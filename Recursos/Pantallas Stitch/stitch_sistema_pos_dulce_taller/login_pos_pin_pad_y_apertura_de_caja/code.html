@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dulce Taller · Apertura de Caja y Turno</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Configuration -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary-fixed-dim": "#aecfae",
+            "secondary-fixed-dim": "#eebca2",
+            "on-tertiary-container": "#ebffe8",
+            "espresso-dark": "#1C120C",
+            "surface-container-lowest": "#ffffff",
+            "on-background": "#1e1b15",
+            "secondary-fixed": "#ffdbca",
+            "on-secondary-fixed": "#2f1405",
+            "on-error-container": "#93000a",
+            "on-primary-fixed-variant": "#7f2b00",
+            "espresso-subtle": "#221610",
+            "primary-fixed": "#ffdbce",
+            "primary": "#9d3c0c",
+            "inverse-surface": "#343029",
+            "primary-fixed-dim": "#ffb599",
+            "primary-container": "#bd5324",
+            "on-tertiary-fixed": "#05210c",
+            "inverse-on-surface": "#f8f0e5",
+            "error-container": "#ffdad6",
+            "table-occupied": "#BD5324",
+            "on-tertiary": "#ffffff",
+            "surface": "#fff8f2",
+            "background": "#fff8f2",
+            "surface-cream": "#FDFBF7",
+            "surface-dim": "#e1d9cf",
+            "on-error": "#ffffff",
+            "table-bill": "#D99B26",
+            "table-free": "#5E7C60",
+            "surface-container-high": "#efe7dd",
+            "caramel-glow": "#D97736",
+            "outline": "#8a7269",
+            "error": "#ba1a1a",
+            "secondary": "#7c5641",
+            "tertiary-container": "#5c7a5e",
+            "on-primary": "#ffffff",
+            "on-primary-container": "#fff9f7",
+            "surface-container-low": "#fbf2e8",
+            "on-secondary": "#ffffff",
+            "table-reserved": "#7A6882",
+            "surface-container": "#f5ede3",
+            "outline-variant": "#dec0b6",
+            "on-secondary-fixed-variant": "#623e2b",
+            "surface-container-highest": "#e9e1d7",
+            "on-secondary-container": "#79533e",
+            "on-surface-variant": "#57423a",
+            "powder-blush": "#E8C8BE",
+            "surface-tint": "#a23f10",
+            "secondary-container": "#fdc9af",
+            "tertiary": "#446147",
+            "on-tertiary-fixed-variant": "#314d34",
+            "on-primary-fixed": "#370e00",
+            "on-surface": "#1e1b15",
+            "surface-bright": "#fff8f2",
+            "tertiary-fixed": "#caebc9",
+            "surface-variant": "#e9e1d7",
+            "inverse-primary": "#ffb599"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "2xl": "1rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "1rem",
+            "margin": "1rem",
+            "space-sm": "0.5rem",
+            "margin-tablet": "1.5rem",
+            "gutter-tablet": "1.25rem",
+            "space-lg": "1.25rem",
+            "space-md": "0.875rem",
+            "space-xl": "2rem",
+            "space-xs": "0.25rem"
+          },
+          "fontFamily": {
+            "label-md": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Playfair Display"],
+            "title-lg": ["Plus Jakarta Sans"],
+            "headline-lg": ["Playfair Display"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "headline-md": ["Playfair Display"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "display-lg": ["Playfair Display"],
+            "headline-lg-mobile": ["Playfair Display"],
+            "title-md": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "display-lg-mobile": ["30px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "title-lg": ["20px", { "lineHeight": "26px", "fontWeight": "700" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "30px", "fontWeight": "600" }],
+            "title-md": ["17px", { "lineHeight": "22px", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .tap-press:active {
+      transform: scale(0.97);
+    }
+  </style>
+</head>
+<body class="bg-surface-cream text-on-surface h-full flex flex-col font-body-md select-none overflow-hidden antialiased">
+<!-- BARRA SUPERIOR DE ESTADO / DOCKED HEADER -->
+<header class="w-full bg-surface-cream px-space-lg py-space-sm flex justify-between items-center shadow-sm z-30 shrink-0 border-b border-outline-variant/30">
+<div class="flex items-center gap-4">
+<div class="w-11 h-11 rounded-xl bg-primary-container text-on-primary-container flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-2xl" data-icon="storefront">storefront</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-headline-md text-headline-md font-bold text-espresso-dark">Dulce Taller</span>
+<span class="text-primary font-headline-md text-headline-md">·</span>
+<span class="font-title-md text-title-md font-medium text-secondary">Pastelería Artesanal</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-table-free inline-block"></span>
+          Caja 01 · Salón &amp; Mostrador Principal
+        </p>
+</div>
+</div>
+<!-- Centro: Fecha y Hora en Vivo -->
+<div class="hidden lg:flex items-center gap-3 bg-surface-container-high px-4 py-2 rounded-xl">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="calendar_today">calendar_today</span>
+<span class="font-label-lg text-label-lg text-espresso-dark font-semibold" id="live-datetime">Martes 24 Octubre · 08:30 hs</span>
+</div>
+<!-- Derecha: Periféricos y Hardware POS -->
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container rounded-lg border border-outline-variant/40">
+<span class="w-2 h-2 rounded-full bg-table-free animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-espresso-dark font-medium">Posnet Conectado</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container rounded-lg border border-outline-variant/40">
+<span class="w-2 h-2 rounded-full bg-table-free"></span>
+<span class="font-label-sm text-label-sm text-espresso-dark font-medium">Impresora Fiscal Lista</span>
+</div>
+<button class="w-10 h-10 rounded-xl bg-surface-container hover:bg-surface-container-highest flex items-center justify-center text-on-surface-variant transition-colors tap-press" title="Configuración de Sistema">
+<span class="material-symbols-outlined text-xl" data-icon="settings">settings</span>
+</button>
+</div>
+</header>
+<!-- CONTENEDOR PRINCIPAL: ARQUITECTURA TÁCTIL TABLET (SPLIT VIEW 55% / 45%) -->
+<main class="flex-1 flex overflow-hidden w-full max-w-[1600px] mx-auto p-4 lg:p-6 gap-6">
+<!-- COLUMNA IZQUIERDA: Personal & Datos de Apertura (Flex 1.1) -->
+<section class="flex-1 flex flex-col justify-between overflow-y-auto pr-1 space-y-5">
+<!-- Bloque 1: Selector de Colaborador -->
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="badge">badge</span>
+<h2 class="font-title-lg text-title-lg text-espresso-dark">Iniciar Sesión de Turno</h2>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2.5 py-1 rounded-full">
+            Paso 1 de 2: Selecciona tu Perfil
+          </span>
+</div>
+<!-- Grid de Tarjetas de Perfil Táctiles -->
+<div class="grid grid-cols-2 gap-3" id="profile-grid">
+<!-- Sofia Calvo (ACTIVA) -->
+<button class="profile-card group flex items-center p-3.5 bg-surface-container-lowest rounded-2xl border-2 border-primary-container shadow-md text-left transition-all tap-press relative overflow-hidden" data-user="Sofía Calvo">
+<div class="absolute top-2 right-2 flex items-center justify-center w-5 h-5 rounded-full bg-primary-container text-white">
+<span class="material-symbols-outlined text-sm" data-icon="check" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="relative w-14 h-14 rounded-xl overflow-hidden shrink-0 border border-powder-blush">
+<img class="w-full h-full object-cover" data-alt="A warm, professional portrait of a cheerful female head barista named Sofia in an artisanal bakery shop, wearing a terracotta brown apron with natural soft morning sun lighting, high realism, editorial aesthetic with creamy neutral tones and cozy cafe background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZmOjZMugWoShkQI-iH-RfkVgzjwjeO6tXh4SUGOvWw1GbfhpERyyHzSrQE_zTPv4nOLmLkXqk2qGKOg2M0HMpqf2sfYVSxgDH5KvDC6gKfawP2nl8nsqsKY8A3yq9caDDJ7kI5AfgOKxliH-Sul45oldBEH94U7c-sHCJ7QlTXv4lHDSsXh0tqnp1V07jJ_XFyp1DuJNPkb6OXl0tzTFgPaIFCXRMeDNos3O-gyPLHvSoJwpgt383"/>
+</div>
+<div class="ml-3.5 pr-4">
+<p class="font-title-md text-title-md text-espresso-dark leading-tight">Sofía Calvo</p>
+<p class="font-label-sm text-label-sm text-primary font-semibold mt-0.5">Encargada · Mozo</p>
+<span class="inline-flex items-center gap-1 font-label-sm text-[10px] text-tertiary mt-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Activa ahora
+              </span>
+</div>
+</button>
+<!-- Martin Gomez -->
+<button class="profile-card group flex items-center p-3.5 bg-surface-container-lowest hover:bg-surface-container-low rounded-2xl border border-outline-variant/50 shadow-sm text-left transition-all tap-press relative" data-user="Martín Gómez">
+<div class="relative w-14 h-14 rounded-xl overflow-hidden shrink-0 border border-outline-variant/30">
+<img class="w-full h-full object-cover" data-alt="A natural, relaxed portrait of a young male barista and server named Martin inside a modern specialty coffee atelier, wearing a dark espresso apron, soft golden cafe ambient lighting, warm tactile background with brass and clean ceramic surfaces." src="https://lh3.googleusercontent.com/aida-public/AB6AXuClGuubL5LPy8dxCvBHkLy9cK1aognVdyzNeBbAlYjQ6InIdfZ1Xue_fAhG-khFJXbe-du0-Ed2q5NJubucwr8Zhy5uTcuYWWCkodQ8c6za-7dHabTYp6cGMtbra83U-QG0bjfC5VT2ik6MsdsfbHWSVRjI-rzgYc2W8d0Oqu0ZqTEXZE4wJuAp47i8csFAJ3MYqzonozVxhbctAJSoSvG8Po8xypLjWJJfm3bGVuU1-4AvEpzgsFAt"/>
+</div>
+<div class="ml-3.5 pr-2">
+<p class="font-title-md text-title-md text-espresso-dark leading-tight">Martín Gómez</p>
+<p class="font-label-sm text-label-sm text-secondary font-medium mt-0.5">Mozo · Mostrador</p>
+<span class="inline-flex items-center gap-1 font-label-sm text-[10px] text-on-surface-variant mt-1">
+                Disponible
+              </span>
+</div>
+</button>
+<!-- Valentina Rivas -->
+<button class="profile-card group flex items-center p-3.5 bg-surface-container-lowest hover:bg-surface-container-low rounded-2xl border border-outline-variant/50 shadow-sm text-left transition-all tap-press relative" data-user="Valentina Rivas">
+<div class="relative w-14 h-14 rounded-xl overflow-hidden shrink-0 border border-outline-variant/30">
+<img class="w-full h-full object-cover" data-alt="A refined portrait of a skilled female pastry chef named Valentina wearing a crisp white chef jacket with subtle flour dusting, working in an artisanal French confectionery kitchen, bright morning light reflecting on stone marble countertops." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_MF_acb4rK-lpLSJVP9YUlo1fHlq83_wGYqFkVgHUL8Kp6DcOEwNmW77VG3MAukZcjNd3EIaRcrYUkXPPfBWStHfQyslvZrgD5M2cehPhI9pApDkqmq-RXWggx5BkuKCh0YuxY6_dAmdMdUokgFEW_A00JSdD7HJUU2P9SKl9CO1LXGM1Htpak8-VkCR7YdaUV-zIb6cxyebdG3WXvgCBxQ11Ne0XYbNyoUB7ts93KsXRJHp1c7OH"/>
+</div>
+<div class="ml-3.5 pr-2">
+<p class="font-title-md text-title-md text-espresso-dark leading-tight">Valentina Rivas</p>
+<p class="font-label-sm text-label-sm text-secondary font-medium mt-0.5">Pastelería · Producción</p>
+<span class="inline-flex items-center gap-1 font-label-sm text-[10px] text-on-surface-variant mt-1">
+                Disponible
+              </span>
+</div>
+</button>
+<!-- Administrador / Modo Gerencial -->
+<button class="profile-card group flex items-center p-3.5 bg-surface-container-low hover:bg-surface-container rounded-2xl border border-outline-variant/60 shadow-sm text-left transition-all tap-press relative" data-user="Gerencia / Admin">
+<div class="w-14 h-14 rounded-xl bg-espresso-dark text-surface-cream flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-2xl" data-icon="admin_panel_settings">admin_panel_settings</span>
+</div>
+<div class="ml-3.5 pr-2">
+<p class="font-title-md text-title-md text-espresso-dark leading-tight">Administración</p>
+<p class="font-label-sm text-label-sm text-secondary font-semibold mt-0.5">Modo Gerencial · Control</p>
+<span class="inline-flex items-center gap-1 font-label-sm text-[10px] text-primary-container mt-1">
+                Acceso Total
+              </span>
+</div>
+</button>
+</div>
+</div>
+<!-- Bloque 2: Tarjeta de Apertura de Caja & Fondo Inicial -->
+<div class="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/40 shadow-sm space-y-4">
+<div class="flex items-center justify-between border-b border-surface-container-high pb-3">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-xl" data-icon="payments">payments</span>
+</div>
+<div>
+<h3 class="font-title-md text-title-md text-espresso-dark">Apertura de Caja &amp; Fondo Inicial</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Registro diario para arqueo y cambio de salón</p>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded-md bg-secondary-container/40 text-on-secondary-container font-label-sm text-label-sm font-semibold">
+            Turno Mañana
+          </span>
+</div>
+<!-- Selector de Turno Segmentado -->
+<div>
+<label class="block font-label-md text-label-md text-espresso-dark mb-2">Franja Horaria de Turno</label>
+<div class="grid grid-cols-2 gap-2 bg-surface-container p-1 rounded-xl">
+<button class="py-2.5 px-3 rounded-lg bg-surface-container-lowest text-espresso-dark font-label-lg text-label-lg shadow-sm font-bold flex items-center justify-center gap-2 border border-outline-variant/30 transition-all" type="button">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="light_mode" style="font-variation-settings: 'FILL' 1;">light_mode</span>
+              Turno Mañana (08:00 - 15:00)
+            </button>
+<button class="py-2.5 px-3 rounded-lg text-on-surface-variant hover:text-espresso-dark font-label-lg text-label-lg font-medium flex items-center justify-center gap-2 transition-all" type="button">
+<span class="material-symbols-outlined text-secondary text-lg" data-icon="dark_mode">dark_mode</span>
+              Turno Tarde (15:00 - 21:00)
+            </button>
+</div>
+</div>
+<!-- Fila de Fondo Inicial y Gaveta -->
+<div class="grid grid-cols-12 gap-3 pt-1">
+<!-- Input Táctil de Fondo Efectivo -->
+<div class="col-span-7">
+<label class="block font-label-md text-label-md text-espresso-dark mb-1.5">Fondo Inicial en Gaveta ($ ARS)</label>
+<div class="relative flex items-center">
+<span class="absolute left-3.5 text-primary-container font-bold text-lg font-title-lg">$</span>
+<input class="w-full bg-surface-container-low border border-outline-variant/60 rounded-xl pl-8 pr-12 py-3 text-espresso-dark font-title-lg text-title-lg font-bold tracking-wide focus:outline-none focus:ring-2 focus:ring-primary-container" readonly="" type="text" value="25.000,00"/>
+<button class="absolute right-2 px-2.5 py-1.5 bg-surface-container-high hover:bg-surface-container-highest text-espresso-dark font-label-sm text-label-sm rounded-lg flex items-center gap-1 transition-all tap-press" title="Modificar monto con conteo detallado">
+<span class="material-symbols-outlined text-sm" data-icon="edit">edit</span>
+<span>Editar</span>
+</button>
+</div>
+<p class="font-label-sm text-[11px] text-on-surface-variant mt-1">Conteo sugerido: 10 x $1.000 + 20 x $500 + 50 x $100</p>
+</div>
+<!-- Switch Gaveta de Dinero Verificada -->
+<div class="col-span-5 flex flex-col justify-between">
+<label class="block font-label-md text-label-md text-espresso-dark mb-1.5">Arqueo Físico</label>
+<div class="flex items-center justify-between p-2.5 bg-surface-container-low rounded-xl border border-outline-variant/40 h-[50px]">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-table-free text-lg" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-sm text-label-sm font-semibold text-espresso-dark">Gaveta Verificada</span>
+</div>
+<!-- Toggle switch activo -->
+<div class="w-10 h-6 bg-tertiary-container rounded-full p-0.5 cursor-pointer flex items-center justify-end shadow-inner">
+<div class="w-5 h-5 bg-white rounded-full shadow-sm"></div>
+</div>
+</div>
+<span class="font-label-sm text-[11px] text-tertiary font-medium">Billetes ordenados y listos</span>
+</div>
+</div>
+</div>
+<!-- Tip de Salón y Ayuda Rápida -->
+<div class="bg-surface-container-high/60 rounded-xl px-4 py-2.5 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="bakery_dining">bakery_dining</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Especialidad del día cargada: <strong class="text-espresso-dark">Croissant con crema de pistacho y frambuesa</strong></span>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-bold">18 unid. disponibles</span>
+</div>
+</section>
+<!-- COLUMNA DERECHA: Teclado Numérico PIN Pad Táctil (Flex 0.9) -->
+<section class="w-[440px] shrink-0 bg-surface-container-lowest rounded-3xl p-6 border border-outline-variant/40 shadow-md flex flex-col justify-between">
+<!-- Encabezado de Columna PIN -->
+<div class="text-center space-y-1">
+<div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-secondary-container/60 text-primary-container mb-1">
+<span class="material-symbols-outlined text-2xl" data-icon="lock">lock</span>
+</div>
+<h2 class="font-headline-md text-headline-md font-bold text-espresso-dark">Ingresar PIN de Seguridad</h2>
+<p class="font-label-md text-label-md text-on-surface-variant" id="selected-user-label">Colaboradora: <span class="font-bold text-espresso-dark">Sofía Calvo</span></p>
+</div>
+<!-- Indicador Visual de 4 Dígitos (Dots de PIN) -->
+<div class="flex justify-center items-center gap-4 py-3 bg-surface-container-low rounded-2xl border border-outline-variant/30 my-1">
+<div class="w-4 h-4 rounded-full bg-primary-container ring-4 ring-primary-container/20 transition-all duration-200"></div>
+<div class="w-4 h-4 rounded-full bg-primary-container ring-4 ring-primary-container/20 transition-all duration-200"></div>
+<div class="w-4 h-4 rounded-full bg-primary-container ring-4 ring-primary-container/20 transition-all duration-200"></div>
+<div class="w-4 h-4 rounded-full bg-surface-container-highest border-2 border-outline-variant transition-all duration-200" id="pin-dot-4"></div>
+</div>
+<!-- PIN PAD NUMÉRICO DE ALTO RENDIMIENTO TÁCTIL (GRID 3x4) -->
+<div class="grid grid-cols-3 gap-2.5 my-1">
+<!-- 1 -->
+<button class="h-16 rounded-2xl bg-surface-cream hover:bg-surface-container border border-outline-variant/40 text-espresso-dark font-title-lg text-2xl font-bold flex flex-col items-center justify-center shadow-sm transition-all tap-press">
+<span>1</span>
+<span class="text-[9px] font-label-sm text-outline tracking-widest font-normal uppercase">pastry</span>
+</button>
+<!-- 2 -->
+<button class="h-16 rounded-2xl bg-surface-cream hover:bg-surface-container border border-outline-variant/40 text-espresso-dark font-title-lg text-2xl font-bold flex flex-col items-center justify-center shadow-sm transition-all tap-press">
+<span>2</span>
+<span class="text-[9px] font-label-sm text-outline tracking-widest font-normal">ABC</span>
+</button>
+<!-- 3 -->
+<button class="h-16 rounded-2xl bg-surface-cream hover:bg-surface-container border border-outline-variant/40 text-espresso-dark font-title-lg text-2xl font-bold flex flex-col items-center justify-center shadow-sm transition-all tap-press">
+<span>3</span>
+<span class="text-[9px] font-label-sm text-outline tracking-widest font-normal">DEF</span>
+</button>
+<!-- 4 -->
+<button class="h-16 rounded-2xl bg-surface-cream hover:bg-surface-container border border-outline-variant/40 text-espresso-dark font-title-lg text-2xl font-bold flex flex-col items-center justify-center shadow-sm transition-all tap-press">
+<span>4</span>
+<span class="text-[9px] font-label-sm text-outline tracking-widest font-normal">GHI</span>
+</button>
+<!-- 5 -->
+<button class="h-16 rounded-2xl bg-surface-cream hover:bg-surface-container border border-outline-variant/40 text-espresso-dark font-title-lg text-2xl font-bold flex flex-col items-center justify-center shadow-sm transition-all tap-press">
+<span>5</span>
+<span class="text-[9px] font-label-sm text-outline tracking-widest font-normal">JKL</span>
+</button>
+<!-- 6 -->
+<button class="h-16 rounded-2xl bg-surface-cream hover:bg-surface-container border border-outline-variant/40 text-espresso-dark font-title-lg text-2xl font-bold flex flex-col items-center justify-center shadow-sm transition-all tap-press">
+<span>6</span>
+<span class="text-[9px] font-label-sm text-outline tracking-widest font-normal">MNO</span>
+</button>
+<!-- 7 -->
+<button class="h-16 rounded-2xl bg-surface-cream hover:bg-surface-container border border-outline-variant/40 text-espresso-dark font-title-lg text-2xl font-bold flex flex-col items-center justify-center shadow-sm transition-all tap-press">
+<span>7</span>
+<span class="text-[9px] font-label-sm text-outline tracking-widest font-normal">PQRS</span>
+</button>
+<!-- 8 -->
+<button class="h-16 rounded-2xl bg-surface-cream hover:bg-surface-container border border-outline-variant/40 text-espresso-dark font-title-lg text-2xl font-bold flex flex-col items-center justify-center shadow-sm transition-all tap-press">
+<span>8</span>
+<span class="text-[9px] font-label-sm text-outline tracking-widest font-normal">TUV</span>
+</button>
+<!-- 9 -->
+<button class="h-16 rounded-2xl bg-surface-cream hover:bg-surface-container border border-outline-variant/40 text-espresso-dark font-title-lg text-2xl font-bold flex flex-col items-center justify-center shadow-sm transition-all tap-press">
+<span>9</span>
+<span class="text-[9px] font-label-sm text-outline tracking-widest font-normal">WXYZ</span>
+</button>
+<!-- Fila Inferior: Tecla C / Borrar -->
+<button class="h-16 rounded-2xl bg-surface-container-high hover:bg-error-container/40 text-error font-title-lg text-lg font-bold flex items-center justify-center gap-1 shadow-sm transition-all tap-press" title="Borrar último dígito">
+<span class="material-symbols-outlined text-xl" data-icon="backspace">backspace</span>
+<span class="font-label-md">C</span>
+</button>
+<!-- 0 -->
+<button class="h-16 rounded-2xl bg-surface-cream hover:bg-surface-container border border-outline-variant/40 text-espresso-dark font-title-lg text-2xl font-bold flex flex-col items-center justify-center shadow-sm transition-all tap-press">
+<span>0</span>
+<span class="text-[9px] font-label-sm text-outline tracking-widest font-normal">+</span>
+</button>
+<!-- Tecla Biometría / Huella o Rápido -->
+<button class="h-16 rounded-2xl bg-secondary-container hover:bg-secondary-fixed text-espresso-dark font-title-lg flex flex-col items-center justify-center shadow-sm transition-all tap-press" title="Validación con Huella Digital">
+<span class="material-symbols-outlined text-2xl text-primary" data-icon="fingerprint">fingerprint</span>
+<span class="text-[9px] font-label-sm text-primary font-bold">Biométrica</span>
+</button>
+</div>
+<!-- Bloque de Acción Principal y Recuperación -->
+<div class="space-y-3 pt-2">
+<!-- Botón Primario de Apertura -->
+<button class="w-full min-h-[56px] py-3.5 px-6 rounded-2xl bg-primary-container hover:bg-primary text-on-primary-container font-label-lg text-label-lg font-bold flex items-center justify-center gap-3 shadow-md hover:shadow-lg transition-all tap-press group">
+<span class="material-symbols-outlined text-2xl group-hover:rotate-12 transition-transform" data-icon="key">key</span>
+<span>Abrir Caja e Ingresar al Salón</span>
+<span class="material-symbols-outlined text-xl ml-auto" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<!-- Acceso Secundario de Soporte / Supervisor -->
+<div class="flex items-center justify-center gap-1.5 pt-1">
+<span class="material-symbols-outlined text-secondary text-base" data-icon="help">help</span>
+<button class="font-label-md text-label-md text-secondary hover:text-espresso-dark underline decoration-outline-variant underline-offset-4 transition-colors">
+            ¿Olvidaste tu PIN? Solicitar código de supervisor
+          </button>
+</div>
+</div>
+</section>
+</main>
+<!-- PIE DE PÁGINA ULTRA LIGERO DE AUDITORÍA -->
+<footer class="w-full bg-surface-container-high/40 px-space-lg py-2 flex justify-between items-center text-on-surface-variant font-label-sm text-label-sm shrink-0 border-t border-outline-variant/20">
+<div class="flex items-center gap-4">
+<span>Terminal POS: <strong>T-01 Salon Principal</strong></span>
+<span>·</span>
+<span>Base de Datos: <strong>Local Cloud Sincronizada</strong></span>
+<span>·</span>
+<span>Versión: <strong>v4.2.1 Atelier</strong></span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-table-free text-sm" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span>Cierre previo conforme: 23/10 21:05 hs (Martín Gómez)</span>
+</div>
+</footer>
+<!-- SCRIPT DE MICRO-INTERACCIONES POS -->
+<script>
+    // Micro-interacción: Selección táctil de colaborador
+    const profileCards = document.querySelectorAll('.profile-card');
+    const selectedUserLabel = document.querySelector('#selected-user-label span');
+
+    profileCards.forEach(card => {
+      card.addEventListener('click', () => {
+        profileCards.forEach(c => {
+          c.classList.remove('border-2', 'border-primary-container', 'shadow-md', 'bg-surface-container-lowest');
+          c.classList.add('border', 'border-outline-variant/50', 'shadow-sm');
+          const badge = c.querySelector('.absolute.top-2.right-2');
+          if (badge) badge.remove();
+        });
+
+        card.classList.add('border-2', 'border-primary-container', 'shadow-md', 'bg-surface-container-lowest');
+        card.classList.remove('border-outline-variant/50');
+
+        const checkBadge = document.createElement('div');
+        checkBadge.className = 'absolute top-2 right-2 flex items-center justify-center w-5 h-5 rounded-full bg-primary-container text-white';
+        checkBadge.innerHTML = '<span class="material-symbols-outlined text-sm" style="font-variation-settings: \'FILL\' 1;">check</span>';
+        card.appendChild(checkBadge);
+
+        const userName = card.getAttribute('data-user');
+        if (selectedUserLabel && userName) {
+          selectedUserLabel.textContent = userName;
+        }
+      });
+    });
+
+    // Actualización de reloj local
+    function updateClock() {
+      const now = new Date();
+      const options = { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' };
+      const clockElement = document.getElementById('live-datetime');
+      if (clockElement) {
+        const dateStr = now.toLocaleDateString('es-AR', options);
+        // Formateo estilizado con mayúscula inicial
+        const formatted = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+        clockElement.textContent = formatted.replace(',', ' ·') + ' hs';
+      }
+    }
+    updateClock();
+    setInterval(updateClock, 30000);
+  </script>
+</body></html>

@@ -29,6 +29,3 @@ tsconfig.tsbuildinfo
 .env.local
 .env.production
 .env.development
-
-# Documentation and design resources
-Recursos/

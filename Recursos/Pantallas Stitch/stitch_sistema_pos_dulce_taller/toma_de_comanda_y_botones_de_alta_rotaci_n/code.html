@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Dulce Taller · Salón &amp; POS</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-tint": "#a23f10",
+            "on-surface": "#1e1b15",
+            "tertiary-fixed-dim": "#aecfae",
+            "surface-container": "#f5ede3",
+            "powder-blush": "#E8C8BE",
+            "table-free": "#5E7C60",
+            "primary": "#9d3c0c",
+            "inverse-primary": "#ffb599",
+            "primary-fixed-dim": "#ffb599",
+            "background": "#fff8f2",
+            "on-background": "#1e1b15",
+            "on-secondary-fixed": "#2f1405",
+            "on-secondary-container": "#79533e",
+            "surface-variant": "#e9e1d7",
+            "on-secondary-fixed-variant": "#623e2b",
+            "secondary-fixed": "#ffdbca",
+            "surface-container-high": "#efe7dd",
+            "primary-container": "#bd5324",
+            "espresso-subtle": "#221610",
+            "on-primary-fixed": "#370e00",
+            "tertiary-fixed": "#caebc9",
+            "error": "#ba1a1a",
+            "outline-variant": "#dec0b6",
+            "error-container": "#ffdad6",
+            "on-tertiary-fixed": "#05210c",
+            "on-secondary": "#ffffff",
+            "table-bill": "#D99B26",
+            "secondary-fixed-dim": "#eebca2",
+            "surface-container-lowest": "#ffffff",
+            "on-primary-container": "#fff9f7",
+            "on-tertiary-fixed-variant": "#314d34",
+            "on-error-container": "#93000a",
+            "outline": "#8a7269",
+            "surface-dim": "#e1d9cf",
+            "inverse-surface": "#343029",
+            "on-primary": "#ffffff",
+            "espresso-dark": "#1C120C",
+            "secondary": "#7c5641",
+            "on-error": "#ffffff",
+            "table-reserved": "#7A6882",
+            "tertiary": "#446147",
+            "surface-bright": "#fff8f2",
+            "surface-container-low": "#fbf2e8",
+            "on-primary-fixed-variant": "#7f2b00",
+            "on-surface-variant": "#57423a",
+            "surface": "#fff8f2",
+            "inverse-on-surface": "#f8f0e5",
+            "table-occupied": "#BD5324",
+            "surface-container-highest": "#e9e1d7",
+            "caramel-glow": "#D97736",
+            "tertiary-container": "#5c7a5e",
+            "secondary-container": "#fdc9af",
+            "primary-fixed": "#ffdbce",
+            "on-tertiary": "#ffffff",
+            "surface-cream": "#FDFBF7",
+            "on-tertiary-container": "#ebffe8"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-lg": "1.25rem",
+            "space-sm": "0.5rem",
+            "space-md": "0.875rem",
+            "space-xs": "0.25rem",
+            "margin-tablet": "1.5rem",
+            "space-xl": "2rem",
+            "gutter": "1rem",
+            "margin": "1rem",
+            "gutter-tablet": "1.25rem"
+          },
+          "fontFamily": {
+            "headline-lg": ["Playfair Display"],
+            "headline-md": ["Playfair Display"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "display-lg": ["Playfair Display"],
+            "display-lg-mobile": ["Playfair Display"],
+            "body-md": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "title-lg": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Playfair Display"],
+            "body-lg": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+            "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "display-lg-mobile": ["30px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "title-lg": ["20px", { "lineHeight": "26px", "fontWeight": "700" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "title-md": ["17px", { "lineHeight": "22px", "fontWeight": "600" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "30px", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Custom scrollbar for tactical tactile lists */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(90, 56, 37, 0.18);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(90, 56, 37, 0.35);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background h-screen overflow-hidden flex flex-col font-body-md select-none">
+<!-- ========================================== -->
+<!-- 1. TOP APP BAR (Shared Component Anchor)    -->
+<!-- ========================================== -->
+<header class="bg-surface-cream dark:bg-espresso-dark shadow-sm dark:shadow-none z-30 flex-shrink-0">
+<div class="flex justify-between items-center w-full px-space-lg py-space-sm max-w-full">
+<!-- Brand & Leading Icon -->
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-primary border border-outline-variant/30 shadow-sm">
+<span class="material-symbols-outlined text-[24px]">storefront</span>
+</div>
+<div>
+<span class="text-title-lg font-title-lg font-bold text-espresso-dark dark:text-surface-cream tracking-tight block">
+            Dulce Taller · Salón
+          </span>
+<span class="text-label-sm font-label-sm text-secondary flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-table-free animate-pulse"></span>
+            Pastelería &amp; Café de Especialidad
+          </span>
+</div>
+</div>
+<!-- Quick Switcher Context: Mesa / Salón / Take Away -->
+<div class="flex items-center gap-2 bg-surface-container-high px-2 py-1.5 rounded-xl border border-outline-variant/30">
+<!-- Mesa Selector Badge -->
+<button class="flex items-center gap-2 bg-surface-container-lowest px-3 py-1.5 rounded-lg shadow-sm border border-primary-container/20 text-on-surface hover:bg-surface-cream active:scale-98 transition-all">
+<span class="w-2.5 h-2.5 rounded-full bg-table-occupied"></span>
+<span class="font-title-md text-title-md text-primary font-bold">Mesa 02</span>
+<span class="text-label-sm font-label-sm bg-surface-container text-secondary px-1.5 py-0.5 rounded">4 pax</span>
+<span class="material-symbols-outlined text-[18px] text-outline">expand_more</span>
+</button>
+<!-- Take Away / Mostrador Quick Toggle -->
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-secondary hover:bg-surface-container text-label-md font-label-md transition-all active:scale-98">
+<span class="material-symbols-outlined text-[18px]">takeout_dining</span>
+<span>A Mostrador</span>
+</button>
+<!-- Floor Plan Modal Trigger -->
+<button class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-secondary hover:bg-surface-container text-label-md font-label-md transition-all active:scale-98" title="Ver plano de mesas">
+<span class="material-symbols-outlined text-[18px]">map</span>
+<span>Plano</span>
+</button>
+</div>
+<!-- Context Info: Staff, Connectivity & Search -->
+<div class="flex items-center gap-3">
+<!-- Live Search Field in Header -->
+<div class="relative w-56">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+<input class="w-full bg-surface-container text-body-md font-body-md text-on-surface placeholder:text-outline/70 pl-9 pr-3 py-1.5 rounded-lg border border-outline-variant/40 focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all" placeholder="Buscar producto (o código)..." type="text"/>
+</div>
+<!-- Connectivity Pill -->
+<div class="hidden lg:flex items-center gap-1.5 bg-tertiary-fixed/40 text-tertiary px-2.5 py-1.5 rounded-lg text-label-sm font-label-sm border border-tertiary/20">
+<span class="material-symbols-outlined text-[16px] text-tertiary">wifi</span>
+<span>Posnet Online</span>
+</div>
+<!-- Active Server Badge -->
+<div class="flex items-center gap-2 pl-2 border-l border-outline-variant/40">
+<div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-label-md">
+            SC
+          </div>
+<div class="leading-tight text-left">
+<span class="text-label-md font-label-md text-on-surface block font-bold">Sofía Calvo</span>
+<span class="text-label-sm font-label-sm text-secondary">Turno Mañana</span>
+</div>
+</div>
+<!-- Action Button (from JSON anchor) -->
+<button class="bg-primary-container text-on-primary-container hover:bg-primary px-3.5 py-2 rounded-xl text-label-md font-label-md font-bold flex items-center gap-1.5 shadow-sm active:scale-98 transition-all">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span>Nuevo Pedido</span>
+</button>
+</div>
+</div>
+</header>
+<!-- ========================================== -->
+<!-- MAIN WORKSPACE: TABLET SPLIT-PANE VIEW     -->
+<!-- ========================================== -->
+<main class="flex-1 flex overflow-hidden">
+<!-- LEFT PANEL (65%): Product Catalog & High-Rotation Quick Touch Grid -->
+<section class="w-[65%] flex flex-col bg-background border-r border-outline-variant/30 overflow-hidden">
+<!-- Horizontal Category Tabs -->
+<nav class="flex-shrink-0 bg-surface-cream px-space-md py-2.5 border-b border-outline-variant/20 overflow-x-auto flex items-center gap-2">
+<button class="bg-primary-container text-on-primary-container px-4 py-2 rounded-xl text-label-md font-label-md font-bold shadow-sm whitespace-nowrap flex items-center gap-1.5 transition-all">
+<span class="material-symbols-outlined text-[18px]">apps</span>
+<span>Todas</span>
+</button>
+<button class="bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface px-4 py-2 rounded-xl text-label-md font-label-md font-semibold whitespace-nowrap flex items-center gap-1.5 transition-all border border-outline-variant/20">
+<span class="material-symbols-outlined text-[18px]">coffee</span>
+<span>Cafetería &amp; Infusiones</span>
+</button>
+<button class="bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface px-4 py-2 rounded-xl text-label-md font-label-md font-semibold whitespace-nowrap flex items-center gap-1.5 transition-all border border-outline-variant/20">
+<span class="material-symbols-outlined text-[18px]">cake</span>
+<span>Pastelería Individual</span>
+</button>
+<button class="bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface px-4 py-2 rounded-xl text-label-md font-label-md font-semibold whitespace-nowrap flex items-center gap-1.5 transition-all border border-outline-variant/20">
+<span class="material-symbols-outlined text-[18px]">bakery_dining</span>
+<span>Tortas &amp; Especialidades</span>
+</button>
+<button class="bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface px-4 py-2 rounded-xl text-label-md font-label-md font-semibold whitespace-nowrap flex items-center gap-1.5 transition-all border border-outline-variant/20">
+<span class="material-symbols-outlined text-[18px]">lunch_dining</span>
+<span>Salados &amp; Bebidas</span>
+</button>
+<button class="bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface px-4 py-2 rounded-xl text-label-md font-label-md font-semibold whitespace-nowrap flex items-center gap-1.5 transition-all border border-outline-variant/20">
+<span class="material-symbols-outlined text-[18px]">card_giftcard</span>
+<span>Talleres &amp; Big Box</span>
+</button>
+</nav>
+<!-- Scrollable Catalog Canvas -->
+<div class="flex-1 overflow-y-auto p-4 space-y-6">
+<!-- SECTION 1: BOTONES DE ALTA ROTACIÓN (1 toque para comanda rápida) -->
+<div>
+<div class="flex items-center justify-between mb-3 px-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container text-[20px]" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<h2 class="text-headline-md font-headline-md text-espresso-dark font-semibold tracking-tight">
+                Alta Rotación · Toque Rápido
+              </h2>
+</div>
+<span class="text-label-sm font-label-sm text-secondary bg-surface-container px-2.5 py-1 rounded-full border border-outline-variant/30">
+              Top 8 más pedidos
+            </span>
+</div>
+<!-- Quick Tap Grid: Large 4-column cards for tactile speed -->
+<div class="grid grid-cols-4 gap-3">
+<!-- Item 1: Café Espresso -->
+<button class="group bg-surface-container-lowest hover:bg-surface-container-low active:scale-98 transition-all p-3 rounded-2xl border border-outline-variant/30 flex flex-col justify-between text-left h-36 relative overflow-hidden shadow-sm hover:shadow-md">
+<div class="flex justify-between items-start w-full">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-secondary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined text-[26px]">coffee</span>
+</div>
+<span class="text-label-sm font-label-sm bg-powder-blush/60 text-secondary px-2 py-0.5 rounded-full font-bold">
+                  Express
+                </span>
+</div>
+<div class="mt-2">
+<h3 class="font-title-md text-title-md text-on-surface font-bold leading-tight group-hover:text-primary transition-colors">
+                  Café Espresso
+                </h3>
+<p class="font-title-lg text-title-lg text-primary-container font-extrabold mt-1">
+                  $3.200
+                </p>
+</div>
+</button>
+<!-- Item 2: Café con Leche -->
+<button class="group bg-surface-container-lowest hover:bg-surface-container-low active:scale-98 transition-all p-3 rounded-2xl border border-outline-variant/30 flex flex-col justify-between text-left h-36 relative overflow-hidden shadow-sm hover:shadow-md">
+<div class="flex justify-between items-start w-full">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-secondary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined text-[26px]">local_cafe</span>
+</div>
+<span class="text-label-sm font-label-sm bg-tertiary-fixed/60 text-tertiary px-2 py-0.5 rounded-full font-bold">
+                  Popular
+                </span>
+</div>
+<div class="mt-2">
+<h3 class="font-title-md text-title-md text-on-surface font-bold leading-tight group-hover:text-primary transition-colors">
+                  Café con Leche
+                </h3>
+<p class="font-title-lg text-title-lg text-primary-container font-extrabold mt-1">
+                  $5.200
+                </p>
+</div>
+</button>
+<!-- Item 3: Capuccino Especial -->
+<button class="group bg-surface-container-lowest hover:bg-surface-container-low active:scale-98 transition-all p-3 rounded-2xl border border-outline-variant/30 flex flex-col justify-between text-left h-36 relative overflow-hidden shadow-sm hover:shadow-md">
+<div class="flex justify-between items-start w-full">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-secondary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined text-[26px]">qr_code_2</span>
+</div>
+<span class="text-label-sm font-label-sm bg-secondary-fixed text-on-secondary-fixed px-2 py-0.5 rounded-full font-bold">
+                  Canela
+                </span>
+</div>
+<div class="mt-2">
+<h3 class="font-title-md text-title-md text-on-surface font-bold leading-tight group-hover:text-primary transition-colors">
+                  Capuccino Especial
+                </h3>
+<p class="font-title-lg text-title-lg text-primary-container font-extrabold mt-1">
+                  $3.400
+                </p>
+</div>
+</button>
+<!-- Item 4: Medialunas de Manteca (x2) -->
+<button class="group bg-surface-container-lowest hover:bg-surface-container-low active:scale-98 transition-all p-3 rounded-2xl border border-outline-variant/30 flex flex-col justify-between text-left h-36 relative overflow-hidden shadow-sm hover:shadow-md">
+<div class="flex justify-between items-start w-full">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-secondary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined text-[26px]">bakery_dining</span>
+</div>
+<span class="text-label-sm font-label-sm bg-table-bill/20 text-on-surface px-2 py-0.5 rounded-full font-bold">
+                  Horneadas
+                </span>
+</div>
+<div class="mt-2">
+<h3 class="font-title-md text-title-md text-on-surface font-bold leading-tight group-hover:text-primary transition-colors">
+                  Medialunas Manteca (x2)
+                </h3>
+<p class="font-title-lg text-title-lg text-primary-container font-extrabold mt-1">
+                  $4.200
+                </p>
+</div>
+</button>
+<!-- Item 5: Porción Lemon Pie -->
+<button class="group bg-surface-container-lowest hover:bg-surface-container-low active:scale-98 transition-all p-3 rounded-2xl border border-outline-variant/30 flex flex-col justify-between text-left h-36 relative overflow-hidden shadow-sm hover:shadow-md">
+<div class="flex justify-between items-start w-full">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-secondary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined text-[26px]">pie_chart</span>
+</div>
+<span class="text-label-sm font-label-sm bg-surface-container-high text-secondary px-2 py-0.5 rounded-full font-bold">
+                  Merengue
+                </span>
+</div>
+<div class="mt-2">
+<h3 class="font-title-md text-title-md text-on-surface font-bold leading-tight group-hover:text-primary transition-colors">
+                  Porción Lemon Pie
+                </h3>
+<p class="font-title-lg text-title-lg text-primary-container font-extrabold mt-1">
+                  $5.600
+                </p>
+</div>
+</button>
+<!-- Item 6: Porción Cheesecake Frutos Rojos -->
+<button class="group bg-surface-container-lowest hover:bg-surface-container-low active:scale-98 transition-all p-3 rounded-2xl border-2 border-primary-container/40 flex flex-col justify-between text-left h-36 relative overflow-hidden shadow-sm hover:shadow-md">
+<div class="flex justify-between items-start w-full">
+<div class="w-12 h-12 rounded-xl bg-primary-fixed flex items-center justify-center text-primary font-bold">
+<span class="material-symbols-outlined text-[26px]">cake</span>
+</div>
+<span class="text-label-sm font-label-sm bg-primary-container text-on-primary-container px-2 py-0.5 rounded-full font-bold">
+                  En comanda
+                </span>
+</div>
+<div class="mt-2">
+<h3 class="font-title-md text-title-md text-on-surface font-bold leading-tight text-primary">
+                  Cheesecake Frutos R.
+                </h3>
+<p class="font-title-lg text-title-lg text-primary-container font-extrabold mt-1">
+                  $5.800
+                </p>
+</div>
+</button>
+<!-- Item 7: Brownie con Nuez & DDL -->
+<button class="group bg-surface-container-lowest hover:bg-surface-container-low active:scale-98 transition-all p-3 rounded-2xl border border-outline-variant/30 flex flex-col justify-between text-left h-36 relative overflow-hidden shadow-sm hover:shadow-md">
+<div class="flex justify-between items-start w-full">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-secondary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined text-[26px]">cookie</span>
+</div>
+<span class="text-label-sm font-label-sm bg-secondary-fixed text-on-secondary-fixed px-2 py-0.5 rounded-full font-bold">
+                  Nuez
+                </span>
+</div>
+<div class="mt-2">
+<h3 class="font-title-md text-title-md text-on-surface font-bold leading-tight group-hover:text-primary transition-colors">
+                  Brownie Nuez &amp; DDL
+                </h3>
+<p class="font-title-lg text-title-lg text-primary-container font-extrabold mt-1">
+                  $5.400
+                </p>
+</div>
+</button>
+<!-- Item 8: Scones de Queso & Hierbas -->
+<button class="group bg-surface-container-lowest hover:bg-surface-container-low active:scale-98 transition-all p-3 rounded-2xl border border-outline-variant/30 flex flex-col justify-between text-left h-36 relative overflow-hidden shadow-sm hover:shadow-md">
+<div class="flex justify-between items-start w-full">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-secondary group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined text-[26px]">breakfast_dining</span>
+</div>
+<span class="text-label-sm font-label-sm bg-powder-blush text-on-surface px-2 py-0.5 rounded-full font-bold">
+                  Tibios
+                </span>
+</div>
+<div class="mt-2">
+<h3 class="font-title-md text-title-md text-on-surface font-bold leading-tight group-hover:text-primary transition-colors">
+                  Scones Queso &amp; Hierbas
+                </h3>
+<p class="font-title-lg text-title-lg text-primary-container font-extrabold mt-1">
+                  $3.900
+                </p>
+</div>
+</button>
+</div>
+</div>
+<!-- SECTION 2: CATÁLOGO EXTENDIDO Y ESPECIALIDADES (Cards horizontales / Bento) -->
+<div>
+<div class="flex items-center justify-between mb-3 px-1">
+<h2 class="text-headline-md font-headline-md text-espresso-dark font-semibold tracking-tight">
+              Especialidades &amp; Cocina
+            </h2>
+<span class="text-label-sm font-label-sm text-secondary">
+              5 opciones disponibles
+            </span>
+</div>
+<div class="grid grid-cols-2 lg:grid-cols-3 gap-3">
+<!-- Specialty 1: Tostado Brioche -->
+<div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-3.5 flex flex-col justify-between shadow-sm hover:border-primary-container/40 transition-all cursor-pointer">
+<div class="flex items-start gap-3">
+<img class="w-16 h-16 rounded-xl object-cover flex-shrink-0 border border-outline-variant/30 shadow-sm" data-alt="A gourmet golden toasted brioche ham and melted artisanal cheese sandwich photographed in natural cafe morning light with delicate steam rising on a ceramic plate, reflecting warm terracotta tones and rustic European craftsmanship." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUkYpf0LkeieMIjWgUbmRm3kewpxB5_V23jQcwocXVDhO5RVexMFtkjnq4yzVqviHq35sbi7LrcbqFgxAtgHnTAtWHQO6cYYBcCZLQA-QkfceMVTrAefZIYEEtbmxFw0ZBrUfZx8pK3DurrhfNF-PHpWxm10opA6cVs_I2luMP4g_kNWdSq4ZneGaMYCuMCV384p1EPVWryutWUufgvSpMIcE77neS-6JhVpuJKEGcN2yJh3IRj3rc"/>
+<div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold leading-tight">
+                    Tostado Brioche
+                  </h3>
+<p class="text-label-sm font-label-sm text-secondary mt-0.5 line-clamp-1">Jamón cocido natural &amp; gruyere</p>
+<p class="text-label-sm font-label-sm text-tertiary font-bold mt-1">Salado Caliente</p>
+</div>
+</div>
+<div class="mt-3 pt-2.5 border-t border-outline-variant/20 flex items-center justify-between">
+<span class="font-title-lg text-title-lg text-primary-container font-bold">$6.800</span>
+<button class="w-9 h-9 rounded-xl bg-surface-container hover:bg-primary-container hover:text-on-primary-container text-primary flex items-center justify-center transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+</div>
+</div>
+<!-- Specialty 2: Croissant Pistacho & Frambuesa -->
+<div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-3.5 flex flex-col justify-between shadow-sm hover:border-primary-container/40 transition-all cursor-pointer">
+<div class="flex items-start gap-3">
+<img class="w-16 h-16 rounded-xl object-cover flex-shrink-0 border border-outline-variant/30 shadow-sm" data-alt="An artisanal French flaky croissant filled with rich green pistachio cream and dusted with vibrant freeze-dried raspberry powder, presented in soft daylight on parchment paper with warm editorial European pastry photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQoa8bwEYaqmIlPWqaPdim3oHCfdTMiCAm0Yi49L_ekQkjPBtWi8xlKXAVFHxx7eir3UcrPOo5-FPv91hTPDcfnUqa7Oivap2nkg5CDT1KbTe4v09U5bL2w3B4FrDObXmhrzSPTiTu3Gx6hCmvSK5N_gO5y0zNVOQkVCq72MAxsuGTtfSyHASYhpmPIJNfLF_0mfbiRhFq8nkmTydTnkjhGWYIDH6ReXa6Q4ZjO8G3CFWA1e6JjKMw"/>
+<div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold leading-tight">
+                    Croissant Pistacho
+                  </h3>
+<p class="text-label-sm font-label-sm text-secondary mt-0.5 line-clamp-1">Crema pistacho puro &amp; frambuesas</p>
+<p class="text-label-sm font-label-sm text-primary font-bold mt-1">Últimas 3 unid.</p>
+</div>
+</div>
+<div class="mt-3 pt-2.5 border-t border-outline-variant/20 flex items-center justify-between">
+<span class="font-title-lg text-title-lg text-primary-container font-bold">$5.900</span>
+<button class="w-9 h-9 rounded-xl bg-surface-container hover:bg-primary-container hover:text-on-primary-container text-primary flex items-center justify-center transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+</div>
+</div>
+<!-- Specialty 3: Cold Brew de la Casa -->
+<div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-3.5 flex flex-col justify-between shadow-sm hover:border-primary-container/40 transition-all cursor-pointer">
+<div class="flex items-start gap-3">
+<img class="w-16 h-16 rounded-xl object-cover flex-shrink-0 border border-outline-variant/30 shadow-sm" data-alt="A refreshing artisanal cold brew coffee served in a fluted glassware over crystal clear ice with an orange twist garnish in a warm daylight cafe aesthetic showcasing deep rich coffee tones and refined minimalism." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnU5564IBWd5uURmqkFk0BlA8dZs46NjSTKG2NdbYc0zBjG8rq8Oj9IzKb09WlPqCxNeHgiUgA2pp_O4Z7_yIpVkdUXh75h3unlqS1GpUYHOClo6LJRdEarSf7h3NJZvyrPHlYuH2CtZm5P-OKbUs77mar2Zm8Pf6VSuAl0KjRZIbjIAdPP3d3cTeLhPUNV0eL-xrAf_dMUE0NefowSOvUMgU_BA7GUeXJRit6F582A8QCDPlgtMch"/>
+<div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold leading-tight">
+                    Cold Brew Casa
+                  </h3>
+<p class="text-label-sm font-label-sm text-secondary mt-0.5 line-clamp-1">Macerado 18hs en frío con cítricos</p>
+<p class="text-label-sm font-label-sm text-tertiary font-bold mt-1">Bebida Fría</p>
+</div>
+</div>
+<div class="mt-3 pt-2.5 border-t border-outline-variant/20 flex items-center justify-between">
+<span class="font-title-lg text-title-lg text-primary-container font-bold">$4.500</span>
+<button class="w-9 h-9 rounded-xl bg-surface-container hover:bg-primary-container hover:text-on-primary-container text-primary flex items-center justify-center transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+</div>
+</div>
+<!-- Specialty 4: Torta Red Velvet Entera -->
+<div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-3.5 flex flex-col justify-between shadow-sm hover:border-primary-container/40 transition-all cursor-pointer">
+<div class="flex items-start gap-3">
+<img class="w-16 h-16 rounded-xl object-cover flex-shrink-0 border border-outline-variant/30 shadow-sm" data-alt="An elegant whole artisan Red Velvet layer cake with whipped mascarpone frosting, edible floral petals and deep crimson sponge cake texture on an elevated stoneware cake stand in warm morning bakery atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiBnzTOHglcyMB-6WU2AMXTrEMp01s3s17FFliVycxustqvGP3It5phE1J3Rrc7w46hbTqDdQjMsK5qooXKZ1zmqXE0d-omMxy17Is4185hOBNzAjxVuZ1Z_TKIeiHH-qLmjQnVB76BOaSae_GZAtnbbb6C7724scWxVsYpUxTITxumGTUleYuAjCGisEr4DhF2NnReqpCOZ0gW9kz9C5dSPHIRV_64i6wO1k9Sev-gwWkpvEHYQ-Y"/>
+<div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold leading-tight">
+                    Torta Red Velvet
+                  </h3>
+<p class="text-label-sm font-label-sm text-secondary mt-0.5 line-clamp-1">Torta entera 10-12 porciones</p>
+<p class="text-label-sm font-label-sm text-secondary-container text-on-secondary-container px-1 rounded inline-block font-bold mt-1">Take Away</p>
+</div>
+</div>
+<div class="mt-3 pt-2.5 border-t border-outline-variant/20 flex items-center justify-between">
+<span class="font-title-lg text-title-lg text-primary-container font-bold">$28.000</span>
+<button class="w-9 h-9 rounded-xl bg-surface-container hover:bg-primary-container hover:text-on-primary-container text-primary flex items-center justify-center transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+</div>
+</div>
+<!-- Specialty 5: Experiencia Taller Pastelería Brunch (Big Box) -->
+<div class="col-span-2 bg-gradient-to-r from-surface-container-lowest to-surface-container-low rounded-2xl border-2 border-primary-container/30 p-3.5 flex flex-col justify-between shadow-sm hover:border-primary-container transition-all cursor-pointer">
+<div class="flex items-start gap-3">
+<div class="w-16 h-16 rounded-xl bg-secondary-container/60 flex items-center justify-center text-primary flex-shrink-0">
+<span class="material-symbols-outlined text-[34px]">card_giftcard</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-title-md text-title-md text-on-surface font-bold">
+                      Experiencia Taller Brunch (Big Box)
+                    </h3>
+<span class="bg-primary text-on-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Voucher</span>
+</div>
+<p class="text-body-md font-body-md text-secondary mt-0.5">Clase maestra de amasado brioche + degustación libre de café y tabla de pastelería para 2 personas.</p>
+</div>
+</div>
+<div class="mt-3 pt-2.5 border-t border-outline-variant/20 flex items-center justify-between">
+<div class="flex items-baseline gap-2">
+<span class="font-title-lg text-title-lg text-primary-container font-bold">$42.000</span>
+<span class="text-label-sm font-label-sm text-secondary">Incluye delantal y kit regalo</span>
+</div>
+<button class="px-4 py-2 rounded-xl bg-primary-container text-on-primary-container text-label-md font-label-md font-bold flex items-center gap-1.5 hover:bg-primary transition-all active:scale-95 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+<span>Cargar Voucher</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- RIGHT PANEL (35%): Live Sticky Order Drawer & Kitchen Ticket -->
+<aside class="w-[35%] bg-surface-cream flex flex-col shadow-lg z-20">
+<!-- Ticket Header -->
+<div class="p-space-md border-b border-outline-variant/30 bg-surface-container-low">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[22px]">receipt_long</span>
+<div>
+<h2 class="font-title-lg text-title-lg text-espresso-dark font-bold leading-tight">
+                Comanda Activa #284
+              </h2>
+<span class="text-label-sm font-label-sm text-secondary">Salón · Mesa 02</span>
+</div>
+</div>
+<span class="bg-table-bill/20 text-on-surface font-label-sm text-label-sm px-2.5 py-1 rounded-full font-bold flex items-center gap-1 border border-table-bill/40">
+<span class="w-2 h-2 rounded-full bg-table-bill"></span>
+            En preparación / Adición
+          </span>
+</div>
+</div>
+<!-- Ticket Items List (Scrollable) -->
+<div class="flex-1 overflow-y-auto p-space-md space-y-3">
+<!-- Order Item 1: Café con leche x2 -->
+<div class="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/30 shadow-sm relative group">
+<div class="flex items-start justify-between">
+<div class="flex-1 pr-2">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-lg bg-surface-container text-primary font-bold text-label-md flex items-center justify-center">2×</span>
+<h4 class="font-title-md text-title-md text-on-surface font-bold">Café con Leche</h4>
+</div>
+<!-- Preparation Notes / Modifiers -->
+<div class="mt-1.5 pl-8 space-y-0.5 text-label-sm font-label-sm text-secondary">
+<p class="flex items-center gap-1 text-on-surface-variant font-medium">
+<span class="material-symbols-outlined text-[14px] text-primary-container">arrow_right</span>
+                  1x Leche de avena (+$0)
+                </p>
+<p class="flex items-center gap-1 text-on-surface-variant font-medium">
+<span class="material-symbols-outlined text-[14px] text-primary-container">arrow_right</span>
+                  1x Leche entera tibia
+                </p>
+</div>
+</div>
+<!-- Total & Trash -->
+<div class="text-right flex flex-col items-end justify-between h-full">
+<span class="font-title-md text-title-md text-espresso-dark font-bold">$10.400</span>
+<button class="mt-2 text-outline hover:text-error transition-colors p-1" title="Eliminar ítem">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Tactile Quantity Controls -->
+<div class="mt-2 pt-2 border-t border-outline-variant/20 flex items-center justify-between">
+<button class="text-label-sm font-label-sm text-primary flex items-center gap-1 hover:underline">
+<span class="material-symbols-outlined text-[14px]">edit_note</span>
+              Editar notas
+            </button>
+<div class="flex items-center gap-1 bg-surface-container px-1 py-0.5 rounded-lg border border-outline-variant/30">
+<button class="w-7 h-7 rounded-md bg-surface-container-lowest text-on-surface flex items-center justify-center hover:bg-surface-cream active:scale-90 font-bold">-</button>
+<span class="font-label-md font-bold text-on-surface px-2">2</span>
+<button class="w-7 h-7 rounded-md bg-surface-container-lowest text-on-surface flex items-center justify-center hover:bg-surface-cream active:scale-90 font-bold">+</button>
+</div>
+</div>
+</div>
+<!-- Order Item 2: Capuccino Especial x1 -->
+<div class="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/30 shadow-sm relative group">
+<div class="flex items-start justify-between">
+<div class="flex-1 pr-2">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-lg bg-surface-container text-primary font-bold text-label-md flex items-center justify-center">1×</span>
+<h4 class="font-title-md text-title-md text-on-surface font-bold">Capuccino Especial</h4>
+</div>
+<div class="mt-1.5 pl-8 text-label-sm font-label-sm text-on-surface-variant font-medium">
+<p class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-primary-container">arrow_right</span>
+                  Con canela extra
+                </p>
+</div>
+</div>
+<div class="text-right flex flex-col items-end justify-between h-full">
+<span class="font-title-md text-title-md text-espresso-dark font-bold">$3.400</span>
+<button class="mt-2 text-outline hover:text-error transition-colors p-1" title="Eliminar ítem">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+<div class="mt-2 pt-2 border-t border-outline-variant/20 flex items-center justify-between">
+<button class="text-label-sm font-label-sm text-primary flex items-center gap-1 hover:underline">
+<span class="material-symbols-outlined text-[14px]">edit_note</span>
+              Editar notas
+            </button>
+<div class="flex items-center gap-1 bg-surface-container px-1 py-0.5 rounded-lg border border-outline-variant/30">
+<button class="w-7 h-7 rounded-md bg-surface-container-lowest text-on-surface flex items-center justify-center hover:bg-surface-cream active:scale-90 font-bold">-</button>
+<span class="font-label-md font-bold text-on-surface px-2">1</span>
+<button class="w-7 h-7 rounded-md bg-surface-container-lowest text-on-surface flex items-center justify-center hover:bg-surface-cream active:scale-90 font-bold">+</button>
+</div>
+</div>
+</div>
+<!-- Order Item 3: Cheesecake Frutos Rojos x1 -->
+<div class="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/30 shadow-sm relative group">
+<div class="flex items-start justify-between">
+<div class="flex-1 pr-2">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-lg bg-surface-container text-primary font-bold text-label-md flex items-center justify-center">1×</span>
+<h4 class="font-title-md text-title-md text-on-surface font-bold">Porción Cheesecake F.R.</h4>
+</div>
+<div class="mt-1.5 pl-8 text-label-sm font-label-sm text-secondary">
+<p>Porción individual fresca de vitrina</p>
+</div>
+</div>
+<div class="text-right flex flex-col items-end justify-between h-full">
+<span class="font-title-md text-title-md text-espresso-dark font-bold">$5.800</span>
+<button class="mt-2 text-outline hover:text-error transition-colors p-1" title="Eliminar ítem">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+<div class="mt-2 pt-2 border-t border-outline-variant/20 flex items-center justify-between">
+<button class="text-label-sm font-label-sm text-secondary flex items-center gap-1 hover:underline">
+<span class="material-symbols-outlined text-[14px]">add_comment</span>
+              Agregar nota
+            </button>
+<div class="flex items-center gap-1 bg-surface-container px-1 py-0.5 rounded-lg border border-outline-variant/30">
+<button class="w-7 h-7 rounded-md bg-surface-container-lowest text-on-surface flex items-center justify-center hover:bg-surface-cream active:scale-90 font-bold">-</button>
+<span class="font-label-md font-bold text-on-surface px-2">1</span>
+<button class="w-7 h-7 rounded-md bg-surface-container-lowest text-on-surface flex items-center justify-center hover:bg-surface-cream active:scale-90 font-bold">+</button>
+</div>
+</div>
+</div>
+<!-- Order Item 4: Medialunas con Jamón y Queso x2 -->
+<div class="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/30 shadow-sm relative group">
+<div class="flex items-start justify-between">
+<div class="flex-1 pr-2">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-lg bg-surface-container text-primary font-bold text-label-md flex items-center justify-center">2×</span>
+<h4 class="font-title-md text-title-md text-on-surface font-bold">Medialunas Jamón &amp; Q.</h4>
+</div>
+<div class="mt-1.5 pl-8 text-label-sm font-label-sm text-on-surface-variant font-medium">
+<p class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-tertiary">heat</span>
+                  Calentar bien tostadas
+                </p>
+</div>
+</div>
+<div class="text-right flex flex-col items-end justify-between h-full">
+<span class="font-title-md text-title-md text-espresso-dark font-bold">$8.400</span>
+<button class="mt-2 text-outline hover:text-error transition-colors p-1" title="Eliminar ítem">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</div>
+<div class="mt-2 pt-2 border-t border-outline-variant/20 flex items-center justify-between">
+<button class="text-label-sm font-label-sm text-primary flex items-center gap-1 hover:underline">
+<span class="material-symbols-outlined text-[14px]">edit_note</span>
+              Editar notas
+            </button>
+<div class="flex items-center gap-1 bg-surface-container px-1 py-0.5 rounded-lg border border-outline-variant/30">
+<button class="w-7 h-7 rounded-md bg-surface-container-lowest text-on-surface flex items-center justify-center hover:bg-surface-cream active:scale-90 font-bold">-</button>
+<span class="font-label-md font-bold text-on-surface px-2">2</span>
+<button class="w-7 h-7 rounded-md bg-surface-container-lowest text-on-surface flex items-center justify-center hover:bg-surface-cream active:scale-90 font-bold">+</button>
+</div>
+</div>
+</div>
+<!-- Quick Add General Note to Kitchen -->
+<button class="w-full py-2.5 px-3 border border-dashed border-outline/40 hover:border-primary-container rounded-xl text-label-md font-label-md text-secondary hover:text-primary flex items-center justify-center gap-2 bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-[18px]">note_add</span>
+<span>Agregar nota general a Cocina / Barra</span>
+</button>
+</div>
+<!-- Ticket Totals & Checkout Panel (Sticky Bottom of Drawer) -->
+<div class="p-space-md bg-surface-container-low border-t border-outline-variant/30 space-y-3">
+<!-- Summary Numbers -->
+<div class="space-y-1.5 text-body-md font-body-md text-secondary">
+<div class="flex justify-between items-center">
+<span>Subtotal (6 ítems)</span>
+<span class="font-semibold text-on-surface">$28.000</span>
+</div>
+<div class="flex justify-between items-center text-label-md font-label-md">
+<span class="flex items-center gap-1">
+              Descuento / Promo
+              <span class="material-symbols-outlined text-[14px] text-tertiary">check_circle</span>
+</span>
+<span class="text-tertiary font-bold">-$0</span>
+</div>
+<div class="pt-2 border-t border-outline-variant/30 flex justify-between items-baseline">
+<span class="text-title-lg font-title-lg text-espresso-dark font-bold">Total a Pagar</span>
+<span class="text-headline-lg font-headline-lg text-primary font-bold tracking-tight">
+              $28.000
+            </span>
+</div>
+</div>
+<!-- Ticket Actions Buttons -->
+<div class="grid grid-cols-2 gap-2.5 pt-1">
+<!-- Marchar / Cocina Button -->
+<button class="h-14 rounded-xl bg-surface-cream hover:bg-surface-container text-secondary border border-outline-variant/40 font-title-md text-title-md font-bold flex items-center justify-center gap-2 transition-all active:scale-98 shadow-sm">
+<span class="material-symbols-outlined text-[22px]">soup_kitchen</span>
+<span>Marchar Cocina</span>
+</button>
+<!-- Cobrar Mesa / Checkout Button (Primary Brand Highlight) -->
+<button class="h-14 rounded-xl bg-primary-container hover:bg-primary text-on-primary-container font-title-md text-title-md font-bold flex items-center justify-center gap-2 transition-all active:scale-98 shadow-md">
+<span class="material-symbols-outlined text-[24px]">payments</span>
+<span>Cobrar ($28.000)</span>
+</button>
+</div>
+<!-- Auxiliary Action: Split Bill -->
+<div class="flex justify-between items-center pt-1 px-1">
+<button class="text-label-sm font-label-sm text-secondary hover:text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">call_split</span>
+<span>Dividir Cuenta</span>
+</button>
+<button class="text-label-sm font-label-sm text-secondary hover:text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">print</span>
+<span>Pre-ticket</span>
+</button>
+<button class="text-label-sm font-label-sm text-error hover:text-error-container flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">cancel</span>
+<span>Anular</span>
+</button>
+</div>
+</div>
+</aside>
+</main>
+<!-- ========================================== -->
+<!-- 4. BOTTOM NAV BAR (Shared Component Anchor)-->
+<!-- ========================================== -->
+<nav class="bg-surface-cream dark:bg-espresso-dark shadow-md dark:shadow-none fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-space-md py-space-xs">
+<!-- Item 1: Salón (ACTIVE) -->
+<a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-xl px-4 py-2 hover:bg-surface-container-high dark:hover:bg-espresso-subtle hover:text-on-surface dark:hover:text-surface transition-all active:scale-98" href="#salon">
+<span class="material-symbols-outlined text-[22px]" data-icon="table_restaurant">table_restaurant</span>
+<span class="text-label-sm font-label-sm mt-0.5">Salón</span>
+</a>
+<!-- Item 2: Mostrador (INACTIVE) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-2 hover:bg-surface-container-high dark:hover:bg-espresso-subtle hover:text-on-surface dark:hover:text-surface transition-all active:scale-98" href="#mostrador">
+<span class="material-symbols-outlined text-[22px]" data-icon="takeout_dining">takeout_dining</span>
+<span class="text-label-sm font-label-sm mt-0.5">Mostrador</span>
+</a>
+<!-- Item 3: Comandas (INACTIVE) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-2 hover:bg-surface-container-high dark:hover:bg-espresso-subtle hover:text-on-surface dark:hover:text-surface transition-all active:scale-98" href="#comandas">
+<span class="material-symbols-outlined text-[22px]" data-icon="receipt_long">receipt_long</span>
+<span class="text-label-sm font-label-sm mt-0.5">Comandas</span>
+</a>
+<!-- Item 4: Cierre Turno (INACTIVE) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-2 hover:bg-surface-container-high dark:hover:bg-espresso-subtle hover:text-on-surface dark:hover:text-surface transition-all active:scale-98" href="#cierre-turno">
+<span class="material-symbols-outlined text-[22px]" data-icon="point_of_sale">point_of_sale</span>
+<span class="text-label-sm font-label-sm mt-0.5">Cierre Turno</span>
+</a>
+</nav>
+<!-- Visual spacer to ensure the bottom fixed bar never occludes ticket contents -->
+<div class="h-14 flex-shrink-0"></div>
+</body></html>

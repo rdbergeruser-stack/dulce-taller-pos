@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cobro QR Interoperable · Dulce Taller POS</title>
+<!-- Google Fonts: Playfair Display & Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config verbatim from design tokens -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-fixed-dim": "#ffb599",
+            "table-occupied": "#BD5324",
+            "caramel-glow": "#D97736",
+            "surface-tint": "#a23f10",
+            "on-tertiary": "#ffffff",
+            "on-background": "#1e1b15",
+            "on-tertiary-fixed-variant": "#314d34",
+            "on-error-container": "#93000a",
+            "outline-variant": "#dec0b6",
+            "on-secondary-fixed-variant": "#623e2b",
+            "surface-dim": "#e1d9cf",
+            "tertiary": "#446147",
+            "on-tertiary-container": "#ebffe8",
+            "secondary": "#7c5641",
+            "surface-container-low": "#fbf2e8",
+            "espresso-dark": "#1C120C",
+            "table-free": "#5E7C60",
+            "surface-container-highest": "#e9e1d7",
+            "surface-variant": "#e9e1d7",
+            "inverse-on-surface": "#f8f0e5",
+            "inverse-primary": "#ffb599",
+            "on-secondary-fixed": "#2f1405",
+            "surface-container-lowest": "#ffffff",
+            "on-secondary": "#ffffff",
+            "table-bill": "#D99B26",
+            "surface-container-high": "#efe7dd",
+            "powder-blush": "#E8C8BE",
+            "error-container": "#ffdad6",
+            "background": "#fff8f2",
+            "inverse-surface": "#343029",
+            "primary-container": "#bd5324",
+            "on-surface-variant": "#57423a",
+            "on-tertiary-fixed": "#05210c",
+            "surface": "#fff8f2",
+            "outline": "#8a7269",
+            "tertiary-fixed": "#caebc9",
+            "error": "#ba1a1a",
+            "on-primary": "#ffffff",
+            "surface-bright": "#fff8f2",
+            "surface-container": "#f5ede3",
+            "on-surface": "#1e1b15",
+            "secondary-fixed-dim": "#eebca2",
+            "table-reserved": "#7A6882",
+            "espresso-subtle": "#221610",
+            "tertiary-container": "#5c7a5e",
+            "on-error": "#ffffff",
+            "secondary-container": "#fdc9af",
+            "primary": "#9d3c0c",
+            "tertiary-fixed-dim": "#aecfae",
+            "on-primary-container": "#fff9f7",
+            "on-secondary-container": "#79533e",
+            "on-primary-fixed": "#370e00",
+            "primary-fixed": "#ffdbce",
+            "surface-cream": "#FDFBF7",
+            "secondary-fixed": "#ffdbca",
+            "on-primary-fixed-variant": "#7f2b00"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter-tablet": "1.25rem",
+            "space-lg": "1.25rem",
+            "space-xl": "2rem",
+            "space-md": "0.875rem",
+            "gutter": "1rem",
+            "margin": "1rem",
+            "space-sm": "0.5rem",
+            "space-xs": "0.25rem",
+            "margin-tablet": "1.5rem"
+          },
+          "fontFamily": {
+            "title-lg": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "headline-lg": ["Playfair Display"],
+            "label-md": ["Plus Jakarta Sans"],
+            "headline-md": ["Playfair Display"],
+            "body-md": ["Plus Jakarta Sans"],
+            "display-lg": ["Playfair Display"],
+            "headline-lg-mobile": ["Playfair Display"],
+            "display-lg-mobile": ["Playfair Display"]
+          },
+          "fontSize": {
+            "title-lg": ["20px", { "lineHeight": "26px", "fontWeight": "700" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "title-md": ["17px", { "lineHeight": "22px", "fontWeight": "600" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "30px", "fontWeight": "600" }],
+            "display-lg-mobile": ["30px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-background text-on-surface h-full w-full overflow-hidden select-none font-body-md text-body-md antialiased">
+<!-- ======================================================== -->
+<!-- BACKGROUND CANVAS: Underneath Checkout Screen (Simulated POS) -->
+<!-- ======================================================== -->
+<div class="h-full w-full flex flex-col pointer-events-none filter blur-[4px] opacity-75">
+<!-- TopAppBar Rendered from JSON Anchor -->
+<header class="bg-surface-cream text-primary shadow-sm flex justify-between items-center w-full px-space-lg py-space-sm max-w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="storefront">storefront</span>
+<span class="text-title-lg font-title-lg font-bold text-espresso-dark">Dulce Taller · Salón</span>
+<span class="bg-surface-container px-2.5 py-0.5 rounded-full text-label-sm font-label-sm text-secondary">Caja Principal 01</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 bg-surface-container-high px-3 py-1.5 rounded-lg">
+<span class="material-symbols-outlined text-tertiary text-sm" data-icon="table_restaurant">table_restaurant</span>
+<span class="font-label-md text-label-md text-on-surface">Mesa 02 · 2 comensales</span>
+</div>
+<button class="flex items-center gap-2 bg-primary-container text-on-primary-container px-4 py-2 rounded-lg font-label-md text-label-md">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+          Nuevo Pedido
+        </button>
+</div>
+</header>
+<!-- Main POS Layout: Split-pane Catalog (60%) & Ticket/Payment (40%) -->
+<div class="flex-1 flex overflow-hidden p-space-md gap-space-md bg-background">
+<!-- Left side: Products Catalog Simulation -->
+<div class="w-3/5 flex flex-col gap-space-md">
+<!-- Categories tabs -->
+<div class="flex gap-2">
+<span class="px-4 py-2 bg-primary text-on-primary rounded-lg font-label-md text-label-md">Cafetería de Especialidad</span>
+<span class="px-4 py-2 bg-surface-container rounded-lg font-label-md text-label-md text-on-surface-variant">Viennoiserie</span>
+<span class="px-4 py-2 bg-surface-container rounded-lg font-label-md text-label-md text-on-surface-variant">Tartas Artesanales</span>
+<span class="px-4 py-2 bg-surface-container rounded-lg font-label-md text-label-md text-on-surface-variant">Bebidas Frías</span>
+</div>
+<!-- Grid Items -->
+<div class="grid grid-cols-3 gap-3">
+<div class="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/30 flex flex-col">
+<div class="h-28 rounded-lg bg-surface-container mb-2 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="An artisanal golden flaky pain au chocolat resting gracefully on a vintage warm ceramic plate in a naturally lit high-end European bakery atelier, with soft terracotta and cream ambient tones in the background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDby3WNK9VKDOuWYapU9GHwIJsTaLIlY4U_r2vv6aJaioCP721A7d3VGydSV0e6_PMzWiYzO5GJS8d_vcRvmhLvvExrKGz6g_Eirrt64whVgkxEcs1RENGrfef732wXwkcg_yNObtuEXAuzYzGphvhT5HmhFEk4xSX13I2FEj1lBaTTISRujrdFMaUCNl29CegiqJDnFx2iIKIQ5pVcVc99ZoDt6AAJtubL_Iu2hAWFknOdw6FBakSw"/>
+</div>
+<span class="font-title-md text-title-md text-espresso-dark">Pain au Chocolat</span>
+<span class="text-label-md text-secondary font-label-md mt-1">$ 580,00</span>
+</div>
+<div class="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/30 flex flex-col">
+<div class="h-28 rounded-lg bg-surface-container mb-2 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A delicate porcelain cup containing flat white espresso with smooth velvety microfoam latte art resting beside roasted coffee beans on a clean limestone countertop in a warm bakery." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZzFLU4_ASkCTKTBoVw0o4G9kNmxytpX4onuHxfnt5Lti6emjxsnNQfMWZhBecpy7z25M7uMk4RDqx7k_qYZMc55sFgqr9k8i3I23LgNIUToLcz6dF4ZJRa196XmD-klCY7iIQQMjphYibPEyflahLCcavfxR-7UpNfEjITF4FVTmhyOVxFjWnRQk63Evv7IL66O7-ZN1x3VlqObUek5lsuimRNLzQkUe5mCbGcx_8wSJ2BdxgrwDV"/>
+</div>
+<span class="font-title-md text-title-md text-espresso-dark">Flat White Doble</span>
+<span class="text-label-md text-secondary font-label-md mt-1">$ 620,00</span>
+</div>
+<div class="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/30 flex flex-col">
+<div class="h-28 rounded-lg bg-surface-container mb-2 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A slice of French pistachio and raspberry tart garnished with fresh raspberries and powdered sugar displayed inside an illuminated glass pastry cabinet in an artisanal boutique cafe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXnR8SgcK9Q2JrYhIpFy0H_RW5f2IP30Cvgvkv7_KT5F_7KY4mXOHXrQw-W_DdyQ6n_w7ldcRQ7OEbOFDxB0eWTyrrTJWauz4UVAUyTBplcMzD0rxLPaBF9K3NSxeiYpCBY0g2BdB4cjm5aTY95X17oaqYaESeFliB7V7_Yfetg8_mkiwenHns05OakxJHhqDQPE1J_gnnV-B0jCrXHaBV_a3pnkIIdmD39wnVAXzrsuOuua5ZP4Nr"/>
+</div>
+<span class="font-title-md text-title-md text-espresso-dark">Tarta Pistacho Frambuesa</span>
+<span class="text-label-md text-secondary font-label-md mt-1">$ 590,80</span>
+</div>
+</div>
+</div>
+<!-- Right side: Ticket Drawer (Simulated) -->
+<div class="w-2/5 bg-surface-container-lowest rounded-xl border border-outline-variant/40 p-space-lg flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-center pb-3 border-b border-surface-container-high">
+<div>
+<p class="font-title-lg text-title-lg text-espresso-dark">Comanda #284</p>
+<p class="font-label-sm text-label-sm text-secondary">Camarero: Mateo G. · Mesa 02</p>
+</div>
+<span class="bg-table-occupied/10 text-table-occupied font-label-sm text-label-sm px-2.5 py-1 rounded-md">Por Cobrar</span>
+</div>
+<div class="py-4 space-y-3">
+<div class="flex justify-between">
+<div>
+<p class="font-body-md text-body-md text-on-surface">1x Pain au Chocolat</p>
+<p class="font-label-sm text-label-sm text-outline">Tibio / Calentado</p>
+</div>
+<p class="font-title-md text-title-md text-espresso-dark">$ 580,00</p>
+</div>
+<div class="flex justify-between">
+<div>
+<p class="font-body-md text-body-md text-on-surface">1x Flat White Doble</p>
+<p class="font-label-sm text-label-sm text-outline">Leche de Avena Barista</p>
+</div>
+<p class="font-title-md text-title-md text-espresso-dark">$ 620,00</p>
+</div>
+<div class="flex justify-between">
+<div>
+<p class="font-body-md text-body-md text-on-surface">1x Tarta Pistacho Frambuesa</p>
+<p class="font-label-sm text-label-sm text-outline">Porción individual</p>
+</div>
+<p class="font-title-md text-title-md text-espresso-dark">$ 590,80</p>
+</div>
+</div>
+</div>
+<div class="pt-4 border-t border-surface-container-high">
+<div class="flex justify-between items-baseline mb-4">
+<span class="font-title-md text-title-md text-secondary">Total Comanda</span>
+<span class="font-headline-md text-headline-md text-primary">$ 1.790,80</span>
+</div>
+<button class="w-full bg-primary-container text-on-primary-container font-title-md text-title-md py-3.5 rounded-xl">
+            Cobrar $ 1.790,80
+          </button>
+</div>
+</div>
+</div>
+</div>
+<!-- ======================================================== -->
+<!-- FOREGROUND MODAL OVERLAY: Cobro con QR Interoperable -->
+<!-- ======================================================== -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-espresso-dark/60 backdrop-blur-md transition-opacity duration-300" id="qrModalOverlay">
+<!-- Modal Card (Landscape Tablet Optimized) -->
+<div class="w-full max-w-4xl bg-surface-cream rounded-2xl shadow-2xl border border-outline-variant/40 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200">
+<!-- 1. MODAL HEADER -->
+<div class="bg-surface-container-lowest px-space-xl py-4 border-b border-surface-container-high flex items-center justify-between">
+<div class="flex items-center gap-3.5">
+<div class="w-12 h-12 rounded-xl bg-primary-fixed flex items-center justify-center text-primary shadow-sm">
+<span class="material-symbols-outlined text-2xl" data-icon="qr_code_2" style="font-variation-settings: 'FILL' 1;">qr_code_2</span>
+</div>
+<div>
+<div class="flex items-center gap-2.5">
+<h2 class="font-headline-md text-headline-md text-espresso-dark tracking-tight">Escanear QR para Pagar</h2>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm px-2.5 py-0.5 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="verified_user">verified_user</span>
+                Transferencias 3.0
+              </span>
+</div>
+<p class="font-body-md text-body-md text-secondary mt-0.5">
+              Compatible con Mercado Pago, MODO, Cuenta DNI, BNA+ y cualquier billetera bancaria
+            </p>
+</div>
+</div>
+<!-- Close / Cancel Button -->
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-secondary hover:bg-surface-container hover:text-espresso-dark active:scale-95 transition-all" onclick="alert('Volviendo al selector de métodos de pago...')" title="Cerrar modal">
+<span class="material-symbols-outlined text-2xl" data-icon="close">close</span>
+</button>
+</div>
+<!-- 2. MODAL BODY (Bento Grid: Left QR & Status | Right Detail Ledger) -->
+<div class="p-space-xl grid grid-cols-1 md:grid-cols-12 gap-space-lg items-stretch">
+<!-- Left Column (5/12): QR Engine & Dynamic Status -->
+<div class="md:col-span-5 bg-surface-container-lowest rounded-xl p-5 border border-outline-variant/30 flex flex-col items-center justify-between text-center relative shadow-sm">
+<!-- Countdown Badge -->
+<div class="w-full flex items-center justify-between mb-3 text-secondary">
+<span class="flex items-center gap-1 font-label-md text-label-md">
+<span class="material-symbols-outlined text-sm text-caramel-glow" data-icon="timer">timer</span>
+              QR Dinámico
+            </span>
+<span class="font-label-md text-label-md font-bold px-2 py-0.5 rounded bg-surface-container text-primary" id="qrTimer">
+              Válido por 04:32 min
+            </span>
+</div>
+<!-- Dynamic SVG QR Code Element -->
+<div class="relative p-3 bg-white rounded-xl border-2 border-primary/20 shadow-inner flex items-center justify-center">
+<!-- Interoperable Central Brand Emblem Inside QR -->
+<svg class="w-56 h-56" fill="none" viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<!-- Outer Markers -->
+<rect fill="#1C120C" height="50" rx="8" width="50" x="10" y="10"></rect>
+<rect fill="#FFFFFF" height="30" rx="4" width="30" x="20" y="20"></rect>
+<rect fill="#9D3C0C" height="18" rx="2" width="18" x="26" y="26"></rect>
+<rect fill="#1C120C" height="50" rx="8" width="50" x="140" y="10"></rect>
+<rect fill="#FFFFFF" height="30" rx="4" width="30" x="150" y="20"></rect>
+<rect fill="#9D3C0C" height="18" rx="2" width="18" x="156" y="26"></rect>
+<rect fill="#1C120C" height="50" rx="8" width="50" x="10" y="140"></rect>
+<rect fill="#FFFFFF" height="30" rx="4" width="30" x="20" y="150"></rect>
+<rect fill="#9D3C0C" height="18" rx="2" width="18" x="26" y="156"></rect>
+<!-- Matrix Pattern Datums -->
+<path d="M70 15H80V25H70V15ZM90 15H105V25H90V15ZM115 15H125V35H115V15ZM70 35H85V45H70V35ZM95 35H105V55H95V35ZM70 55H80V70H70V55ZM125 45H135V65H125V45ZM15 70H30V80H15V70ZM40 70H60V80H40V70ZM70 80H90V90H70V80ZM100 75H110V85H100V75ZM120 75H130V95H120V75ZM140 70H155V80H140V70ZM165 70H185V80H165V70ZM15 90H25V105H15V90ZM35 90H50V100H35V90ZM60 95H70V115H60V95ZM135 95H145V105H135V95ZM155 90H170V100H155V90ZM180 90H190V110H180V90ZM15 115H30V125H15V115ZM40 115H55V130H40V115ZM70 120H80V135H70V120ZM125 115H135V130H125V115ZM145 115H160V125H145V115ZM170 120H185V130H170V120ZM70 145H85V155H70V145ZM95 145H110V160H95V145ZM120 145H130V155H120V145ZM140 140H150V155H140V140ZM160 145H170V165H160V145ZM180 140H190V155H180V140ZM70 165H80V185H70V165ZM90 170H105V180H90V170ZM115 165H130V175H115V165ZM135 165H145V185H135V165ZM155 175H170V185H155V175ZM180 165H190V185H180V165ZM115 185H125V195H115V185ZM90 185H105V195H90V185ZM30 185H50V195H30V185Z" fill="#1C120C"></path>
+<!-- Subtle Center Badge of Dulce Taller -->
+<circle cx="100" cy="100" fill="#FFF8F2" r="19" stroke="#BD5324" stroke-width="2"></circle>
+<path d="M93 100C93 96.5 96.5 93 100 93C103.5 93 107 96.5 107 100C107 104.5 100 108 100 108C100 108 93 104.5 93 100Z" fill="#BD5324"></path>
+</svg>
+<!-- Real-time scan pulse overlay frame -->
+<div class="absolute inset-0 border-2 border-caramel-glow/30 rounded-xl pointer-events-none animate-pulse"></div>
+</div>
+<!-- Pulsing Status Badge in Real-Time -->
+<div class="w-full mt-4 bg-surface-container py-2.5 px-3 rounded-lg flex items-center justify-center gap-2.5">
+<span class="relative flex h-3 w-3">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-table-bill opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-table-bill"></span>
+</span>
+<span class="font-label-md text-label-md text-espresso-dark font-semibold">
+              Esperando confirmación de pago...
+            </span>
+</div>
+</div>
+<!-- Right Column (7/12): Transaction Ledger & Interoperable Wallets -->
+<div class="md:col-span-7 flex flex-col justify-between gap-space-md">
+<!-- Price Hero Box -->
+<div class="bg-surface-container-low rounded-xl p-5 border border-outline-variant/30 flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div>
+<span class="font-label-md text-label-md text-secondary">Monto Total a Transferir</span>
+<div class="flex items-baseline gap-1 mt-1">
+<span class="font-display-lg text-display-lg text-primary font-headline-lg">$ 1.790,80</span>
+<span class="font-label-sm text-label-sm text-outline font-bold">ARS</span>
+</div>
+</div>
+<span class="bg-primary-fixed text-on-primary-fixed-variant px-3 py-1 rounded-full font-label-sm text-label-sm font-bold">
+                Comanda #284 · Mesa 02
+              </span>
+</div>
+<!-- Transfer Account Metadata Table -->
+<div class="mt-4 pt-4 border-t border-outline-variant/20 grid grid-cols-2 gap-3 text-left">
+<div>
+<p class="font-label-sm text-label-sm text-outline">Alias CBU / CVU</p>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="font-title-md text-title-md text-espresso-dark font-bold tracking-wide">DULCE.TALLER.MP</span>
+<button class="text-secondary hover:text-primary p-0.5 rounded" onclick="navigator.clipboard?.writeText('DULCE.TALLER.MP'); alert('Alias copiado');" title="Copiar Alias">
+<span class="material-symbols-outlined text-base" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-outline">Titular de la Cuenta</p>
+<p class="font-body-md text-body-md text-espresso-dark font-medium mt-0.5">Dulce Taller Pastelería S.R.L.</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-outline">CUIT Comercial</p>
+<p class="font-body-md text-body-md text-espresso-dark">30-71649281-4</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-outline">Entidad Recaudadora</p>
+<p class="font-body-md text-body-md text-espresso-dark">Mercado Pago PSP / BIND</p>
+</div>
+</div>
+</div>
+<!-- Accepted Wallets & Banking apps pills -->
+<div class="bg-surface-container-lowest rounded-xl p-4 border border-outline-variant/30">
+<div class="flex items-center justify-between mb-2.5">
+<span class="font-label-sm text-label-sm text-secondary font-bold uppercase tracking-wider">
+                Billeteras Habilitadas (Cualquier App Bancaria o Fintech)
+              </span>
+<span class="material-symbols-outlined text-sm text-tertiary" data-icon="sync">sync</span>
+</div>
+<div class="flex flex-wrap items-center gap-2">
+<!-- Mercado Pago -->
+<span class="inline-flex items-center gap-1.5 bg-surface-container px-3 py-1.5 rounded-lg border border-outline-variant/30 font-label-md text-label-md text-espresso-dark font-medium">
+<span class="w-2 h-2 rounded-full bg-sky-500"></span> Mercado Pago
+              </span>
+<!-- MODO -->
+<span class="inline-flex items-center gap-1.5 bg-surface-container px-3 py-1.5 rounded-lg border border-outline-variant/30 font-label-md text-label-md text-espresso-dark font-medium">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span> MODO
+              </span>
+<!-- Cuenta DNI -->
+<span class="inline-flex items-center gap-1.5 bg-surface-container px-3 py-1.5 rounded-lg border border-outline-variant/30 font-label-md text-label-md text-espresso-dark font-medium">
+<span class="w-2 h-2 rounded-full bg-teal-600"></span> Cuenta DNI
+              </span>
+<!-- BNA+ -->
+<span class="inline-flex items-center gap-1.5 bg-surface-container px-3 py-1.5 rounded-lg border border-outline-variant/30 font-label-md text-label-md text-espresso-dark font-medium">
+<span class="w-2 h-2 rounded-full bg-blue-600"></span> BNA+
+              </span>
+<!-- Ualá -->
+<span class="inline-flex items-center gap-1.5 bg-surface-container px-3 py-1.5 rounded-lg border border-outline-variant/30 font-label-md text-label-md text-espresso-dark font-medium">
+<span class="w-2 h-2 rounded-full bg-red-500"></span> Ualá
+              </span>
+<!-- Any Bank -->
+<span class="inline-flex items-center gap-1 bg-surface-container-high px-2.5 py-1.5 rounded-lg font-label-sm text-label-sm text-secondary">
+<span class="material-symbols-outlined text-xs" data-icon="account_balance">account_balance</span>
+                +40 bancos
+              </span>
+</div>
+</div>
+<!-- Micro Quick Help / Server Tip -->
+<div class="flex items-center gap-2 px-1 text-secondary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-sm text-table-occupied" data-icon="info">info</span>
+<span>La acreditación se confirma automáticamente por webhook en el POS sin necesidad de comprobante.</span>
+</div>
+</div>
+</div>
+<!-- 3. MODAL FOOTER ACTIONS (Secondary Actions & POS Controls) -->
+<div class="bg-surface-container-high/60 px-space-xl py-space-md border-t border-surface-container-high flex flex-wrap items-center justify-between gap-3">
+<!-- Left Footer: Back / Change Method -->
+<button class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface-container-lowest text-secondary border border-outline-variant/40 hover:bg-surface-container hover:text-espresso-dark active:scale-95 transition-all font-title-md text-title-md" onclick="alert('Regresando a selección de métodos (Efectivo / Tarjeta / Cuenta Corriente)...')">
+<span class="material-symbols-outlined text-lg" data-icon="arrow_back">arrow_back</span>
+          Cambiar a otro método de pago
+        </button>
+<!-- Right Footer: Rotate screen & Manual Check -->
+<div class="flex items-center gap-3">
+<!-- Rotate to Client Button -->
+<button class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface-container-lowest text-espresso-dark border border-outline-variant/40 hover:bg-surface-container active:scale-95 transition-all font-title-md text-title-md shadow-sm" id="btnFlipScreen" onclick="toggleScreenOrientation()">
+<span class="material-symbols-outlined text-lg text-caramel-glow" data-icon="screen_rotation">screen_rotation</span>
+<span>Girar Pantalla hacia el Cliente</span>
+</button>
+<!-- Simulate Payment / Manual Verification -->
+<button class="inline-flex items-center gap-2.5 px-6 py-2.5 rounded-xl bg-primary-container text-on-primary-container hover:brightness-105 active:scale-95 transition-all font-title-md text-title-md shadow-md" id="btnManualConfirm" onclick="simulatePaymentApproval()">
+<span class="material-symbols-outlined text-lg" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span>Simular Pago Aprobado</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Interactive JavaScript for micro-interactions & feedback -->
+<script>
+    // Countdown Timer logic
+    let remainingSeconds = 272; // 04:32 min
+    const timerElement = document.getElementById('qrTimer');
+    
+    const interval = setInterval(() => {
+      if (remainingSeconds <= 0) {
+        clearInterval(interval);
+        if (timerElement) timerElement.innerText = "Expirado · Regenerando...";
+        return;
+      }
+      remainingSeconds--;
+      const mins = String(Math.floor(remainingSeconds / 60)).padStart(2, '0');
+      const secs = String(remainingSeconds % 60).padStart(2, '0');
+      if (timerElement) {
+        timerElement.innerText = `Válido por ${mins}:${secs} min`;
+      }
+    }, 1000);
+
+    // Screen Flip simulation for POS hardware
+    let isFlipped = false;
+    function toggleScreenOrientation() {
+      const card = document.querySelector('#qrModalOverlay > div');
+      const btn = document.getElementById('btnFlipScreen');
+      isFlipped = !isFlipped;
+      
+      if (isFlipped) {
+        card.classList.add('rotate-180', 'transition-transform', 'duration-500');
+        btn.querySelector('span:last-child').innerText = 'Restablecer Orientación';
+      } else {
+        card.classList.remove('rotate-180');
+        btn.querySelector('span:last-child').innerText = 'Girar Pantalla hacia el Cliente';
+      }
+    }
+
+    // Payment Approval Simulation
+    function simulatePaymentApproval() {
+      const modal = document.querySelector('#qrModalOverlay > div');
+      modal.innerHTML = `
+        <div class="p-12 flex flex-col items-center justify-center text-center space-y-4 bg-surface-cream">
+          <div class="w-20 h-20 rounded-full bg-tertiary-fixed flex items-center justify-center text-tertiary text-4xl shadow-lg animate-bounce">
+            <span class="material-symbols-outlined text-5xl" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+          </div>
+          <h2 class="font-headline-lg text-headline-lg text-espresso-dark">¡Pago Acreditado Exitosamente!</h2>
+          <p class="font-title-md text-title-md text-tertiary font-bold">$ 1.790,80 ARS recibido vía Mercado Pago Interoperable</p>
+          <div class="bg-surface-container px-6 py-3 rounded-xl border border-outline-variant/30 text-on-surface-variant font-label-md text-label-md">
+            Operación MP #839210492 · Comanda #284 Liberada · Ticket impreso en caja
+          </div>
+          <button onclick="window.location.reload()" class="mt-4 px-8 py-3.5 rounded-xl bg-primary-container text-on-primary-container font-title-md text-title-md active:scale-95 transition-all shadow-md">
+            Finalizar y Volver al Salón
+          </button>
+        </div>
+      `;
+    }
+  </script>
+</body></html>
