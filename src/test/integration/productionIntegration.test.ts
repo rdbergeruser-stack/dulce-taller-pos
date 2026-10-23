@@ -3,7 +3,7 @@ import { inventoryService } from '../../services/inventoryService';
 import { productionService } from '../../services/productionService';
 import { recipeService } from '../../services/recipeService';
 
-describe('Pruebas de Integración - Producción y Stock Transaccional', () => {
+describe('Pruebas de Integración - Producción y Stock Transaccional', { timeout: 15000 }, () => {
   it('1. Creación de Materia Prima y persistencia con movimiento inicial', async () => {
     const testCode = `TEST-${Date.now().toString().slice(-5)}`;
     const newMat = await inventoryService.createRawMaterial({

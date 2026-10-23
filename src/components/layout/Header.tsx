@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { UserCheck, Shield, UtensilsCrossed, Database, AlertCircle } from 'lucide-react';
+import { UtensilsCrossed, AlertCircle, LogOut, Shield, User } from 'lucide-react';
 
 interface HeaderProps {
-  onOpenDbGuide: () => void;
   lowStockCount: number;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onOpenDbGuide, lowStockCount }) => {
-  const { role, switchRole, isConfigured } = useAuth();
+export const Header: React.FC<HeaderProps> = ({ lowStockCount }) => {
+  const { user, isAdmin, logout } = useAuth();
   const [time, setTime] = useState<string>('');
 
   useEffect(() => {
@@ -35,20 +34,20 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDbGuide, lowStockCount }) 
                 Dulce Taller
               </h1>
               <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#f5ede3] text-[#9d3c0c] border border-[#dec0b6]">
-                App Interna
+                POS Tablet
               </span>
             </div>
             <p className="text-xs text-[#7c5641] hidden sm:block">
-              Sistema de Comandas, Recetas & Control de Producción
+              Gestión de Comandas, Producción & Stock
             </p>
           </div>
         </div>
 
-        {/* Right Actions: Clock, Stock Alert, DB status, Role Selector */}
-        <div className="flex items-center gap-2 md:gap-4">
+        {/* Right Actions: Clock, Stock Alert, User Profile Box & Logout */}
+        <div className="flex items-center gap-3 md:gap-5">
           {/* Reloj de turno */}
-          <div className="text-right hidden lg:block pr-2 border-r border-[#dec0b6]">
-            <span className="text-xs text-[#7c5641] block">Hora actual</span>
+          <div className="text-right hidden lg:block pr-3 border-r border-[#dec0b6]">
+            <span className="text-[11px] text-[#7c5641] block">Hora de Turno</span>
             <span className="text-sm font-bold text-[#1c120c]">{time} hs</span>
           </div>
 
@@ -60,49 +59,37 @@ export const Header: React.FC<HeaderProps> = ({ onOpenDbGuide, lowStockCount }) 
             </div>
           )}
 
-          {/* Conexión Supabase */}
-          <button
-            onClick={onOpenDbGuide}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
-              isConfigured
-                ? 'bg-[#ebffe8] text-[#446147] border-[#aecfae] hover:bg-[#d5f5d3]'
-                : 'bg-[#fef3c7] text-[#92400e] border-[#fde68a] hover:bg-[#fde68a]'
-            }`}
-            title="Estado de persistencia con Supabase"
-          >
-            <Database className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">
-              {isConfigured ? 'Supabase Conectado' : 'Conectar Supabase'}
-            </span>
-          </button>
+          {/* Caja de Usuario Activo y Rol */}
+          {user && (
+            <div className="flex items-center gap-3 pl-2 sm:border-l border-[#dec0b6]">
+              <div className="flex items-center gap-2.5">
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-sm ${
+                  isAdmin ? 'bg-[#1c120c]' : 'bg-[#9d3c0c]'
+                }`}>
+                  {isAdmin ? <Shield className="w-4 h-4" /> : <User className="w-4 h-4" />}
+                </div>
+                <div className="text-left">
+                  <div className="text-sm font-bold text-[#1c120c] leading-tight">
+                    {user.full_name}
+                  </div>
+                  <div className="text-[11px] font-semibold text-[#7c5641] flex items-center gap-1 mt-0.5">
+                    <span className={`w-2 h-2 rounded-full ${isAdmin ? 'bg-[#1c120c]' : 'bg-[#9d3c0c]'}`} />
+                    <span>{isAdmin ? 'Administrador / Stock' : 'Mozo de Salón'}</span>
+                  </div>
+                </div>
+              </div>
 
-          {/* Selector de Rol táctil rápido */}
-          <div className="flex items-center bg-[#efe7dd] p-1 rounded-xl border border-[#dec0b6]">
-            <button
-              type="button"
-              onClick={() => switchRole('mozo')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                role === 'mozo'
-                  ? 'bg-[#9d3c0c] text-white shadow-sm'
-                  : 'text-[#7c5641] hover:text-[#1c120c]'
-              }`}
-            >
-              <UserCheck className="w-3.5 h-3.5" />
-              <span>Mozo</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => switchRole('admin')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                role === 'admin'
-                  ? 'bg-[#1c120c] text-white shadow-sm'
-                  : 'text-[#7c5641] hover:text-[#1c120c]'
-              }`}
-            >
-              <Shield className="w-3.5 h-3.5" />
-              <span>Admin / Stock</span>
-            </button>
-          </div>
+              {/* Botón Cerrar Sesión / Salir de turno */}
+              <button
+                type="button"
+                onClick={logout}
+                title="Cerrar turno y salir"
+                className="p-2 ml-1 rounded-xl text-[#7c5641] hover:text-[#ba1a1a] hover:bg-[#ffdad6]/40 active:scale-95 transition-all"
+              >
+                <LogOut className="w-5 h-5" />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>

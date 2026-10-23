@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { LoginView } from './components/auth/LoginView';
 import { Header } from './components/layout/Header';
 import { Navigation, ActiveTab } from './components/layout/Navigation';
 import { OrdersView } from './components/orders/OrdersView';
@@ -7,7 +8,6 @@ import { InventoryView } from './components/inventory/InventoryView';
 import { RecipesView } from './components/recipes/RecipesView';
 import { ProductionView } from './components/production/ProductionView';
 import { PurchasesView } from './components/purchases/PurchasesView';
-import { SupabaseGuideModal } from './components/database/SupabaseGuideModal';
 
 import { inventoryService } from './services/inventoryService';
 import { recipeService } from './services/recipeService';
@@ -17,9 +17,8 @@ import { purchaseService } from './services/purchaseService';
 import { RawMaterial, Preparation, Order, StockMovement, PurchaseListItem, OrderStatus, OrderOrigin } from './types/database';
 
 function MainApp() {
-  const { isAdmin, role } = useAuth();
+  const { user, isAdmin, role } = useAuth();
   const [activeTab, setActiveTab] = useState<ActiveTab>('orders');
-  const [isDbGuideOpen, setIsDbGuideOpen] = useState(false);
 
   // Estados de datos
   const [materials, setMaterials] = useState<RawMaterial[]>([]);
@@ -61,8 +60,10 @@ function MainApp() {
   };
 
   useEffect(() => {
-    loadAllData();
-  }, []);
+    if (user) {
+      loadAllData();
+    }
+  }, [user]);
 
   // Si cambia el rol de admin a mozo y está en una pestaña restringida, volver a 'orders'
   useEffect(() => {
@@ -71,18 +72,23 @@ function MainApp() {
     }
   }, [role, activeTab]);
 
+  // Si no hay usuario autenticado, renderizar la pantalla de Login previa
+  if (!user) {
+    return <LoginView />;
+  }
+
   // Handlers Comandas
   const handleCreateOrder = async (
     orderData: { origin: OrderOrigin; table_number?: string; notes?: string },
     items: { preparation_id: string; quantity: number; unit_price: number; notes?: string }[]
   ) => {
-    await orderService.createOrder(orderData, items);
+    await orderService.createOrder(orderData, items, user.id);
     showToast(`Comanda #${orders.length > 0 ? Math.max(...orders.map(o => o.order_number)) + 1 : 101} creada con éxito.`);
     await loadAllData();
   };
 
   const handleUpdateOrderStatus = async (orderId: string, status: OrderStatus) => {
-    await orderService.updateOrderStatus(orderId, status);
+    await orderService.updateOrderStatus(orderId, status, user.id);
     if (status === 'entregada') {
       showToast('Comanda entregada. Stock de vitrina actualizado.', 'success');
     } else {
@@ -93,13 +99,13 @@ function MainApp() {
 
   // Handlers Inventario
   const handleAddMaterial = async (mat: Omit<RawMaterial, 'id'>) => {
-    await inventoryService.createRawMaterial(mat);
+    await inventoryService.createRawMaterial(mat, user.id);
     showToast(`Materia prima "${mat.name}" creada exitosamente.`);
     await loadAllData();
   };
 
   const handleAdjustStock = async (id: string, newStock: number, reason: string) => {
-    await inventoryService.updateRawMaterial(id, { current_stock: newStock }, undefined, reason);
+    await inventoryService.updateRawMaterial(id, { current_stock: newStock }, user.id, reason);
     showToast('Stock de materia prima ajustado.');
     await loadAllData();
   };
@@ -143,11 +149,8 @@ function MainApp() {
         </div>
       )}
 
-      {/* Header */}
-      <Header
-        onOpenDbGuide={() => setIsDbGuideOpen(true)}
-        lowStockCount={lowStockCount}
-      />
+      {/* Header con Perfil de Usuario y Logout */}
+      <Header lowStockCount={lowStockCount} />
 
       {/* Navegación Táctil para Tablet */}
       <Navigation
@@ -203,12 +206,6 @@ function MainApp() {
           />
         )}
       </main>
-
-      {/* Guía Modal de Supabase */}
-      <SupabaseGuideModal
-        isOpen={isDbGuideOpen}
-        onClose={() => setIsDbGuideOpen(false)}
-      />
     </div>
   );
 }
