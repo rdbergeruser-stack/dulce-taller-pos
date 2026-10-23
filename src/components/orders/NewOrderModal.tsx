@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Preparation, OrderOrigin } from '../../types/database';
 import { X, Plus, Minus, Check, Coffee, Sparkles, Utensils } from 'lucide-react';
+import { getEffectiveAvailableStock } from '../../services/portionService';
 
 interface NewOrderModalProps {
   isOpen: boolean;
@@ -209,15 +210,18 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
               {preparations.map(prep => {
                 const count = cart[prep.id]?.quantity || 0;
                 const stock = prep.stock_available || 0;
-                const isOutOfStock = stock <= 0;
-                const isLowStock = stock > 0 && stock <= (prep.unit_type === 'entera' ? 1 : 3);
+                const effective = getEffectiveAvailableStock(prep, preparations);
+                const isPortion = prep.unit_type === 'porcion';
+                const canAutoOpenMother = isPortion && stock <= 0 && effective.motherStock > 0;
+                const isOutOfStock = effective.totalAvailablePortions <= 0;
+                const isLowStock = !canAutoOpenMother && stock > 0 && stock <= (prep.unit_type === 'entera' ? 1 : 3);
 
                 return (
                   <div
                     key={prep.id}
                     onClick={() => {
                       if (isOutOfStock) {
-                        setErrorMessage(`El producto "${prep.name}" está agotado en vitrina.`);
+                        setErrorMessage(`El producto "${prep.name}" está agotado en vitrina (sin stock ni tortas para fraccionar).`);
                         return;
                       }
                       handleAddItem(prep.id);
@@ -238,6 +242,10 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
                         {isOutOfStock ? (
                           <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#ffdad6] text-[#ba1a1a] border border-[#ba1a1a]/30">
                             AGOTADO
+                          </span>
+                        ) : canAutoOpenMother ? (
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#fef3c7] text-[#92400e] border border-[#fde68a]" title="Se abrirá automáticamente 1 torta entera al despachar">
+                            Abrir torta ({effective.motherStock} disp.)
                           </span>
                         ) : isLowStock ? (
                           <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#fef3c7] text-[#92400e] border border-[#fde68a]">

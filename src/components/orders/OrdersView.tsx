@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Order, OrderStatus, Preparation } from '../../types/database';
 import { NewOrderModal } from './NewOrderModal';
 import { PaymentModal, PaymentMethod } from './PaymentModal';
+import { getEffectiveAvailableStock } from '../../services/portionService';
 import { 
   Plus, 
   Clock, 
@@ -64,7 +65,43 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
     return o.status === statusFilter;
   });
 
-  const getVitrinaAlert = (stock: number, unitType: string) => {
+  const getVitrinaAlert = (prep: Preparation) => {
+    const stock = Number(prep.stock_available) || 0;
+    const effective = getEffectiveAvailableStock(prep, preparations);
+
+    if (prep.unit_type === 'porcion') {
+      if (stock <= 0) {
+        if (effective.motherStock > 0) {
+          return {
+            level: 'auto_slice',
+            label: `0 cortadas (${effective.motherStock} tortas)`,
+            badgeClass: 'bg-[#fff8f2] text-[#9d3c0c] border-[#dec0b6] font-bold',
+            icon: <Sparkles className="w-3 h-3 text-[#9d3c0c] shrink-0" />
+          };
+        }
+        return {
+          level: 'out',
+          label: 'AGOTADO (0 un.)',
+          badgeClass: 'bg-[#ffdad6] text-[#ba1a1a] border-[#ba1a1a]/30 animate-pulse font-extrabold',
+          icon: <AlertOctagon className="w-3 h-3 text-[#ba1a1a] shrink-0" />
+        };
+      }
+      if (stock <= 3) {
+        return {
+          level: 'low',
+          label: `${stock} porc. (${effective.motherStock} tortas)`,
+          badgeClass: 'bg-[#fef3c7] text-[#92400e] border-[#fde68a] font-bold',
+          icon: <AlertTriangle className="w-3 h-3 text-[#92400e] shrink-0" />
+        };
+      }
+      return {
+        level: 'ok',
+        label: `${stock} porciones`,
+        badgeClass: 'bg-[#ebffe8] text-[#446147] border-[#aecfae] font-semibold',
+        icon: <Check className="w-3 h-3 text-[#446147] shrink-0" />
+      };
+    }
+
     if (stock <= 0) {
       return {
         level: 'out',
@@ -73,18 +110,18 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
         icon: <AlertOctagon className="w-3 h-3 text-[#ba1a1a] shrink-0" />
       };
     }
-    const lowThreshold = unitType === 'entera' ? 1 : 3;
+    const lowThreshold = prep.unit_type === 'entera' ? 1 : 3;
     if (stock <= lowThreshold) {
       return {
         level: 'low',
-        label: `Poco Stock (${stock} ${unitType})`,
+        label: `Poco Stock (${stock} ${prep.unit_type})`,
         badgeClass: 'bg-[#fef3c7] text-[#92400e] border-[#fde68a] font-bold',
         icon: <AlertTriangle className="w-3 h-3 text-[#92400e] shrink-0" />
       };
     }
     return {
       level: 'ok',
-      label: `${stock} ${unitType}`,
+      label: `${stock} ${prep.unit_type}`,
       badgeClass: 'bg-[#ebffe8] text-[#446147] border-[#aecfae] font-semibold',
       icon: <Check className="w-3 h-3 text-[#446147] shrink-0" />
     };
@@ -201,7 +238,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
           {preparations.map(p => {
-            const alertInfo = getVitrinaAlert(p.stock_available || 0, p.unit_type);
+            const alertInfo = getVitrinaAlert(p);
 
             return (
               <div

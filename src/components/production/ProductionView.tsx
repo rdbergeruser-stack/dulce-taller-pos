@@ -14,13 +14,21 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
   materials,
   onProductionCompleted
 }) => {
-  const [selectedPrepId, setSelectedPrepId] = useState<string>(preparations[0]?.id || '');
+  const produciblePreparations = preparations.filter(p => p.unit_type !== 'porcion');
+  const [selectedPrepId, setSelectedPrepId] = useState<string>(produciblePreparations[0]?.id || preparations[0]?.id || '');
   const [quantity, setQuantity] = useState<number>(1);
   const [notes, setNotes] = useState<string>('');
   const [requirements, setRequirements] = useState<ProductionRequirementPreview[]>([]);
   const [canProduce, setCanProduce] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [resultMessage, setResultMessage] = useState<{ type: 'success' | 'error'; text: string; batch?: string } | null>(null);
+
+  // Asegurar que si cambian las preparaciones o está seleccionada una porción, seleccione una preparación válida
+  useEffect(() => {
+    if (produciblePreparations.length > 0 && !produciblePreparations.some(p => p.id === selectedPrepId)) {
+      setSelectedPrepId(produciblePreparations[0].id);
+    }
+  }, [preparations]);
 
   const selectedPrep = preparations.find(p => p.id === selectedPrepId);
 
@@ -122,20 +130,28 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
           </h3>
 
           <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
-              Preparación
-            </label>
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
+                Preparación / Torta Base
+              </label>
+              <span className="text-[10px] text-[#7c5641] font-medium bg-[#f5ede3] px-2 py-0.5 rounded-full border border-[#dec0b6]">
+                Tortas Enteras y Cafetería
+              </span>
+            </div>
             <select
               value={selectedPrepId}
               onChange={(e) => setSelectedPrepId(e.target.value)}
               className="w-full px-3 py-2.5 rounded-xl border border-[#dec0b6] bg-[#fff8f2] text-sm font-bold text-[#1c120c] focus:outline-none focus:ring-2 focus:ring-[#9d3c0c]"
             >
-              {preparations.map(p => (
+              {produciblePreparations.map(p => (
                 <option key={p.id} value={p.id}>
-                  {p.name} ({p.category}) - Stock actual: {p.stock_available}
+                  {p.name} ({p.category}) - Stock actual: {p.stock_available} {p.unit_type}
                 </option>
               ))}
             </select>
+            <p className="text-[11px] text-[#7c5641] italic">
+              💡 Las porciones individuales no se cocinan directamente con materias primas: se hornea la <strong>Torta Entera</strong> y el sistema fracciona las porciones automáticamente en vitrina.
+            </p>
           </div>
 
           <div className="space-y-2">

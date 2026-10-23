@@ -2,6 +2,7 @@ import { Order, OrderItem, OrderStatus } from '../types/database';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { INITIAL_ORDERS } from '../data/mockData';
 import { recipeService } from './recipeService';
+import { portionService } from './portionService';
 
 let localOrders: Order[] = [...INITIAL_ORDERS];
 
@@ -93,6 +94,18 @@ export const orderService = {
     if (isSupabaseConfigured && supabase) {
       const isValidUuid = userId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
       if (status === 'entregada') {
+        // Opción 3: Verificar si la comanda contiene porciones que requieran fraccionar tortas enteras automáticamente
+        const { data: orderItems } = await supabase
+          .from('order_items')
+          .select('preparation_id, quantity')
+          .eq('order_id', orderId);
+
+        if (orderItems && orderItems.length > 0) {
+          for (const item of orderItems) {
+            await portionService.autoFractionIfNeeded(item.preparation_id, item.quantity, userId);
+          }
+        }
+
         const { error } = await supabase.rpc('dispatch_order', {
           p_order_id: orderId,
           p_user_id: isValidUuid ? userId : null
@@ -121,6 +134,12 @@ export const orderService = {
 
     // Si se pasa a entregada, descontar del stock de productos elaborados en vitrina
     if (status === 'entregada' && order.status !== 'entregada') {
+      if (order.items) {
+        for (const item of order.items) {
+          await portionService.autoFractionIfNeeded(item.preparation_id, item.quantity, userId);
+        }
+      }
+
       const preps = await recipeService.getPreparations();
       if (order.items) {
         for (const item of order.items) {

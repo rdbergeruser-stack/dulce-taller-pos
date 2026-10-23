@@ -232,6 +232,7 @@ function MainApp() {
             onAddMaterial={handleAddMaterial}
             onAdjustStock={handleAdjustStock}
             onAdjustPrepStock={handleAdjustPrepStock}
+            onRefresh={loadAllData}
           />
         )}
 

@@ -8,8 +8,10 @@ import {
   X,
   Cake,
   Sparkles,
-  Coffee
+  Coffee,
+  CheckCircle2
 } from 'lucide-react';
+import { portionService, getEffectiveAvailableStock } from '../../services/portionService';
 
 interface InventoryViewProps {
   materials: RawMaterial[];
@@ -18,6 +20,7 @@ interface InventoryViewProps {
   onAddMaterial: (mat: Omit<RawMaterial, 'id'>) => Promise<void>;
   onAdjustStock: (id: string, newStock: number, reason: string) => Promise<void>;
   onAdjustPrepStock: (id: string, newStock: number, reason: string) => Promise<void>;
+  onRefresh?: () => Promise<void>;
 }
 
 export const InventoryView: React.FC<InventoryViewProps> = ({
@@ -26,7 +29,8 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
   preparations,
   onAddMaterial,
   onAdjustStock,
-  onAdjustPrepStock
+  onAdjustPrepStock,
+  onRefresh
 }) => {
   const [subTab, setSubTab] = useState<'vitrina' | 'stock' | 'kardex'>('vitrina');
   const [selectedMaterial, setSelectedMaterial] = useState<RawMaterial | null>(null);
@@ -34,6 +38,8 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
   const [newStockValue, setNewStockValue] = useState<string>('');
   const [adjustReason, setAdjustReason] = useState<string>('');
   const [isNewMatModalOpen, setIsNewMatModalOpen] = useState(false);
+  const [sliceNotice, setSliceNotice] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [isSlicing, setIsSlicing] = useState(false);
 
   // Form nueva materia prima
   const [code, setCode] = useState('');
@@ -108,6 +114,20 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
     } else if (selectedPrep) {
       await onAdjustPrepStock(selectedPrep.id, num, adjustReason);
       setSelectedPrep(null);
+    }
+  };
+
+  const handleManualSlice = async (portionPrepId: string) => {
+    setIsSlicing(true);
+    setSliceNotice(null);
+    try {
+      const res = await portionService.manualSliceCake(portionPrepId, 1);
+      setSliceNotice({ type: 'success', text: res.message });
+      if (onRefresh) await onRefresh();
+    } catch (err: any) {
+      setSliceNotice({ type: 'error', text: err.message || 'Error al fraccionar la torta.' });
+    } finally {
+      setIsSlicing(false);
     }
   };
 
@@ -271,9 +291,35 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
       {/* SUBTAB 1: PRODUCTOS ELABORADOS / VITRINA (STOCK DE LO PRODUCIDO) */}
       {subTab === 'vitrina' && (
         <div className="space-y-4">
+          {sliceNotice && (
+            <div className={`p-4 rounded-2xl border flex items-center justify-between gap-3 shadow-sm ${
+              sliceNotice.type === 'success'
+                ? 'bg-[#ebffe8] border-[#aecfae] text-[#446147]'
+                : 'bg-[#ffdad6] border-[#ba1a1a]/30 text-[#ba1a1a]'
+            }`}>
+              <div className="flex items-center gap-2 text-sm font-bold">
+                {sliceNotice.type === 'success' ? (
+                  <CheckCircle2 className="w-5 h-5 shrink-0" />
+                ) : (
+                  <AlertTriangle className="w-5 h-5 shrink-0" />
+                )}
+                <span>{sliceNotice.text}</span>
+              </div>
+              <button
+                onClick={() => setSliceNotice(null)}
+                className="text-xs font-bold underline px-2 py-1"
+              >
+                Cerrar
+              </button>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {preparations.map(prep => {
               const hasStock = (prep.stock_available || 0) > 0;
+              const isPortion = prep.unit_type === 'porcion';
+              const effective = getEffectiveAvailableStock(prep, preparations);
+
               return (
                 <div
                   key={prep.id}
@@ -296,14 +342,27 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                     <p className="text-xs text-[#7c5641] mt-1 line-clamp-2">
                       {prep.description || 'Producto artesanal Dulce Taller'}
                     </p>
+
+                    {isPortion && effective.motherPrep && (
+                      <div className="mt-2.5 p-2 rounded-xl bg-[#f5ede3]/70 border border-[#dec0b6] text-[11px] text-[#7c5641] space-y-1">
+                        <span className="font-bold text-[#9d3c0c] block">
+                          🍰 Torta Base: {effective.motherPrep.name}
+                        </span>
+                        <span>
+                          {effective.motherStock} tortas en stock = {effective.motherStock * effective.yieldPerCake} porciones potenciales
+                        </span>
+                      </div>
+                    )}
                   </div>
 
-                  <div className="mt-4 pt-4 border-t border-[#dec0b6]/50">
-                    <div className="flex items-baseline justify-between mb-3">
-                      <span className="text-xs text-[#7c5641] font-semibold">Stock en Vitrina:</span>
+                  <div className="mt-4 pt-4 border-t border-[#dec0b6]/50 space-y-3">
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-xs text-[#7c5641] font-semibold">
+                        {isPortion ? 'Porciones cortadas:' : 'Stock en Vitrina:'}
+                      </span>
                       <div className="text-right">
                         <span className={`text-2xl font-serif font-bold ${
-                          hasStock ? 'text-[#446147]' : 'text-[#ba1a1a]'
+                          hasStock ? 'text-[#446147]' : isPortion && effective.motherStock > 0 ? 'text-[#9d3c0c]' : 'text-[#ba1a1a]'
                         }`}>
                           {prep.stock_available}
                         </span>
@@ -313,12 +372,24 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between text-xs mb-3">
+                    <div className="flex items-center justify-between text-xs">
                       <span className="text-[#7c5641]">Precio por unidad:</span>
                       <span className="font-bold text-[#1c120c]">
                         ${prep.price.toLocaleString('es-AR')}
                       </span>
                     </div>
+
+                    {isPortion && (
+                      <button
+                        onClick={() => handleManualSlice(prep.id)}
+                        disabled={effective.motherStock <= 0 || isSlicing}
+                        className="w-full py-2 px-3 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold hover:bg-[#7f2b00] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 shadow-sm transition-all"
+                        title={effective.motherStock > 0 ? 'Descuenta 1 torta entera y suma porciones cortadas' : 'No hay tortas enteras para fraccionar'}
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>Cortar 1 Torta (+{effective.yieldPerCake} porc.)</span>
+                      </button>
+                    )}
 
                     <button
                       onClick={() => handleOpenAdjustPrep(prep)}

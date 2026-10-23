@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { recipeService } from '../../services/recipeService';
 import { inventoryService } from '../../services/inventoryService';
-import { RawMaterial, PreparationIngredient } from '../../types/database';
+import { findMotherPreparation, getEffectiveAvailableStock } from '../../services/portionService';
+import { RawMaterial, PreparationIngredient, Preparation } from '../../types/database';
 
 describe('Reglas de Negocio Unitarias - Dulce Taller', () => {
   const mockMaterials: RawMaterial[] = [
@@ -41,6 +42,43 @@ describe('Reglas de Negocio Unitarias - Dulce Taller', () => {
 
     const cost = recipeService.calculateRecipeCost(recipe, mockMaterials);
     expect(cost).toBe(300 + 1800 + 720); // 2820
+  });
+
+  it('4. Opción 3: Vinculación inteligente Torta Entera y Porción', () => {
+    const preps: Preparation[] = [
+      {
+        id: 'p-mother',
+        code: 'PREP-001',
+        name: 'Lemon Pie (Torta Entera)',
+        category: 'pasteleria',
+        unit_type: 'entera',
+        portion_yield: 1,
+        price: 28000,
+        stock_available: 3,
+        is_active: true
+      },
+      {
+        id: 'p-slice',
+        code: 'PREP-002',
+        name: 'Porción Lemon Pie',
+        category: 'pasteleria',
+        unit_type: 'porcion',
+        portion_yield: 8,
+        price: 3800,
+        stock_available: 0,
+        is_active: true
+      }
+    ];
+
+    const mother = findMotherPreparation(preps[1], preps);
+    expect(mother).not.toBeNull();
+    expect(mother?.id).toBe('p-mother');
+
+    const effective = getEffectiveAvailableStock(preps[1], preps);
+    expect(effective.directStock).toBe(0);
+    expect(effective.motherStock).toBe(3);
+    // 0 cortadas + (3 tortas * 8 porciones) = 24 porciones disponibles potenciales
+    expect(effective.totalAvailablePortions).toBe(24);
   });
 });
 
