@@ -54,6 +54,24 @@ export function findMotherPreparation(portionPrep: Preparation, allPreps: Prepar
 /**
  * Calcula el stock efectivo disponible (porciones directas en mostrador + porciones potenciales en tortas enteras)
  */
+
+/**
+ * Encuentra la Porción hija correspondiente a una Torta Entera madre
+ */
+export function findPortionPreparation(motherPrep: Preparation, allPreps: Preparation[]): Preparation | null {
+  if (motherPrep.unit_type !== 'entera') return null;
+
+  const cakeFlavor = normalizeFlavorName(motherPrep.name);
+  if (!cakeFlavor) return null;
+
+  return allPreps.find(p => {
+    if (p.unit_type !== 'porcion') return false;
+    if (p.description && p.description.includes(motherPrep.code)) return true;
+    const portionFlavor = normalizeFlavorName(p.name);
+    return portionFlavor === cakeFlavor || portionFlavor.includes(cakeFlavor) || cakeFlavor.includes(portionFlavor);
+  }) || null;
+}
+
 export function getEffectiveAvailableStock(prep: Preparation, allPreps: Preparation[]): {
   directStock: number;
   motherStock: number;
@@ -188,25 +206,57 @@ export const portionService = {
    * Fraccionamiento manual: El pastelero o mozo decide abrir una torta entera físicamente para colocarla en porciones
    */
   async manualSliceCake(
-    portionPrepId: string,
+    targetPrepId: string,
     cakesCount: number = 1,
     userId?: string
   ): Promise<{ success: boolean; message: string; newPortionStock?: number; newMotherStock?: number }> {
     const allPreps = await recipeService.getPreparations();
-    const portionPrep = allPreps.find(p => p.id === portionPrepId);
+    const target = allPreps.find(p => p.id === targetPrepId);
 
-    if (!portionPrep || portionPrep.unit_type !== 'porcion') {
-      throw new Error('La preparación seleccionada no es una porción fraccionable.');
+    if (!target) {
+      throw new Error('La preparación seleccionada no fue encontrada.');
     }
 
-    const motherPrep = findMotherPreparation(portionPrep, allPreps);
-    if (!motherPrep) {
-      throw new Error(`No se encontró la Torta Entera madre asociada a "${portionPrep.name}".`);
+    let motherPrep: Preparation;
+    let portionPrep: Preparation | null = null;
+
+    if (target.unit_type === 'porcion') {
+      portionPrep = target;
+      motherPrep = findMotherPreparation(portionPrep, allPreps)!;
+      if (!motherPrep) {
+        throw new Error(`No se encontró la Torta Entera madre asociada a "${portionPrep.name}".`);
+      }
+    } else if (target.unit_type === 'entera') {
+      motherPrep = target;
+      portionPrep = findPortionPreparation(motherPrep, allPreps);
+
+      if (!portionPrep) {
+        // Autocrear la porción hija si no existe
+        const nextNum = allPreps.length + 1;
+        const autoCode = motherPrep.code === 'PREP-001' ? 'PREP-002' : `PREP-P${String(nextNum).padStart(2, '0')}`;
+        const cleanName = motherPrep.name.replace(/\s*\(torta\s*entera\)/i, '').replace(/\s*torta\s*entera/i, '').trim();
+        const portionName = cleanName.toLowerCase().startsWith('porci') ? cleanName : `Porción ${cleanName}`;
+        const portionPrice = motherPrep.code === 'PREP-001' ? 3800 : Math.round((motherPrep.price / 8 * 1.1) / 100) * 100;
+
+        portionPrep = await recipeService.createPreparation({
+          code: autoCode,
+          name: portionName,
+          category: motherPrep.category || 'pasteleria',
+          description: `Porción individual de ${motherPrep.name}. [TORTA_MADRE:${motherPrep.code}]`,
+          unit_type: 'porcion',
+          portion_yield: 8.0,
+          price: portionPrice > 0 ? portionPrice : 3800,
+          stock_available: 0,
+          is_active: true
+        });
+      }
+    } else {
+      throw new Error('La preparación seleccionada no es una torta ni una porción fraccionable.');
     }
 
     const motherStock = Number(motherPrep.stock_available) || 0;
     if (motherStock < cakesCount) {
-      throw new Error(`Stock insuficiente: se intentó abrir ${cakesCount} torta(s), pero sólo hay ${motherStock} tortas de "${motherPrep.name}" en stock.`);
+      throw new Error(`Stock insuficiente: se intentó cortar ${cakesCount} torta(s), pero sólo hay ${motherStock} disponible(s) de "${motherPrep.name}".`);
     }
 
     const currentStock = Number(portionPrep.stock_available) || 0;
@@ -233,7 +283,7 @@ export const portionService = {
           quantity: -cakesCount,
           previous_stock: motherStock,
           new_stock: newMotherStock,
-          reason: `Corte manual en mostrador: ${cakesCount} un. de "${motherPrep.name}" abierta(s) para venta por porción`,
+          reason: `Corte de torta en vitrina: ${cakesCount} un. de "${motherPrep.name}" abierta(s) para venta por porción`,
           created_by: isValidUuid ? userId : null
         },
         {
@@ -242,7 +292,7 @@ export const portionService = {
           quantity: portionsToAdd,
           previous_stock: currentStock,
           new_stock: newPortionStock,
-          reason: `Corte manual en mostrador: +${portionsToAdd} porciones obtenidas de "${motherPrep.name}"`,
+          reason: `Corte de torta en vitrina: +${portionsToAdd} porciones obtenidas de "${motherPrep.name}"`,
           created_by: isValidUuid ? userId : null
         }
       ]);
@@ -250,7 +300,7 @@ export const portionService = {
 
     return {
       success: true,
-      message: `¡Corte realizado! Se abrió ${cakesCount} torta de "${motherPrep.name}". Ahora hay ${newPortionStock} porciones listas y quedan ${newMotherStock} tortas enteras.`,
+      message: `¡Corte realizado! Se fraccionó ${cakesCount} torta de "${motherPrep.name}". Ahora hay ${newPortionStock} porciones listas y quedan ${newMotherStock} tortas enteras.`,
       newPortionStock,
       newMotherStock
     };

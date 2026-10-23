@@ -379,11 +379,23 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                       </span>
                     </div>
 
+                    {prep.unit_type === 'entera' && (
+                      <button
+                        onClick={() => handleManualSlice(prep.id)}
+                        disabled={prep.stock_available <= 0 || isSlicing}
+                        className="w-full py-2.5 px-3 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold hover:bg-[#7f2b00] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 shadow-md shadow-[#9d3c0c]/20 transition-all"
+                        title={prep.stock_available > 0 ? 'Descuenta 1 torta entera y genera porciones listas en vitrina' : 'Sin stock de tortas enteras para cortar'}
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>Cortar 1 Torta en Porciones (+8)</span>
+                      </button>
+                    )}
+
                     {isPortion && (
                       <button
                         onClick={() => handleManualSlice(prep.id)}
                         disabled={effective.motherStock <= 0 || isSlicing}
-                        className="w-full py-2 px-3 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold hover:bg-[#7f2b00] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 shadow-sm transition-all"
+                        className="w-full py-2.5 px-3 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold hover:bg-[#7f2b00] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 shadow-md shadow-[#9d3c0c]/20 transition-all"
                         title={effective.motherStock > 0 ? 'Descuenta 1 torta entera y suma porciones cortadas' : 'No hay tortas enteras para fraccionar'}
                       >
                         <Sparkles className="w-3.5 h-3.5" />
