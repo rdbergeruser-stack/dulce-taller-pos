@@ -110,6 +110,12 @@ function MainApp() {
     await loadAllData();
   };
 
+  const handleAdjustPrepStock = async (id: string, newStock: number, reason: string) => {
+    await recipeService.updatePreparation(id, { stock_available: newStock });
+    showToast(`Stock de vitrina actualizado (${reason}).`);
+    await loadAllData();
+  };
+
   // Handlers Compras
   const handleUpdatePurchaseItem = async (id: string, updates: Partial<PurchaseListItem>) => {
     await purchaseService.updateItem(id, updates);
@@ -191,8 +197,10 @@ function MainApp() {
           <InventoryView
             materials={materials}
             movements={movements}
+            preparations={preparations}
             onAddMaterial={handleAddMaterial}
             onAdjustStock={handleAdjustStock}
+            onAdjustPrepStock={handleAdjustPrepStock}
           />
         )}
 

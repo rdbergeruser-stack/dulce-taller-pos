@@ -120,6 +120,47 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
         </button>
       </div>
 
+      {/* Franja de Disponibilidad en Vitrina (Stock Elaborado) */}
+      <div className="bg-[#f5ede3] p-3.5 rounded-2xl border border-[#dec0b6] shadow-sm">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
+            Stock en Vitrina / Productos Elaborados Listos
+          </span>
+          <span className="text-[11px] text-[#7c5641] hidden sm:inline">
+            Se descuenta automáticamente al entregar comanda
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          {preparations.map(p => {
+            const hasStock = (p.stock_available || 0) > 0;
+            return (
+              <div
+                key={p.id}
+                className="bg-white p-2.5 rounded-xl border border-[#dec0b6] flex items-center justify-between shadow-xs"
+              >
+                <div className="min-w-0 pr-2">
+                  <h4 className="text-xs font-bold text-[#1c120c] truncate">
+                    {p.name}
+                  </h4>
+                  <span className="text-[10px] text-[#7c5641] uppercase font-semibold">
+                    {p.category}
+                  </span>
+                </div>
+                <div className="text-right shrink-0">
+                  <span className={`text-sm font-bold ${hasStock ? 'text-[#446147]' : 'text-[#ba1a1a]'}`}>
+                    {p.stock_available}
+                  </span>
+                  <span className="text-[10px] text-[#7c5641] ml-0.5 uppercase">
+                    {p.unit_type}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Filtros Táctiles Rápidos */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
         {[

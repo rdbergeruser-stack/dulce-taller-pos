@@ -1,28 +1,36 @@
 import React, { useState } from 'react';
-import { RawMaterial, StockMovement } from '../../types/database';
+import { RawMaterial, StockMovement, Preparation } from '../../types/database';
 import { 
   Package, 
   AlertTriangle, 
   Plus, 
   History, 
-  X
+  X,
+  Cake,
+  Sparkles,
+  Coffee
 } from 'lucide-react';
 
 interface InventoryViewProps {
   materials: RawMaterial[];
   movements: StockMovement[];
+  preparations: Preparation[];
   onAddMaterial: (mat: Omit<RawMaterial, 'id'>) => Promise<void>;
   onAdjustStock: (id: string, newStock: number, reason: string) => Promise<void>;
+  onAdjustPrepStock: (id: string, newStock: number, reason: string) => Promise<void>;
 }
 
 export const InventoryView: React.FC<InventoryViewProps> = ({
   materials,
   movements,
+  preparations,
   onAddMaterial,
-  onAdjustStock
+  onAdjustStock,
+  onAdjustPrepStock
 }) => {
-  const [subTab, setSubTab] = useState<'stock' | 'kardex'>('stock');
+  const [subTab, setSubTab] = useState<'vitrina' | 'stock' | 'kardex'>('vitrina');
   const [selectedMaterial, setSelectedMaterial] = useState<RawMaterial | null>(null);
+  const [selectedPrep, setSelectedPrep] = useState<Preparation | null>(null);
   const [newStockValue, setNewStockValue] = useState<string>('');
   const [adjustReason, setAdjustReason] = useState<string>('');
   const [isNewMatModalOpen, setIsNewMatModalOpen] = useState(false);
@@ -39,20 +47,33 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
 
   const handleOpenAdjust = (mat: RawMaterial) => {
     setSelectedMaterial(mat);
+    setSelectedPrep(null);
     setNewStockValue(mat.current_stock.toString());
     setAdjustReason('Reingreso o ajuste físico de inventario');
   };
 
+  const handleOpenAdjustPrep = (prep: Preparation) => {
+    setSelectedPrep(prep);
+    setSelectedMaterial(null);
+    setNewStockValue(prep.stock_available.toString());
+    setAdjustReason('Ajuste de vitrina / Registro de merma');
+  };
+
   const handleSaveAdjust = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedMaterial) return;
     const num = parseFloat(newStockValue);
     if (isNaN(num) || num < 0) {
       alert('Ingresa una cantidad válida mayor o igual a 0');
       return;
     }
-    await onAdjustStock(selectedMaterial.id, num, adjustReason);
-    setSelectedMaterial(null);
+
+    if (selectedMaterial) {
+      await onAdjustStock(selectedMaterial.id, num, adjustReason);
+      setSelectedMaterial(null);
+    } else if (selectedPrep) {
+      await onAdjustPrepStock(selectedPrep.id, num, adjustReason);
+      setSelectedPrep(null);
+    }
   };
 
   const handleCreateMaterial = async (e: React.FormEvent) => {
@@ -75,9 +96,17 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
     setCost('0');
   };
 
+  const getPrepCategoryIcon = (cat: string) => {
+    switch (cat) {
+      case 'pasteleria': return <Cake className="w-4 h-4 text-[#9d3c0c]" />;
+      case 'cafeteria': return <Coffee className="w-4 h-4 text-[#7c5641]" />;
+      default: return <Sparkles className="w-4 h-4 text-[#d97736]" />;
+    }
+  };
+
   return (
     <div className="space-y-6">
-      {/* Top Banner de Alertas si hay stock bajo */}
+      {/* Top Banner de Alertas si hay stock bajo de materias primas */}
       {lowStockMaterials.length > 0 && (
         <div className="p-4 rounded-2xl bg-[#ffdad6] border border-[#ba1a1a]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
           <div className="flex items-center gap-3">
@@ -86,10 +115,10 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
             </div>
             <div>
               <h3 className="font-bold text-sm text-[#ba1a1a]">
-                Alerta de Stock Mínimo ({lowStockMaterials.length} insumos críticos)
+                Alerta de Materias Primas ({lowStockMaterials.length} insumos críticos)
               </h3>
               <p className="text-xs text-[#93000a]">
-                Los siguientes insumos están en o por debajo de su punto de reposición: {' '}
+                Insumos en o por debajo de su punto de reposición: {' '}
                 {lowStockMaterials.map(m => `${m.name} (${m.current_stock} ${m.unit})`).join(', ')}
               </p>
             </div>
@@ -97,30 +126,41 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
         </div>
       )}
 
-      {/* Sub Tabs: Inventario vs Historial Kardex */}
+      {/* Sub Tabs: 1) Productos Producidos (Vitrina), 2) Materias Primas, 3) Historial Kardex */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center bg-[#efe7dd] p-1 rounded-xl border border-[#dec0b6]">
+        <div className="flex items-center bg-[#efe7dd] p-1 rounded-xl border border-[#dec0b6] overflow-x-auto max-w-full">
+          <button
+            onClick={() => setSubTab('vitrina')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+              subTab === 'vitrina'
+                ? 'bg-[#9d3c0c] text-white shadow-sm'
+                : 'text-[#7c5641] hover:text-[#1c120c]'
+            }`}
+          >
+            <Cake className="w-4 h-4" />
+            <span>Productos Elaborados / Vitrina ({preparations.length})</span>
+          </button>
           <button
             onClick={() => setSubTab('stock')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
               subTab === 'stock'
                 ? 'bg-white text-[#1c120c] shadow-sm'
                 : 'text-[#7c5641] hover:text-[#1c120c]'
             }`}
           >
             <Package className="w-4 h-4" />
-            <span>Materias Primas ({materials.length})</span>
+            <span>Materias Primas / Insumos ({materials.length})</span>
           </button>
           <button
             onClick={() => setSubTab('kardex')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
               subTab === 'kardex'
                 ? 'bg-white text-[#1c120c] shadow-sm'
                 : 'text-[#7c5641] hover:text-[#1c120c]'
             }`}
           >
             <History className="w-4 h-4" />
-            <span>Auditoría de Movimientos (Kardex)</span>
+            <span>Auditoría Kardex</span>
           </button>
         </div>
 
@@ -135,7 +175,73 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
         )}
       </div>
 
-      {/* TAB 1: LISTADO DE MATERIAS PRIMAS */}
+      {/* SUBTAB 1: PRODUCTOS ELABORADOS / VITRINA (STOCK DE LO PRODUCIDO) */}
+      {subTab === 'vitrina' && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {preparations.map(prep => {
+              const hasStock = (prep.stock_available || 0) > 0;
+              return (
+                <div
+                  key={prep.id}
+                  className="bg-white rounded-2xl border border-[#dec0b6] p-5 shadow-sm flex flex-col justify-between hover:shadow-md transition-all"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-1 mb-2">
+                      <span className="flex items-center gap-1 text-[11px] font-bold uppercase px-2 py-0.5 rounded-full bg-[#f5ede3] text-[#7c5641]">
+                        {getPrepCategoryIcon(prep.category)}
+                        <span>{prep.category}</span>
+                      </span>
+                      <span className="text-xs font-mono font-bold text-[#7c5641]">
+                        {prep.code}
+                      </span>
+                    </div>
+
+                    <h3 className="font-bold text-base text-[#1c120c] leading-snug">
+                      {prep.name}
+                    </h3>
+                    <p className="text-xs text-[#7c5641] mt-1 line-clamp-2">
+                      {prep.description || 'Producto artesanal Dulce Taller'}
+                    </p>
+                  </div>
+
+                  <div className="mt-4 pt-4 border-t border-[#dec0b6]/50">
+                    <div className="flex items-baseline justify-between mb-3">
+                      <span className="text-xs text-[#7c5641] font-semibold">Stock en Vitrina:</span>
+                      <div className="text-right">
+                        <span className={`text-2xl font-serif font-bold ${
+                          hasStock ? 'text-[#446147]' : 'text-[#ba1a1a]'
+                        }`}>
+                          {prep.stock_available}
+                        </span>
+                        <span className="text-xs text-[#7c5641] ml-1 uppercase font-bold">
+                          {prep.unit_type}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs mb-3">
+                      <span className="text-[#7c5641]">Precio por unidad:</span>
+                      <span className="font-bold text-[#1c120c]">
+                        ${prep.price.toLocaleString('es-AR')}
+                      </span>
+                    </div>
+
+                    <button
+                      onClick={() => handleOpenAdjustPrep(prep)}
+                      className="w-full py-2 rounded-xl border border-[#dec0b6] bg-[#f5ede3] text-xs font-bold text-[#9d3c0c] hover:bg-[#ffdbce] active:scale-95 transition-all"
+                    >
+                      Ajustar Stock / Registrar Merma
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* SUBTAB 2: LISTADO DE MATERIAS PRIMAS */}
       {subTab === 'stock' && (
         <div className="bg-white rounded-2xl border border-[#dec0b6] overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
@@ -212,7 +318,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
         </div>
       )}
 
-      {/* TAB 2: AUDITORÍA KARDEX */}
+      {/* SUBTAB 3: AUDITORÍA KARDEX */}
       {subTab === 'kardex' && (
         <div className="bg-white rounded-2xl border border-[#dec0b6] overflow-hidden shadow-sm">
           <div className="p-4 border-b border-[#dec0b6] bg-[#f5ede3] flex items-center justify-between">
@@ -220,7 +326,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
               Registro Completo de Movimientos de Stock
             </h3>
             <span className="text-xs text-[#7c5641]">
-              Auditoría cronológica de consumos, mermas y entradas
+              Auditoría cronológica de consumos, mermas, entradas y despachos
             </span>
           </div>
 
@@ -239,6 +345,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
               <tbody className="divide-y divide-[#dec0b6]/50">
                 {movements.map(mov => {
                   const mat = materials.find(m => m.id === mov.raw_material_id);
+                  const prep = preparations.find(p => p.id === mov.preparation_id);
                   const isPositive = mov.quantity > 0;
 
                   return (
@@ -252,7 +359,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                         })}
                       </td>
                       <td className="py-3 px-4 font-bold text-[#1c120c]">
-                        {mat ? `${mat.name} (${mat.code})` : 'Preparación / Orden'}
+                        {mat ? `${mat.name} (${mat.code})` : prep ? `${prep.name} (Vitrina)` : 'Stock'}
                       </td>
                       <td className="py-3 px-4">
                         <span className="font-semibold uppercase tracking-wider text-[10px] px-2 py-0.5 rounded bg-[#efe7dd] text-[#7c5641]">
@@ -262,7 +369,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                       <td className={`py-3 px-4 font-bold ${
                         isPositive ? 'text-[#446147]' : 'text-[#ba1a1a]'
                       }`}>
-                        {isPositive ? `+${mov.quantity}` : mov.quantity} {mat?.unit || 'un'}
+                        {isPositive ? `+${mov.quantity}` : mov.quantity} {mat?.unit || prep?.unit_type || 'un'}
                       </td>
                       <td className="py-3 px-4 text-[#7c5641]">
                         {mov.previous_stock} &rarr; <span className="font-bold text-[#1c120c]">{mov.new_stock}</span>
@@ -279,28 +386,34 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
         </div>
       )}
 
-      {/* MODAL AJUSTE DE STOCK */}
-      {selectedMaterial && (
+      {/* MODAL AJUSTE DE STOCK (MATERIA PRIMA O PRODUCTO DE VITRINA) */}
+      {(selectedMaterial || selectedPrep) && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-[#fff8f2] rounded-2xl border border-[#dec0b6] shadow-2xl w-full max-w-md overflow-hidden">
             <div className="p-4 border-b border-[#dec0b6] bg-[#f5ede3] flex items-center justify-between">
               <h3 className="font-serif font-bold text-lg text-[#1c120c]">
-                Ajustar Stock: {selectedMaterial.name}
+                Ajustar Stock: {selectedMaterial?.name || selectedPrep?.name}
               </h3>
-              <button onClick={() => setSelectedMaterial(null)}>
+              <button onClick={() => { setSelectedMaterial(null); setSelectedPrep(null); }}>
                 <X className="w-5 h-5 text-[#7c5641]" />
               </button>
             </div>
 
             <form onSubmit={handleSaveAdjust} className="p-5 space-y-4">
               <div className="p-3 rounded-xl bg-white border border-[#dec0b6] text-xs space-y-1">
-                <p className="text-[#7c5641]">Código: <span className="font-mono font-bold text-[#1c120c]">{selectedMaterial.code}</span></p>
-                <p className="text-[#7c5641]">Stock actual en sistema: <span className="font-bold text-[#1c120c]">{selectedMaterial.current_stock} {selectedMaterial.unit}</span></p>
+                <p className="text-[#7c5641]">
+                  Tipo: <span className="font-bold text-[#1c120c]">{selectedMaterial ? 'Materia Prima' : 'Producto Cocinado en Vitrina'}</span>
+                </p>
+                <p className="text-[#7c5641]">
+                  Stock actual en sistema: <span className="font-bold text-[#1c120c]">
+                    {selectedMaterial ? `${selectedMaterial.current_stock} ${selectedMaterial.unit}` : `${selectedPrep?.stock_available} ${selectedPrep?.unit_type}`}
+                  </span>
+                </p>
               </div>
 
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-[#7c5641]">
-                  Nuevo Stock Físico ({selectedMaterial.unit})
+                  Nuevo Stock Físico ({selectedMaterial?.unit || selectedPrep?.unit_type})
                 </label>
                 <input
                   type="number"
@@ -321,7 +434,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                   value={adjustReason}
                   onChange={(e) => setAdjustReason(e.target.value)}
                   className="w-full px-3 py-2 rounded-xl border border-[#dec0b6] bg-white text-xs text-[#1c120c] focus:outline-none focus:ring-2 focus:ring-[#9d3c0c]"
-                  placeholder="Ej. Ingreso factura proveedor, merma o recuento físico"
+                  placeholder="Ej. Recuento físico, merma por rotura/vencimiento, reposición"
                   required
                 />
               </div>
@@ -329,7 +442,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
               <div className="pt-2 flex items-center justify-end gap-2">
                 <button
                   type="button"
-                  onClick={() => setSelectedMaterial(null)}
+                  onClick={() => { setSelectedMaterial(null); setSelectedPrep(null); }}
                   className="px-4 py-2 rounded-xl border border-[#dec0b6] text-xs font-bold text-[#7c5641] hover:bg-[#efe7dd]"
                 >
                   Cancelar
