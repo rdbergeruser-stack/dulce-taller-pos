@@ -14,7 +14,18 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
   materials,
   onRefresh
 }) => {
-  const [selectedPrep, setSelectedPrep] = useState<Preparation | null>(preparations[0] || null);
+  const visiblePreparations = preparations.filter(
+    p => p.code !== 'PREP-020' && (p as any).category !== 'taller' && !p.name?.toLowerCase().includes('taller')
+  );
+  const [selectedPrep, setSelectedPrep] = useState<Preparation | null>(visiblePreparations[0] || null);
+
+  useEffect(() => {
+    if (!selectedPrep || selectedPrep.code === 'PREP-020' || (selectedPrep as any).category === 'taller' || selectedPrep.name?.toLowerCase().includes('taller')) {
+      if (visiblePreparations.length > 0) {
+        setSelectedPrep(visiblePreparations[0]);
+      }
+    }
+  }, [preparations]);
   const [currentRecipe, setCurrentRecipe] = useState<PreparationIngredient[]>([]);
   const [isLoadingRecipe, setIsLoadingRecipe] = useState(false);
 
@@ -88,6 +99,21 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
     await recipeService.saveRecipe(selectedPrep.id, updated);
     await loadRecipe(selectedPrep.id);
     await onRefresh();
+  };
+
+
+
+
+
+  const handleDeletePreparation = async (prep: Preparation) => {
+    if (!window.confirm(`¿Estás seguro de que deseas eliminar la preparación "${prep.name}"?`)) return;
+    try {
+      await recipeService.deletePreparation(prep.id);
+      setSelectedPrep(null);
+      await onRefresh();
+    } catch (err: any) {
+      alert('Error al eliminar preparación: ' + (err.message || ''));
+    }
   };
 
   // Crear nueva receta
@@ -190,10 +216,10 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
         {/* Selector de Preparaciones */}
         <div className="space-y-3">
           <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
-            Preparaciones Registradas ({preparations.length})
+            Preparaciones Registradas ({visiblePreparations.length})
           </label>
           <div className="space-y-2">
-            {preparations.map(prep => {
+            {visiblePreparations.map(prep => {
               const isSelected = selectedPrep?.id === prep.id;
               return (
                 <div
@@ -248,13 +274,23 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                   </p>
                 </div>
 
-                <button
-                  onClick={() => setIsAddIngModalOpen(true)}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold shadow-sm hover:bg-[#7f2b00] active:scale-95 transition-all"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>+ Agregar Ingrediente</span>
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleDeletePreparation(selectedPrep)}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#ffdad6] text-[#ba1a1a] hover:bg-[#ffb4ab] text-xs font-bold transition-all"
+                    title="Eliminar preparación"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    <span>Eliminar</span>
+                  </button>
+                  <button
+                    onClick={() => setIsAddIngModalOpen(true)}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold shadow-sm hover:bg-[#7f2b00] active:scale-95 transition-all"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>+ Agregar Ingrediente</span>
+                  </button>
+                </div>
               </div>
 
               {/* Métricas de Costeo */}

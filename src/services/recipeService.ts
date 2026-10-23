@@ -13,9 +13,13 @@ export const recipeService = {
         .select('*')
         .order('name');
       if (error) throw error;
-      return data as Preparation[];
+      return ((data || []) as Preparation[]).filter(
+        (p: any) => p.code !== 'PREP-020' && p.category !== 'taller' && !p.name?.toLowerCase().includes('taller')
+      );
     }
-    return [...localPreps];
+    return [...localPreps].filter(
+      (p: any) => p.code !== 'PREP-020' && p.category !== 'taller' && !p.name?.toLowerCase().includes('taller')
+    );
   },
 
   async createPreparation(prep: Omit<Preparation, 'id'>): Promise<Preparation> {
@@ -52,6 +56,20 @@ export const recipeService = {
     if (idx === -1) throw new Error('Preparación no encontrada');
     localPreps[idx] = { ...localPreps[idx], ...updates, updated_at: new Date().toISOString() };
     return localPreps[idx];
+  },
+
+  async deletePreparation(id: string): Promise<void> {
+    if (isSupabaseConfigured && supabase) {
+      await supabase.from('order_items').delete().eq('preparation_id', id);
+      await supabase.from('production_records').delete().eq('preparation_id', id);
+      await supabase.from('stock_movements').delete().eq('preparation_id', id);
+      await supabase.from('preparation_ingredients').delete().eq('preparation_id', id);
+      const { error } = await supabase.from('preparations').delete().eq('id', id);
+      if (error) throw error;
+      return;
+    }
+    localPreps = localPreps.filter(p => p.id !== id);
+    localRecipes = localRecipes.filter(r => r.preparation_id !== id);
   },
 
   async getRecipe(preparationId: string): Promise<PreparationIngredient[]> {

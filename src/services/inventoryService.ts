@@ -13,9 +13,9 @@ export const inventoryService = {
         .select('*')
         .order('name');
       if (error) throw error;
-      return data as RawMaterial[];
+      return ((data || []) as RawMaterial[]).filter(m => !['INS-020', 'INS-021', 'INS-022'].includes(m.code));
     }
-    return [...localMaterials];
+    return [...localMaterials].filter(m => !['INS-020', 'INS-021', 'INS-022'].includes(m.code));
   },
 
   async createRawMaterial(material: Omit<RawMaterial, 'id'>, userId?: string): Promise<RawMaterial> {

@@ -14,12 +14,12 @@ export const orderService = {
         .select('*, order_items(*, preparations(*))')
         .order('created_at', { ascending: false });
       if (error) throw error;
-      return (data || []).map((o: any) => ({
+      return (data || []).filter((o: any) => o.origin !== 'taller').map((o: any) => ({
         ...o,
-        items: o.order_items || []
+        items: (o.order_items || []).filter((it: any) => it.preparations?.code !== 'PREP-020')
       })) as Order[];
     }
-    return [...localOrders];
+    return [...localOrders].filter((o: any) => o.origin !== 'taller');
   },
 
   async createOrder(
