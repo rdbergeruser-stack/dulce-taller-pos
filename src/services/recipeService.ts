@@ -60,12 +60,18 @@ export const recipeService = {
 
   async deletePreparation(id: string): Promise<void> {
     if (isSupabaseConfigured && supabase) {
-      await supabase.from('order_items').delete().eq('preparation_id', id);
-      await supabase.from('production_records').delete().eq('preparation_id', id);
-      await supabase.from('stock_movements').delete().eq('preparation_id', id);
-      await supabase.from('preparation_ingredients').delete().eq('preparation_id', id);
-      const { error } = await supabase.from('preparations').delete().eq('id', id);
-      if (error) throw error;
+      try {
+        await supabase.from('order_items').delete().eq('preparation_id', id);
+        await supabase.from('production_records').delete().eq('preparation_id', id);
+        await supabase.from('stock_movements').delete().eq('preparation_id', id);
+        await supabase.from('preparation_ingredients').delete().eq('preparation_id', id);
+        const { error } = await supabase.from('preparations').delete().eq('id', id);
+        if (error) {
+          await supabase.from('preparations').update({ is_active: false }).eq('id', id);
+        }
+      } catch (err) {
+        await supabase.from('preparations').update({ is_active: false }).eq('id', id);
+      }
       return;
     }
     localPreps = localPreps.filter(p => p.id !== id);

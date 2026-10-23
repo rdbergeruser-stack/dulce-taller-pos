@@ -45,6 +45,8 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
   const [newDescription, setNewDescription] = useState('');
   const [newIngredients, setNewIngredients] = useState<{ raw_material_id: string; quantity: number }[]>([]);
   const [isSavingNewRecipe, setIsSavingNewRecipe] = useState(false);
+  const [prepToDelete, setPrepToDelete] = useState<Preparation | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (selectedPrep) {
@@ -105,14 +107,19 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
 
 
 
-  const handleDeletePreparation = async (prep: Preparation) => {
-    if (!window.confirm(`¿Estás seguro de que deseas eliminar la preparación "${prep.name}"?`)) return;
+  const confirmDeletePreparation = async (prep: Preparation) => {
+    setIsDeleting(true);
     try {
       await recipeService.deletePreparation(prep.id);
-      setSelectedPrep(null);
+      setPrepToDelete(null);
+      if (selectedPrep?.id === prep.id) {
+        setSelectedPrep(null);
+      }
       await onRefresh();
     } catch (err: any) {
       alert('Error al eliminar preparación: ' + (err.message || ''));
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -235,9 +242,22 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                     <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-[#f5ede3] text-[#7c5641]">
                       {prep.category}
                     </span>
-                    <span className="text-xs font-mono font-bold text-[#7c5641]">
-                      {prep.code}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-mono font-bold text-[#7c5641]">
+                        {prep.code}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPrepToDelete(prep);
+                        }}
+                        className="p-1 rounded-lg text-[#7c5641] hover:text-[#ba1a1a] hover:bg-[#ffdad6] active:scale-95 transition-all"
+                        title={`Eliminar ${prep.name}`}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
                   <h4 className="font-bold text-base text-[#1c120c] mt-1">
                     {prep.name}
@@ -276,12 +296,12 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
 
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => handleDeletePreparation(selectedPrep)}
+                    onClick={() => setPrepToDelete(selectedPrep)}
                     className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#ffdad6] text-[#ba1a1a] hover:bg-[#ffb4ab] text-xs font-bold transition-all"
                     title="Eliminar preparación"
                   >
                     <Trash2 className="w-4 h-4" />
-                    <span>Eliminar</span>
+                    <span>Eliminar Receta</span>
                   </button>
                   <button
                     onClick={() => setIsAddIngModalOpen(true)}
@@ -639,6 +659,67 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Modal Confirmar Eliminación de Receta / Preparación */}
+      {prepToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-[#fff8f2] rounded-2xl border border-[#dec0b6] shadow-2xl w-full max-w-md overflow-hidden">
+            <div className="p-4 border-b border-[#dec0b6] bg-[#fcf0ed] flex items-center justify-between">
+              <div className="flex items-center gap-2 text-[#ba1a1a]">
+                <Trash2 className="w-5 h-5" />
+                <h3 className="font-serif font-bold text-lg text-[#1c120c]">
+                  ¿Eliminar Preparación / Receta?
+                </h3>
+              </div>
+              <button onClick={() => setPrepToDelete(null)} disabled={isDeleting}>
+                <X className="w-5 h-5 text-[#7c5641]" />
+              </button>
+            </div>
+
+            <div className="p-5 space-y-4">
+              <div className="p-3.5 bg-white rounded-xl border border-[#dec0b6]">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-[#f5ede3] text-[#7c5641]">
+                    {prepToDelete.category}
+                  </span>
+                  <span className="text-xs font-mono font-bold text-[#7c5641]">
+                    {prepToDelete.code}
+                  </span>
+                </div>
+                <h4 className="font-serif font-bold text-lg text-[#1c120c] mt-1">
+                  {prepToDelete.name}
+                </h4>
+                <p className="text-xs text-[#7c5641] mt-0.5">
+                  {prepToDelete.description || 'Sin descripción'}
+                </p>
+              </div>
+
+              <div className="p-3 bg-[#ffdad6]/60 border border-[#ba1a1a]/20 rounded-xl text-xs text-[#ba1a1a] leading-relaxed">
+                <strong>Atención:</strong> Esta acción borrará la ficha técnica con todos sus ingredientes y retirará el producto de la vitrina y de la toma de comandas.
+              </div>
+
+              <div className="pt-2 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setPrepToDelete(null)}
+                  disabled={isDeleting}
+                  className="px-4 py-2.5 rounded-xl border border-[#dec0b6] text-xs font-bold text-[#7c5641] hover:bg-[#efe7dd] active:scale-95 transition-all"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => confirmDeletePreparation(prepToDelete)}
+                  disabled={isDeleting}
+                  className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#ba1a1a] text-white text-xs font-bold shadow-md shadow-[#ba1a1a]/20 hover:bg-[#93000a] active:scale-95 transition-all disabled:opacity-50"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>{isDeleting ? 'Eliminando...' : 'Sí, Eliminar Receta'}</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

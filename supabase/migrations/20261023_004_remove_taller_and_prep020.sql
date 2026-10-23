@@ -39,3 +39,4 @@ WHERE code = 'PREP-020' OR category = 'taller' OR name ILIKE '%taller%';
 -- 5. Eliminar insumos exclusivos del taller de cookies si existen
 DELETE FROM public.raw_materials 
 WHERE code IN ('INS-020', 'INS-021', 'INS-022');
+
