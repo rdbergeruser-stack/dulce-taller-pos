@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { UtensilsCrossed, AlertCircle, LogOut, Shield, User } from 'lucide-react';
+import { AlertCircle, LogOut, Shield, User } from 'lucide-react';
 
 interface HeaderProps {
   lowStockCount: number;
@@ -29,11 +29,13 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="bg-[#fff8f2] border-b border-[#dec0b6] px-4 md:px-6 py-3 shadow-sm select-none">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        {/* Brand & Logo */}
+        {/* Brand & Logo Oficial */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#9d3c0c] to-[#bd5324] flex items-center justify-center text-white shadow-md shadow-[#9d3c0c]/20">
-            <UtensilsCrossed className="w-5 h-5" />
-          </div>
+          <img 
+            src="/logo.png" 
+            alt="Logo Dulce Taller" 
+            className="w-11 h-11 object-contain rounded-xl shadow-xs p-1 bg-white border border-[#dec0b6]"
+          />
           <div>
             <div className="flex items-center gap-2">
               <h1 className="font-serif font-bold text-xl md:text-2xl text-[#1c120c] tracking-tight">

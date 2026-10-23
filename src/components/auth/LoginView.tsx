@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useAuth, PRESET_USERS } from '../../contexts/AuthContext';
 import { UserRole } from '../../types/database';
 import { 
-  UtensilsCrossed, 
   ShieldCheck, 
   ArrowRight, 
   Coffee, 
@@ -45,10 +44,14 @@ export const LoginView: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#fff8f2] flex flex-col justify-center items-center p-4 select-none">
       <div className="w-full max-w-md bg-white rounded-3xl border border-[#dec0b6] shadow-xl overflow-hidden">
-        {/* Header con identidad Dulce Taller */}
+        {/* Header con identidad Dulce Taller Oficial */}
         <div className="p-8 text-center bg-gradient-to-b from-[#f5ede3] to-white border-b border-[#dec0b6]/60">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[#9d3c0c] to-[#bd5324] flex items-center justify-center text-white shadow-lg shadow-[#9d3c0c]/25">
-            <UtensilsCrossed className="w-8 h-8" />
+          <div className="w-20 h-20 mx-auto mb-4 rounded-3xl bg-white p-2 border border-[#dec0b6] shadow-md flex items-center justify-center">
+            <img 
+              src="/logo.png" 
+              alt="Logo Dulce Taller" 
+              className="w-full h-full object-contain"
+            />
           </div>
           <h1 className="font-serif font-bold text-3xl text-[#1c120c] tracking-tight">
             Dulce Taller

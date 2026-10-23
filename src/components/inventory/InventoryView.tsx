@@ -43,13 +43,42 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
   const [minStock, setMinStock] = useState('0');
   const [cost, setCost] = useState('0');
 
-  const lowStockMaterials = materials.filter(m => m.is_active && m.current_stock <= m.min_stock);
+  const outOfStockMaterials = materials.filter(m => m.is_active && m.current_stock <= 0);
+  const lowStockMaterials = materials.filter(m => m.is_active && m.current_stock > 0 && m.current_stock <= m.min_stock);
   const outOfStockPreps = preparations.filter(p => (p.stock_available || 0) <= 0);
   const lowStockPreps = preparations.filter(p => {
     const s = p.stock_available || 0;
     const threshold = p.unit_type === 'entera' ? 1 : 3;
     return s > 0 && s <= threshold;
   });
+
+  const getRawMaterialStatus = (mat: RawMaterial) => {
+    if (mat.current_stock <= 0) {
+      return {
+        level: 'out',
+        rowClass: 'bg-[#ffdad6]/35 hover:bg-[#ffdad6]/60',
+        stockClass: 'text-[#ba1a1a] font-black',
+        badgeClass: 'bg-[#ffdad6] text-[#ba1a1a] border-[#ba1a1a]/40 font-extrabold animate-pulse',
+        label: '🚨 AGOTADO'
+      };
+    }
+    if (mat.current_stock <= mat.min_stock) {
+      return {
+        level: 'low',
+        rowClass: 'bg-[#fef3c7]/35 hover:bg-[#fef3c7]/60',
+        stockClass: 'text-[#d97736] font-bold',
+        badgeClass: 'bg-[#fef3c7] text-[#92400e] border-[#fde68a] font-bold',
+        label: '⚠️ BAJO MÍNIMO'
+      };
+    }
+    return {
+      level: 'ok',
+      rowClass: 'hover:bg-[#fffbf8]',
+      stockClass: 'text-[#1c120c] font-bold',
+      badgeClass: 'bg-[#ebffe8] text-[#446147] border-[#aecfae]',
+      label: '✓ ÓPTIMO'
+    };
+  };
 
   const handleOpenAdjust = (mat: RawMaterial) => {
     setSelectedMaterial(mat);
@@ -151,19 +180,38 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
         </div>
       )}
 
-      {/* Top Banner de Alertas si hay stock bajo de materias primas */}
-      {lowStockMaterials.length > 0 && (
-        <div className="p-4 rounded-2xl bg-[#ffdad6] border border-[#ba1a1a]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+      {/* Top Banners de Alertas Materias Primas */}
+      {outOfStockMaterials.length > 0 && (
+        <div className="p-4 rounded-2xl bg-[#ffdad6] border border-[#ba1a1a]/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm animate-pulse">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-[#ba1a1a] text-white rounded-xl">
               <AlertTriangle className="w-5 h-5" />
             </div>
             <div>
               <h3 className="font-bold text-sm text-[#ba1a1a]">
-                Alerta de Materias Primas ({lowStockMaterials.length} insumos críticos)
+                🚨 Insumos Críticos Agotados: {outOfStockMaterials.length} materias primas en 0
               </h3>
               <p className="text-xs text-[#93000a]">
-                Insumos en o por debajo de su punto de reposición: {' '}
+                Imposible producir recetas que los contengan: {' '}
+                <strong>{outOfStockMaterials.map(m => m.name).join(', ')}</strong>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {lowStockMaterials.length > 0 && (
+        <div className="p-4 rounded-2xl bg-[#fef3c7] border border-[#fde68a] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-[#d97736] text-white rounded-xl">
+              <AlertTriangle className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-bold text-sm text-[#92400e]">
+                ⚠️ Insumos Bajo Punto de Reposición ({lowStockMaterials.length} insumos)
+              </h3>
+              <p className="text-xs text-[#78350f]">
+                Materias primas próximas a agotarse: {' '}
                 {lowStockMaterials.map(m => `${m.name} (${m.current_stock} ${m.unit})`).join(', ')}
               </p>
             </div>
@@ -305,13 +353,11 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
               </thead>
               <tbody className="divide-y divide-[#dec0b6]/50 font-medium">
                 {materials.map(mat => {
-                  const isLow = mat.current_stock <= mat.min_stock;
+                  const status = getRawMaterialStatus(mat);
                   return (
                     <tr
                       key={mat.id}
-                      className={`hover:bg-[#fffbf8] transition-colors ${
-                        isLow ? 'bg-[#ffdad6]/20' : ''
-                      }`}
+                      className={`transition-colors ${status.rowClass}`}
                     >
                       <td className="py-3.5 px-4 text-xs font-bold font-mono text-[#7c5641]">
                         {mat.code}
@@ -323,9 +369,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                         {mat.unit}
                       </td>
                       <td className="py-3.5 px-4">
-                        <span className={`text-base font-bold ${
-                          isLow ? 'text-[#ba1a1a]' : 'text-[#1c120c]'
-                        }`}>
+                        <span className={`text-base ${status.stockClass}`}>
                           {mat.current_stock.toLocaleString('es-AR')}
                         </span>
                       </td>
@@ -336,15 +380,9 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                         ${mat.unit_cost.toFixed(2)}
                       </td>
                       <td className="py-3.5 px-4 text-center">
-                        {isLow ? (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#ffdad6] text-[#ba1a1a] border border-[#ba1a1a]/30">
-                            Bajo Mínimo
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#ebffe8] text-[#446147]">
-                            Óptimo
-                          </span>
-                        )}
+                        <span className={`inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full border ${status.badgeClass}`}>
+                          {status.label}
+                        </span>
                       </td>
                       <td className="py-3.5 px-4 text-right">
                         <button

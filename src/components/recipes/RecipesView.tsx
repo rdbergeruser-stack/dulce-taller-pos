@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Preparation, PreparationIngredient, RawMaterial } from '../../types/database';
+import { Preparation, PreparationIngredient, RawMaterial, PreparationCategory, PreparationUnitType } from '../../types/database';
 import { recipeService } from '../../services/recipeService';
-import { BookOpen, Plus, Trash2, X } from 'lucide-react';
+import { BookOpen, Plus, Trash2, X, ChefHat } from 'lucide-react';
 
 interface RecipesViewProps {
   preparations: Preparation[];
@@ -18,10 +18,22 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
   const [currentRecipe, setCurrentRecipe] = useState<PreparationIngredient[]>([]);
   const [isLoadingRecipe, setIsLoadingRecipe] = useState(false);
 
-  // Modal para agregar ingrediente
+  // Modal para agregar ingrediente a receta existente
   const [isAddIngModalOpen, setIsAddIngModalOpen] = useState(false);
   const [selectedRawId, setSelectedRawId] = useState<string>(materials[0]?.id || '');
   const [quantityReq, setQuantityReq] = useState<string>('100');
+
+  // Modal para CREAR NUEVA RECETA COMPLETA
+  const [isNewRecipeModalOpen, setIsNewRecipeModalOpen] = useState(false);
+  const [newCode, setNewCode] = useState('');
+  const [newName, setNewName] = useState('');
+  const [newCategory, setNewCategory] = useState<PreparationCategory>('pasteleria');
+  const [newUnitType, setNewUnitType] = useState<PreparationUnitType>('porcion');
+  const [newPrice, setNewPrice] = useState('3500');
+  const [newYield, setNewYield] = useState('1');
+  const [newDescription, setNewDescription] = useState('');
+  const [newIngredients, setNewIngredients] = useState<{ raw_material_id: string; quantity: number }[]>([]);
+  const [isSavingNewRecipe, setIsSavingNewRecipe] = useState(false);
 
   useEffect(() => {
     if (selectedPrep) {
@@ -78,6 +90,69 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
     await onRefresh();
   };
 
+  // Crear nueva receta
+  const handleOpenNewRecipe = () => {
+    const nextNumber = preparations.length + 1;
+    const codeSuggestion = `PREP-${nextNumber < 10 ? '00' : '0'}${nextNumber}`;
+    setNewCode(codeSuggestion);
+    setNewName('');
+    setNewDescription('');
+    setNewPrice('3500');
+    setNewYield('1');
+    setNewIngredients([]);
+    setIsNewRecipeModalOpen(true);
+  };
+
+  const handleAddIngredientToDraft = (rawId: string, qty: number) => {
+    setNewIngredients(prev => {
+      const filtered = prev.filter(p => p.raw_material_id !== rawId);
+      return [...filtered, { raw_material_id: rawId, quantity: qty }];
+    });
+  };
+
+  const handleRemoveIngredientFromDraft = (rawId: string) => {
+    setNewIngredients(prev => prev.filter(p => p.raw_material_id !== rawId));
+  };
+
+  const handleSaveNewRecipe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCode.trim() || !newName.trim()) return;
+
+    setIsSavingNewRecipe(true);
+    try {
+      const created = await recipeService.createPreparation({
+        code: newCode.trim(),
+        name: newName.trim(),
+        category: newCategory,
+        description: newDescription.trim() || undefined,
+        unit_type: newUnitType,
+        portion_yield: parseFloat(newYield) || 1,
+        price: parseFloat(newPrice) || 0,
+        stock_available: 0,
+        is_active: true
+      });
+
+      // Guardar ingredientes asociados si se cargaron
+      if (newIngredients.length > 0) {
+        const ingredientsPayload = newIngredients.map(ing => {
+          const mat = materials.find(m => m.id === ing.raw_material_id);
+          return {
+            raw_material_id: ing.raw_material_id,
+            quantity_required: ing.quantity,
+            unit: mat?.unit || 'gr'
+          };
+        });
+        await recipeService.saveRecipe(created.id, ingredientsPayload);
+      }
+
+      setIsNewRecipeModalOpen(false);
+      await onRefresh();
+      setSelectedPrep(created);
+    } finally {
+      setIsSavingNewRecipe(false);
+    }
+  };
+
   // Cálculo de costo teórico
   const theoreticalCost = recipeService.calculateRecipeCost(currentRecipe, materials);
   const margin = selectedPrep && selectedPrep.price > 0 
@@ -86,7 +161,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Top Header */}
+      {/* Top Header con Botón para Crear Nueva Receta */}
       <div className="bg-white p-4 rounded-2xl border border-[#dec0b6] shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="p-3 bg-[#f5ede3] text-[#9d3c0c] rounded-xl">
@@ -97,17 +172,25 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
               Fichas Técnicas & Recetas Estándar
             </h2>
             <p className="text-xs text-[#7c5641]">
-              Composición de insumos por unidad elaborada y costeo teórico
+              Composición de insumos por unidad elaborada, costeo teórico y margen
             </p>
           </div>
         </div>
+
+        <button
+          onClick={handleOpenNewRecipe}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold shadow-md shadow-[#9d3c0c]/20 hover:bg-[#7f2b00] active:scale-95 transition-all"
+        >
+          <Plus className="w-4 h-4" />
+          <span>+ Nueva Receta / Preparación</span>
+        </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Selector de Preparaciones */}
         <div className="space-y-3">
           <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
-            Selecciona una Preparación
+            Preparaciones Registradas ({preparations.length})
           </label>
           <div className="space-y-2">
             {preparations.map(prep => {
@@ -186,7 +269,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                 </div>
                 <div className="p-3.5 rounded-xl bg-[#f5ede3] border border-[#dec0b6]">
                   <span className="text-[11px] font-bold text-[#7c5641] uppercase block">
-                    Precio Sugerido
+                    Precio Venta
                   </span>
                   <span className="text-lg font-bold text-[#9d3c0c]">
                     ${selectedPrep.price.toLocaleString('es-AR')}
@@ -270,7 +353,198 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
         </div>
       </div>
 
-      {/* Modal Agregar Ingrediente */}
+      {/* MODAL CREAR NUEVA RECETA COMPLETA */}
+      {isNewRecipeModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm select-none">
+          <div className="bg-[#fff8f2] rounded-3xl border border-[#dec0b6] shadow-2xl w-full max-w-2xl max-h-[92vh] flex flex-col overflow-hidden">
+            <div className="p-5 border-b border-[#dec0b6] bg-[#f5ede3] flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-[#9d3c0c] text-white rounded-xl">
+                  <ChefHat className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-serif font-bold text-lg text-[#1c120c]">
+                    Nueva Receta / Preparación
+                  </h3>
+                  <p className="text-xs text-[#7c5641]">
+                    Carga el producto y sus materias primas requeridas
+                  </p>
+                </div>
+              </div>
+              <button onClick={() => setIsNewRecipeModalOpen(false)}>
+                <X className="w-5 h-5 text-[#7c5641]" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveNewRecipe} className="flex-1 overflow-y-auto p-6 space-y-5">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-[#7c5641]">Código de Ficha</label>
+                  <input
+                    type="text"
+                    value={newCode}
+                    onChange={(e) => setNewCode(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-[#dec0b6] bg-white text-xs font-mono font-bold"
+                    required
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-[#7c5641]">Categoría</label>
+                  <select
+                    value={newCategory}
+                    onChange={(e) => setNewCategory(e.target.value as any)}
+                    className="w-full px-3 py-2 rounded-xl border border-[#dec0b6] bg-white text-xs font-bold"
+                  >
+                    <option value="pasteleria">Pastelería</option>
+                    <option value="cafeteria">Cafetería</option>
+                    <option value="taller">Taller / Workshop</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-[#7c5641]">Nombre de la Preparación</label>
+                <input
+                  type="text"
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  placeholder="Ej. Tarta de Frutillas o Cheesecake"
+                  className="w-full px-3 py-2 rounded-xl border border-[#dec0b6] bg-white text-xs font-bold"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-[#7c5641]">Tipo de Unidad</label>
+                  <select
+                    value={newUnitType}
+                    onChange={(e) => setNewUnitType(e.target.value as any)}
+                    className="w-full px-3 py-2 rounded-xl border border-[#dec0b6] bg-white text-xs font-bold"
+                  >
+                    <option value="porcion">Porción</option>
+                    <option value="entera">Torta Entera</option>
+                    <option value="taza">Taza / Bebida</option>
+                    <option value="kit">Kit Taller</option>
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-[#7c5641]">Rendimiento</label>
+                  <input
+                    type="number"
+                    step="any"
+                    value={newYield}
+                    onChange={(e) => setNewYield(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-[#dec0b6] bg-white text-xs font-bold"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-[#7c5641]">Precio Venta ($)</label>
+                  <input
+                    type="number"
+                    step="any"
+                    value={newPrice}
+                    onChange={(e) => setNewPrice(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-[#dec0b6] bg-white text-xs font-bold text-[#9d3c0c]"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-[#7c5641]">Descripción</label>
+                <textarea
+                  rows={2}
+                  value={newDescription}
+                  onChange={(e) => setNewDescription(e.target.value)}
+                  placeholder="Detalles sobre presentación, conservación o servicio..."
+                  className="w-full px-3 py-2 rounded-xl border border-[#dec0b6] bg-white text-xs"
+                />
+              </div>
+
+              {/* Sección Ingredientes Iniciales */}
+              <div className="pt-2 border-t border-[#dec0b6] space-y-3">
+                <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
+                  Ingredientes de la Receta ({newIngredients.length})
+                </label>
+
+                <div className="space-y-2">
+                  {newIngredients.map((item, idx) => {
+                    const mat = materials.find(m => m.id === item.raw_material_id);
+                    return (
+                      <div key={idx} className="p-2.5 bg-white rounded-xl border border-[#dec0b6] flex items-center justify-between text-xs">
+                        <span className="font-bold text-[#1c120c]">{mat?.name} ({mat?.code})</span>
+                        <div className="flex items-center gap-3">
+                          <span className="font-bold text-[#9d3c0c]">{item.quantity} {mat?.unit}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveIngredientFromDraft(item.raw_material_id)}
+                            className="text-[#ba1a1a] hover:bg-[#ffdad6] p-1 rounded"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Agregar insumo al borrador */}
+                <div className="p-3 bg-[#efe7dd] rounded-xl flex items-center gap-2">
+                  <select
+                    id="draft_select_raw"
+                    className="flex-1 px-2.5 py-1.5 rounded-lg border border-[#dec0b6] bg-white text-xs font-bold"
+                  >
+                    {materials.map(m => (
+                      <option key={m.id} value={m.id}>{m.name} ({m.code}) - {m.unit}</option>
+                    ))}
+                  </select>
+                  <input
+                    id="draft_qty"
+                    type="number"
+                    step="any"
+                    placeholder="Cant."
+                    defaultValue="100"
+                    className="w-20 px-2 py-1.5 rounded-lg border border-[#dec0b6] bg-white text-xs font-bold"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const sel = document.getElementById('draft_select_raw') as HTMLSelectElement;
+                      const qty = document.getElementById('draft_qty') as HTMLInputElement;
+                      if (sel && qty) {
+                        handleAddIngredientToDraft(sel.value, parseFloat(qty.value) || 0);
+                      }
+                    }}
+                    className="px-3 py-1.5 rounded-lg bg-[#9d3c0c] text-white text-xs font-bold hover:bg-[#7f2b00]"
+                  >
+                    + Añadir
+                  </button>
+                </div>
+              </div>
+
+              <div className="pt-4 flex items-center justify-end gap-2 border-t border-[#dec0b6]">
+                <button
+                  type="button"
+                  onClick={() => setIsNewRecipeModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-[#dec0b6] text-xs font-bold text-[#7c5641]"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSavingNewRecipe}
+                  className="px-5 py-2.5 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold shadow-md hover:bg-[#7f2b00] active:scale-95 disabled:opacity-50"
+                >
+                  {isSavingNewRecipe ? 'Guardando...' : 'Crear Receta Completa'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Agregar Ingrediente a Receta Existente */}
       {isAddIngModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-[#fff8f2] rounded-2xl border border-[#dec0b6] shadow-2xl w-full max-w-md overflow-hidden">
