@@ -397,7 +397,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                   >
                     <option value="pasteleria">Pastelería</option>
                     <option value="cafeteria">Cafetería</option>
-                    <option value="taller">Taller / Workshop</option>
+
                   </select>
                 </div>
               </div>
@@ -425,7 +425,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                     <option value="porcion">Porción</option>
                     <option value="entera">Torta Entera</option>
                     <option value="taza">Taza / Bebida</option>
-                    <option value="kit">Kit Taller</option>
+
                   </select>
                 </div>
                 <div className="space-y-1">

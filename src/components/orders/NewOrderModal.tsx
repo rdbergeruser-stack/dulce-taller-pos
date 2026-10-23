@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Preparation, OrderOrigin } from '../../types/database';
-import { X, Plus, Minus, Check, Coffee, Sparkles, Utensils } from 'lucide-react';
+import { X, Plus, Minus, Check, Coffee, Utensils } from 'lucide-react';
 import { getEffectiveAvailableStock } from '../../services/portionService';
 
 interface NewOrderModalProps {
@@ -92,7 +92,7 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
       await onSubmit(
         {
           origin,
-          table_number: origin === 'salon' ? tableNumber : origin === 'takeaway' ? 'Mostrador' : 'Taller',
+          table_number: origin === 'salon' ? tableNumber : 'Mostrador',
           notes: orderNotes.trim() || undefined
         },
         selectedItems.map(item => ({
@@ -147,11 +147,11 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
               <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
                 Destino del Pedido
               </label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 {[
                   { id: 'salon', label: 'Salón', icon: <Utensils className="w-4 h-4" /> },
-                  { id: 'takeaway', label: 'Take Away', icon: <Coffee className="w-4 h-4" /> },
-                  { id: 'taller', label: 'Taller', icon: <Sparkles className="w-4 h-4" /> }
+                  { id: 'takeaway', label: 'Take Away', icon: <Coffee className="w-4 h-4" /> }
+
                 ].map(opt => (
                   <button
                     key={opt.id}

@@ -23,8 +23,8 @@ export interface RawMaterial {
   updated_at?: string;
 }
 
-export type PreparationCategory = 'pasteleria' | 'cafeteria' | 'taller';
-export type PreparationUnitType = 'porcion' | 'entera' | 'taza' | 'kit';
+export type PreparationCategory = 'pasteleria' | 'cafeteria';
+export type PreparationUnitType = 'porcion' | 'entera' | 'taza';
 
 export interface Preparation {
   id: string;
@@ -84,7 +84,7 @@ export interface StockMovement {
   preparation?: Preparation;
 }
 
-export type OrderOrigin = 'salon' | 'takeaway' | 'taller';
+export type OrderOrigin = 'salon' | 'takeaway';
 export type OrderStatus = 'pendiente' | 'en_preparacion' | 'lista' | 'entregada' | 'cancelada';
 
 export interface OrderItem {

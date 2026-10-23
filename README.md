@@ -19,7 +19,7 @@ Inspirado en la calidez y precisión de una pastelería artesanal europea:
 
 1. **Stock de Materias Primas (Insumos):** Harina 0000, Manteca, Huevos frescos, Café en grano, Leche, etc.
    - **Descuento Atómico en Cocina:** Se descuentan **únicamente al confirmar la producción terminada**, según la receta estándar del lote (impide doble descuento y garantiza trazabilidad).
-2. **Stock de Productos Terminados / Vitrina:** Lemon Pie entero (1.000 un), Porciones (0.125 un), Capuccino, Kits de Taller.
+2. **Stock de Productos Terminados / Vitrina:** Lemon Pie entero (1.000 un), Porciones (0.125 un), Capuccino.
    - **Descuento al Despachar:** Al entregar una comanda de salón o take-away, se descuenta de las unidades elaboradas disponibles en vitrina.
 
 ---
@@ -28,7 +28,7 @@ Inspirado en la calidez y precisión de una pastelería artesanal europea:
 
 - **Mozo (Personal de Salón / Mostrador):**
   - Acceso directo a la pantalla de **Comandas & KDS**.
-  - Toma de pedidos táctil con botones de alta rotación, origen (Salón, Take Away, Taller) y notas para cocina.
+  - Toma de pedidos táctil con botones de alta rotación, origen (Salón, Take Away) y notas para cocina.
   - Actualización de estados: *Pendiente* &rarr; *En Preparación* &rarr; *Lista para Servir* &rarr; *Entregada*.
   - Visualización del stock disponible en vitrina en tiempo real.
 - **Admin / Encargado de Stock:**
@@ -77,7 +77,7 @@ El sistema incluye persistencia completa en PostgreSQL. Para conectarlo:
 3. Copia y pega el contenido del archivo `supabase/full_schema_and_seed.sql` generado en el repositorio y haz clic en **Run**.
    - Crea las tablas con restricciones `CHECK` y políticas de seguridad RLS.
    - Crea la función transaccional `confirm_production_batch` para descuento atómico con `SELECT FOR UPDATE`.
-   - Inserta los datos reales de insumos y recetas de Dulce Taller (*Lemon Pie*, *Café Capuccino*, *Kit Cookies*).
+   - Inserta los datos reales de insumos y recetas de Dulce Taller (*Lemon Pie*, *Café Capuccino*).
 4. En Supabase ve a **Project Settings** &rarr; **API**, copia la `Project URL` y la `anon key`.
 5. Pégalas en el archivo `.env`:
    ```env

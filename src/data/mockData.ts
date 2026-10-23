@@ -11,9 +11,6 @@ export const INITIAL_RAW_MATERIALS: RawMaterial[] = [
   { id: 'rm-8', code: 'INS-011', name: 'Leche entera / vegetal', unit: 'ml', current_stock: 15000, min_stock: 3000, unit_cost: 1.30, is_active: true },
   { id: 'rm-9', code: 'INS-012', name: 'Cacao en polvo (Decoración)', unit: 'gr', current_stock: 1000, min_stock: 200, unit_cost: 15.00, is_active: true },
   { id: 'rm-10', code: 'INS-013', name: 'Servilleta / Kit mesa', unit: 'un', current_stock: 500, min_stock: 100, unit_cost: 10.00, is_active: true },
-  { id: 'rm-11', code: 'INS-020', name: 'Masa base de cookie precocida', unit: 'un', current_stock: 60, min_stock: 20, unit_cost: 200.00, is_active: true },
-  { id: 'rm-12', code: 'INS-021', name: 'Manga de Glasé real (colores)', unit: 'un', current_stock: 30, min_stock: 10, unit_cost: 350.00, is_active: true },
-  { id: 'rm-13', code: 'INS-022', name: 'Toppings y Sprinkles variados', unit: 'gr', current_stock: 1500, min_stock: 300, unit_cost: 10.00, is_active: true },
   { id: 'rm-14', code: 'INS-023', name: 'Caja Take-Away / Embalaje especial', unit: 'un', current_stock: 80, min_stock: 25, unit_cost: 450.00, is_active: true }
 ];
 
@@ -53,18 +50,6 @@ export const INITIAL_PREPARATIONS: Preparation[] = [
     price: 2900.00,
     stock_available: 50,
     is_active: true
-  },
-  {
-    id: 'p-4',
-    code: 'PREP-020',
-    name: 'Kit Participativo Taller de Cookies',
-    category: 'taller',
-    description: 'Kit individual para participantes de workshops con bases, mangas y toppings.',
-    unit_type: 'kit',
-    portion_yield: 1.0,
-    price: 12000.00,
-    stock_available: 8,
-    is_active: true
   }
 ];
 
@@ -81,13 +66,7 @@ export const INITIAL_RECIPES: PreparationIngredient[] = [
   { id: 'pi-7', preparation_id: 'p-3', raw_material_id: 'rm-7', quantity_required: 18, unit: 'gr' },
   { id: 'pi-8', preparation_id: 'p-3', raw_material_id: 'rm-8', quantity_required: 180, unit: 'ml' },
   { id: 'pi-9', preparation_id: 'p-3', raw_material_id: 'rm-9', quantity_required: 3, unit: 'gr' },
-  { id: 'pi-10', preparation_id: 'p-3', raw_material_id: 'rm-10', quantity_required: 2, unit: 'un' },
-
-  // Kit Taller Cookies
-  { id: 'pi-11', preparation_id: 'p-4', raw_material_id: 'rm-11', quantity_required: 4, unit: 'un' },
-  { id: 'pi-12', preparation_id: 'p-4', raw_material_id: 'rm-12', quantity_required: 3, unit: 'un' },
-  { id: 'pi-13', preparation_id: 'p-4', raw_material_id: 'rm-13', quantity_required: 50, unit: 'gr' },
-  { id: 'pi-14', preparation_id: 'p-4', raw_material_id: 'rm-14', quantity_required: 1, unit: 'un' },
+  { id: 'pi-10', preparation_id: 'p-3', raw_material_id: 'rm-10', quantity_required: 2, unit: 'un' }
 ];
 
 export const INITIAL_ORDERS: Order[] = [
@@ -117,19 +96,6 @@ export const INITIAL_ORDERS: Order[] = [
     items: [
       { id: 'oi-3', order_id: 'ord-102', preparation_id: 'p-1', quantity: 1, unit_price: 28000.00 }
     ]
-  },
-  {
-    id: 'ord-103',
-    order_number: 103,
-    origin: 'taller',
-    table_number: 'Taller Sala B',
-    status: 'lista',
-    notes: 'Workshop de pastelería infantil.',
-    created_at: new Date(Date.now() - 35 * 60000).toISOString(),
-    updated_at: new Date(Date.now() - 2 * 60000).toISOString(),
-    items: [
-      { id: 'oi-4', order_id: 'ord-103', preparation_id: 'p-4', quantity: 4, unit_price: 12000.00 }
-    ]
   }
 ];
 
@@ -155,4 +121,3 @@ export const INITIAL_MOVEMENTS: StockMovement[] = [
     created_at: new Date(Date.now() - 24 * 3600000).toISOString()
   }
 ];
-

@@ -15,9 +15,6 @@ INSERT INTO public.raw_materials (code, name, unit, current_stock, min_stock, un
 ('INS-011', 'Leche entera / vegetal', 'ml', 15000, 3000, 1.30),
 ('INS-012', 'Cacao en polvo (Decoración)', 'gr', 1000, 200, 15.00),
 ('INS-013', 'Servilleta / Kit mesa', 'un', 500, 100, 10.00),
-('INS-020', 'Masa base de cookie precocida', 'un', 60, 20, 200.00),
-('INS-021', 'Manga de Glasé real (colores)', 'un', 30, 10, 350.00),
-('INS-022', 'Toppings y Sprinkles variados', 'gr', 1500, 300, 10.00),
 ('INS-023', 'Caja Take-Away / Embalaje especial', 'un', 80, 25, 450.00)
 ON CONFLICT (code) DO NOTHING;
 
@@ -25,8 +22,7 @@ ON CONFLICT (code) DO NOTHING;
 INSERT INTO public.preparations (code, name, category, description, unit_type, portion_yield, price, stock_available) VALUES
 ('PREP-001', 'Lemon Pie (Torta Entera)', 'pasteleria', 'Torta entera clásica de 8 porciones con base crocante y merengue italiano.', 'entera', 1.0, 28000.00, 4),
 ('PREP-002', 'Porción Lemon Pie', 'pasteleria', 'Porción individual (1/8 de torta entera). Descuenta 0.125 de stock terminado.', 'porcion', 8.0, 3800.00, 16),
-('PREP-010', 'Café Capuccino', 'cafeteria', 'Café de especialidad doble shot con leche texturizada y cacao amargo.', 'taza', 1.0, 2900.00, 50),
-('PREP-020', 'Kit Participativo Taller de Cookies', 'taller', 'Kit individual para participantes de workshops con bases, mangas y toppings.', 'kit', 1.0, 12000.00, 8)
+('PREP-010', 'Café Capuccino', 'cafeteria', 'Café de especialidad doble shot con leche texturizada y cacao amargo.', 'taza', 1.0, 2900.00, 50)
 ON CONFLICT (code) DO NOTHING;
 
 -- 3. ASOCIAR INGREDIENTES A RECETA: LEMON PIE (Torta Entera)
@@ -95,36 +91,6 @@ BEGIN
         -- Servilleta / Kit mesa: 2 un
         INSERT INTO public.preparation_ingredients (preparation_id, raw_material_id, quantity_required, unit)
         SELECT v_prep_id, id, 2, 'un' FROM public.raw_materials WHERE code = 'INS-013'
-        ON CONFLICT (preparation_id, raw_material_id) DO NOTHING;
-    END IF;
-END $$;
-
--- 5. ASOCIAR INGREDIENTES A RECETA: KIT TALLER COOKIES
-DO $$
-DECLARE
-    v_prep_id UUID;
-BEGIN
-    SELECT id INTO v_prep_id FROM public.preparations WHERE code = 'PREP-020';
-    
-    IF v_prep_id IS NOT NULL THEN
-        -- Masa base cookie: 4 un
-        INSERT INTO public.preparation_ingredients (preparation_id, raw_material_id, quantity_required, unit)
-        SELECT v_prep_id, id, 4, 'un' FROM public.raw_materials WHERE code = 'INS-020'
-        ON CONFLICT (preparation_id, raw_material_id) DO NOTHING;
-
-        -- Manga de Glasé: 3 un
-        INSERT INTO public.preparation_ingredients (preparation_id, raw_material_id, quantity_required, unit)
-        SELECT v_prep_id, id, 3, 'un' FROM public.raw_materials WHERE code = 'INS-021'
-        ON CONFLICT (preparation_id, raw_material_id) DO NOTHING;
-
-        -- Toppings: 50 gr
-        INSERT INTO public.preparation_ingredients (preparation_id, raw_material_id, quantity_required, unit)
-        SELECT v_prep_id, id, 50, 'gr' FROM public.raw_materials WHERE code = 'INS-022'
-        ON CONFLICT (preparation_id, raw_material_id) DO NOTHING;
-
-        -- Caja Take-Away: 1 un
-        INSERT INTO public.preparation_ingredients (preparation_id, raw_material_id, quantity_required, unit)
-        SELECT v_prep_id, id, 1, 'un' FROM public.raw_materials WHERE code = 'INS-023'
         ON CONFLICT (preparation_id, raw_material_id) DO NOTHING;
     END IF;
 END $$;

@@ -170,8 +170,8 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
         return <Utensils className="w-4 h-4 text-[#9d3c0c]" />;
       case 'takeaway':
         return <Coffee className="w-4 h-4 text-[#7c5641]" />;
-      case 'taller':
-        return <Sparkles className="w-4 h-4 text-[#d97736]" />;
+
+
       default:
         return null;
     }
@@ -312,7 +312,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
             No hay comandas en este estado
           </h3>
           <p className="text-xs text-[#7c5641] max-w-sm mx-auto">
-            Utiliza el botón "+ Nueva Comanda" para registrar los pedidos de salón, mostrador o talleres.
+            Utiliza el botón "+ Nueva Comanda" para registrar los pedidos de salón o mostrador.
           </p>
         </div>
       ) : (

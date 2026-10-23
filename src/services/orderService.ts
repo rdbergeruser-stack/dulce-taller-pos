@@ -1,4 +1,4 @@
-import { Order, OrderItem, OrderStatus } from '../types/database';
+import { Order, OrderItem, OrderStatus, OrderOrigin } from '../types/database';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { INITIAL_ORDERS } from '../data/mockData';
 import { recipeService } from './recipeService';
@@ -23,7 +23,7 @@ export const orderService = {
   },
 
   async createOrder(
-    orderData: { origin: 'salon' | 'takeaway' | 'taller'; table_number?: string; notes?: string },
+    orderData: { origin: OrderOrigin; table_number?: string; notes?: string },
     items: { preparation_id: string; quantity: number; unit_price: number; notes?: string }[],
     userId?: string
   ): Promise<Order> {
