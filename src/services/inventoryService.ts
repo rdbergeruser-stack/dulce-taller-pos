@@ -29,6 +29,7 @@ export const inventoryService = {
 
       // Registrar movimiento de stock inicial si current_stock > 0
       if (material.current_stock > 0) {
+        const isValidUuid = userId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
         await supabase.from('stock_movements').insert([{
           raw_material_id: data.id,
           movement_type: 'entrada',
@@ -36,7 +37,7 @@ export const inventoryService = {
           previous_stock: 0,
           new_stock: material.current_stock,
           reason: 'Carga inicial de materia prima: ' + material.name,
-          created_by: userId
+          created_by: isValidUuid ? userId : null
         }]);
       }
 
@@ -77,6 +78,7 @@ export const inventoryService = {
           .single();
 
         if (current && current.current_stock !== updates.current_stock) {
+          const isValidUuid = userId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
           const diff = updates.current_stock - current.current_stock;
           await supabase.from('stock_movements').insert([{
             raw_material_id: id,
@@ -85,7 +87,7 @@ export const inventoryService = {
             previous_stock: current.current_stock,
             new_stock: updates.current_stock,
             reason: reason || 'Ajuste manual de stock de materia prima',
-            created_by: userId
+            created_by: isValidUuid ? userId : null
           }]);
         }
       }

@@ -30,6 +30,8 @@ export const orderService = {
       throw new Error('La comanda debe contener al menos un producto.');
     }
 
+    const isValidUuid = userId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
+
     if (isSupabaseConfigured && supabase) {
       const { data: order, error: orderErr } = await supabase
         .from('orders')
@@ -38,7 +40,7 @@ export const orderService = {
           table_number: orderData.table_number || null,
           notes: orderData.notes || null,
           status: 'pendiente',
-          created_by: userId
+          created_by: isValidUuid ? userId : null
         }])
         .select()
         .single();
@@ -89,10 +91,11 @@ export const orderService = {
 
   async updateOrderStatus(orderId: string, status: OrderStatus, userId?: string): Promise<Order> {
     if (isSupabaseConfigured && supabase) {
+      const isValidUuid = userId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
       if (status === 'entregada') {
         const { error } = await supabase.rpc('dispatch_order', {
           p_order_id: orderId,
-          p_user_id: userId || null
+          p_user_id: isValidUuid ? userId : null
         });
         if (error) throw error;
       } else {

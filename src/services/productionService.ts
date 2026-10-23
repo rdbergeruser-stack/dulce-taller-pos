@@ -63,10 +63,11 @@ export const productionService = {
     }
 
     if (isSupabaseConfigured && supabase) {
+      const isValidUuid = userId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
       const { data, error } = await supabase.rpc('confirm_production_batch', {
         p_preparation_id: preparationId,
         p_quantity_produced: quantityToProduce,
-        p_user_id: userId || null,
+        p_user_id: isValidUuid ? userId : null,
         p_notes: notes || null
       });
 

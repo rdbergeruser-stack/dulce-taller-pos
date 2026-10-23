@@ -5,8 +5,9 @@ import { recipeService } from '../../services/recipeService';
 
 describe('Pruebas de Integración - Producción y Stock Transaccional', () => {
   it('1. Creación de Materia Prima y persistencia con movimiento inicial', async () => {
+    const testCode = `TEST-${Date.now().toString().slice(-5)}`;
     const newMat = await inventoryService.createRawMaterial({
-      code: 'TEST-001',
+      code: testCode,
       name: 'Vainilla en Rama Test',
       unit: 'un',
       current_stock: 50,
@@ -17,7 +18,7 @@ describe('Pruebas de Integración - Producción y Stock Transaccional', () => {
 
     expect(newMat.id).toBeDefined();
     const all = await inventoryService.getRawMaterials();
-    const found = all.find(m => m.code === 'TEST-001');
+    const found = all.find(m => m.code === testCode);
     expect(found).toBeDefined();
     expect(found?.current_stock).toBe(50);
   });
