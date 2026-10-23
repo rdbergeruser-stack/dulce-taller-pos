@@ -41,11 +41,26 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
   const [statusFilter, setStatusFilter] = useState<string>('activas');
   const [payingOrder, setPayingOrder] = useState<Order | null>(null);
 
-  const activeOrders = orders.filter(o => o.status !== 'entregada' && o.status !== 'cancelada');
+  const isOrderPaid = (o: Order) => Boolean(o.notes && o.notes.includes('[PAGADO'));
+
+  // Comandas activas en el KDS (no canceladas y aún no cobradas)
+  const activeOrders = orders.filter(o => o.status !== 'cancelada' && !isOrderPaid(o));
+  // Comandas entregadas pendientes de cobro
+  const pendingPaymentOrders = orders.filter(o => o.status === 'entregada' && !isOrderPaid(o));
+  // Comandas ya cobradas
+  const paidOrders = orders.filter(o => isOrderPaid(o));
 
   const filteredOrders = orders.filter(o => {
-    if (statusFilter === 'activas') return o.status !== 'entregada' && o.status !== 'cancelada';
-    if (statusFilter === 'todas') return true;
+    const isPaid = isOrderPaid(o);
+    if (statusFilter === 'activas') return o.status !== 'cancelada' && !isPaid;
+    if (statusFilter === 'entregada') {
+      // Sólo comandas entregadas que están listas para cobrar (NO cobradas aún)
+      return o.status === 'entregada' && !isPaid;
+    }
+    if (statusFilter === 'cobradas') {
+      return isPaid;
+    }
+    if (statusFilter === 'todas') return true; // Historial completo: muestra todas (incluyendo cobradas)
     return o.status === statusFilter;
   });
 
@@ -227,11 +242,12 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
       <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
         {[
           { id: 'activas', label: `Activas (${activeOrders.length})` },
-          { id: 'pendiente', label: 'Pendientes' },
-          { id: 'en_preparacion', label: 'En Preparación' },
-          { id: 'lista', label: 'Listas para Servir' },
-          { id: 'entregada', label: 'Entregadas / Cobros' },
-          { id: 'todas', label: 'Historial Completo' }
+          { id: 'pendiente', label: `Pendientes (${orders.filter(o => o.status === 'pendiente').length})` },
+          { id: 'en_preparacion', label: `En Preparación (${orders.filter(o => o.status === 'en_preparacion').length})` },
+          { id: 'lista', label: `Listas (${orders.filter(o => o.status === 'lista').length})` },
+          { id: 'entregada', label: `Entregadas / Por Cobrar (${pendingPaymentOrders.length})` },
+          { id: 'cobradas', label: `Cobradas (${paidOrders.length})` },
+          { id: 'todas', label: `Historial Completo (${orders.length})` }
         ].map(filter => (
           <button
             key={filter.id}
