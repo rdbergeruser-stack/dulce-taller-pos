@@ -208,14 +208,24 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {preparations.map(prep => {
                 const count = cart[prep.id]?.quantity || 0;
-                const hasStock = (prep.stock_available || 0) > 0;
+                const stock = prep.stock_available || 0;
+                const isOutOfStock = stock <= 0;
+                const isLowStock = stock > 0 && stock <= (prep.unit_type === 'entera' ? 1 : 3);
 
                 return (
                   <div
                     key={prep.id}
-                    onClick={() => handleAddItem(prep.id)}
+                    onClick={() => {
+                      if (isOutOfStock) {
+                        setErrorMessage(`El producto "${prep.name}" está agotado en vitrina.`);
+                        return;
+                      }
+                      handleAddItem(prep.id);
+                    }}
                     className={`p-3.5 rounded-xl border transition-all cursor-pointer select-none text-left flex flex-col justify-between ${
-                      count > 0
+                      isOutOfStock
+                        ? 'bg-[#ffdad6]/30 border-[#ba1a1a]/40 opacity-75'
+                        : count > 0
                         ? 'bg-[#ffdbce]/40 border-[#9d3c0c] ring-2 ring-[#9d3c0c]/30'
                         : 'bg-white border-[#dec0b6] hover:border-[#9d3c0c]/50 hover:bg-[#fffbf8]'
                     }`}
@@ -225,11 +235,19 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
                         <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-[#f5ede3] text-[#7c5641]">
                           {prep.category}
                         </span>
-                        <span className={`text-[11px] font-semibold ${
-                          hasStock ? 'text-[#446147]' : 'text-[#ba1a1a]'
-                        }`}>
-                          Stock: {prep.stock_available} {prep.unit_type}
-                        </span>
+                        {isOutOfStock ? (
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#ffdad6] text-[#ba1a1a] border border-[#ba1a1a]/30">
+                            AGOTADO
+                          </span>
+                        ) : isLowStock ? (
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#fef3c7] text-[#92400e] border border-[#fde68a]">
+                            Poco ({stock})
+                          </span>
+                        ) : (
+                          <span className="text-[11px] font-semibold text-[#446147]">
+                            Stock: {stock} {prep.unit_type}
+                          </span>
+                        )}
                       </div>
                       <h4 className="font-bold text-sm text-[#1c120c] line-clamp-1">
                         {prep.name}

@@ -4,9 +4,15 @@ import { UtensilsCrossed, AlertCircle, LogOut, Shield, User } from 'lucide-react
 
 interface HeaderProps {
   lowStockCount: number;
+  outOfStockVitrinaCount?: number;
+  lowStockVitrinaCount?: number;
 }
 
-export const Header: React.FC<HeaderProps> = ({ lowStockCount }) => {
+export const Header: React.FC<HeaderProps> = ({ 
+  lowStockCount, 
+  outOfStockVitrinaCount = 0,
+  lowStockVitrinaCount = 0 
+}) => {
   const { user, isAdmin, logout } = useAuth();
   const [time, setTime] = useState<string>('');
 
@@ -51,11 +57,25 @@ export const Header: React.FC<HeaderProps> = ({ lowStockCount }) => {
             <span className="text-sm font-bold text-[#1c120c]">{time} hs</span>
           </div>
 
-          {/* Alerta de Stock Mínimo */}
+          {/* Alerta de Stock Mínimo Insumos */}
           {lowStockCount > 0 && (
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#ffdad6] text-[#ba1a1a] text-xs font-semibold animate-pulse">
               <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>{lowStockCount} stock bajo</span>
+              <span>{lowStockCount} insumos bajos</span>
+            </div>
+          )}
+
+          {/* Alertas de Vitrina */}
+          {outOfStockVitrinaCount > 0 && (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#ffdad6] text-[#ba1a1a] text-xs font-extrabold border border-[#ba1a1a]/30 animate-pulse">
+              <span className="w-2 h-2 rounded-full bg-[#ba1a1a]" />
+              <span>{outOfStockVitrinaCount} vitrina agotada</span>
+            </div>
+          )}
+
+          {outOfStockVitrinaCount === 0 && lowStockVitrinaCount > 0 && (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#fef3c7] text-[#92400e] text-xs font-bold border border-[#fde68a]">
+              <span>{lowStockVitrinaCount} poco stock vitrina</span>
             </div>
           )}
 

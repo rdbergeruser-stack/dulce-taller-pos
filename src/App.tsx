@@ -14,6 +14,7 @@ import { recipeService } from './services/recipeService';
 import { orderService } from './services/orderService';
 import { purchaseService } from './services/purchaseService';
 
+import { supabase, isSupabaseConfigured } from './lib/supabase';
 import { RawMaterial, Preparation, Order, StockMovement, PurchaseListItem, OrderStatus, OrderOrigin } from './types/database';
 
 function MainApp() {
@@ -97,6 +98,25 @@ function MainApp() {
     await loadAllData();
   };
 
+  const handlePayOrder = async (orderId: string, paymentData: { method: any; amountPaid: number; changeGiven: number; receiptNumber: string }) => {
+    const order = orders.find(o => o.id === orderId);
+    const existingNotes = order?.notes ? `${order.notes} | ` : '';
+    const paymentNote = `${existingNotes}[PAGADO: ${paymentData.method.toUpperCase()} | Recibido: $${paymentData.amountPaid.toLocaleString('es-AR')} | Vuelto: $${paymentData.changeGiven.toLocaleString('es-AR')} | Ticket #${paymentData.receiptNumber}]`;
+
+    if (order && order.status !== 'entregada') {
+      await orderService.updateOrderStatus(orderId, 'entregada', user.id);
+    }
+
+    if (isSupabaseConfigured && supabase) {
+      await supabase.from('orders').update({ notes: paymentNote }).eq('id', orderId);
+    } else if (order) {
+      order.notes = paymentNote;
+    }
+
+    showToast(`Cuenta cobrada exitosamente ($${paymentData.amountPaid.toLocaleString('es-AR')}). Ticket #${paymentData.receiptNumber}`, 'success');
+    await loadAllData();
+  };
+
   // Handlers Inventario
   const handleAddMaterial = async (mat: Omit<RawMaterial, 'id'>) => {
     await inventoryService.createRawMaterial(mat, user.id);
@@ -136,6 +156,12 @@ function MainApp() {
   };
 
   const lowStockCount = inventoryService.getLowStockAlerts(materials).length;
+  const outOfStockVitrinaCount = preparations.filter(p => (p.stock_available || 0) <= 0).length;
+  const lowStockVitrinaCount = preparations.filter(p => {
+    const stock = p.stock_available || 0;
+    const threshold = p.unit_type === 'entera' ? 1 : 3;
+    return stock > 0 && stock <= threshold;
+  }).length;
   const pendingOrdersCount = orders.filter(o => o.status === 'pendiente' || o.status === 'en_preparacion').length;
 
   return (
@@ -156,7 +182,11 @@ function MainApp() {
       )}
 
       {/* Header con Perfil de Usuario y Logout */}
-      <Header lowStockCount={lowStockCount} />
+      <Header 
+        lowStockCount={lowStockCount} 
+        outOfStockVitrinaCount={outOfStockVitrinaCount}
+        lowStockVitrinaCount={lowStockVitrinaCount}
+      />
 
       {/* Navegación Táctil para Tablet */}
       <Navigation
@@ -173,6 +203,7 @@ function MainApp() {
             preparations={preparations}
             onCreateOrder={handleCreateOrder}
             onUpdateStatus={handleUpdateOrderStatus}
+            onPayOrder={handlePayOrder}
             isLoading={isLoading}
           />
         )}

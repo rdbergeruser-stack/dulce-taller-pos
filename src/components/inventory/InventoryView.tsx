@@ -44,6 +44,12 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
   const [cost, setCost] = useState('0');
 
   const lowStockMaterials = materials.filter(m => m.is_active && m.current_stock <= m.min_stock);
+  const outOfStockPreps = preparations.filter(p => (p.stock_available || 0) <= 0);
+  const lowStockPreps = preparations.filter(p => {
+    const s = p.stock_available || 0;
+    const threshold = p.unit_type === 'entera' ? 1 : 3;
+    return s > 0 && s <= threshold;
+  });
 
   const handleOpenAdjust = (mat: RawMaterial) => {
     setSelectedMaterial(mat);
@@ -106,6 +112,45 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
 
   return (
     <div className="space-y-6">
+      {/* Top Banner de Alertas si hay productos de vitrina agotados o bajos */}
+      {outOfStockPreps.length > 0 && (
+        <div className="p-4 rounded-2xl bg-[#ffdad6] border border-[#ba1a1a]/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm animate-pulse">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-[#ba1a1a] text-white rounded-xl">
+              <AlertTriangle className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-bold text-sm text-[#ba1a1a]">
+                🚨 Alerta de Vitrina: {outOfStockPreps.length} productos agotados (Stock 0)
+              </h3>
+              <p className="text-xs text-[#93000a]">
+                Se requiere producir o reponer inmediatamente: {' '}
+                <strong>{outOfStockPreps.map(p => p.name).join(', ')}</strong>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {lowStockPreps.length > 0 && (
+        <div className="p-4 rounded-2xl bg-[#fef3c7] border border-[#fde68a] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-[#d97736] text-white rounded-xl">
+              <AlertTriangle className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-bold text-sm text-[#92400e]">
+                ⚠️ Advertencia de Vitrina: {lowStockPreps.length} productos con poco stock
+              </h3>
+              <p className="text-xs text-[#78350f]">
+                Quedan pocas unidades disponibles para la venta: {' '}
+                {lowStockPreps.map(p => `${p.name} (${p.stock_available} ${p.unit_type})`).join(', ')}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Top Banner de Alertas si hay stock bajo de materias primas */}
       {lowStockMaterials.length > 0 && (
         <div className="p-4 rounded-2xl bg-[#ffdad6] border border-[#ba1a1a]/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">

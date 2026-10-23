@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Order, OrderStatus, Preparation } from '../../types/database';
 import { NewOrderModal } from './NewOrderModal';
+import { PaymentModal, PaymentMethod } from './PaymentModal';
 import { 
   Plus, 
   Clock, 
@@ -9,7 +10,11 @@ import {
   PackageCheck, 
   Coffee,
   Sparkles,
-  Utensils
+  Utensils,
+  Banknote,
+  AlertTriangle,
+  AlertOctagon,
+  Check
 } from 'lucide-react';
 
 interface OrdersViewProps {
@@ -20,6 +25,7 @@ interface OrdersViewProps {
     items: { preparation_id: string; quantity: number; unit_price: number; notes?: string }[]
   ) => Promise<void>;
   onUpdateStatus: (orderId: string, status: OrderStatus) => Promise<void>;
+  onPayOrder?: (orderId: string, paymentData: { method: PaymentMethod; amountPaid: number; changeGiven: number; receiptNumber: string }) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -28,10 +34,12 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
   preparations,
   onCreateOrder,
   onUpdateStatus,
+  onPayOrder,
   isLoading
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>('activas');
+  const [payingOrder, setPayingOrder] = useState<Order | null>(null);
 
   const activeOrders = orders.filter(o => o.status !== 'entregada' && o.status !== 'cancelada');
 
@@ -41,7 +49,35 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
     return o.status === statusFilter;
   });
 
-  const getStatusBadge = (status: OrderStatus) => {
+  const getVitrinaAlert = (stock: number, unitType: string) => {
+    if (stock <= 0) {
+      return {
+        level: 'out',
+        label: 'AGOTADO (0 un.)',
+        badgeClass: 'bg-[#ffdad6] text-[#ba1a1a] border-[#ba1a1a]/30 animate-pulse font-extrabold',
+        icon: <AlertOctagon className="w-3 h-3 text-[#ba1a1a] shrink-0" />
+      };
+    }
+    const lowThreshold = unitType === 'entera' ? 1 : 3;
+    if (stock <= lowThreshold) {
+      return {
+        level: 'low',
+        label: `Poco Stock (${stock} ${unitType})`,
+        badgeClass: 'bg-[#fef3c7] text-[#92400e] border-[#fde68a] font-bold',
+        icon: <AlertTriangle className="w-3 h-3 text-[#92400e] shrink-0" />
+      };
+    }
+    return {
+      level: 'ok',
+      label: `${stock} ${unitType}`,
+      badgeClass: 'bg-[#ebffe8] text-[#446147] border-[#aecfae] font-semibold',
+      icon: <Check className="w-3 h-3 text-[#446147] shrink-0" />
+    };
+  };
+
+  const getStatusBadge = (status: OrderStatus, notes?: string) => {
+    const isPaid = notes && notes.includes('[PAGADO');
+
     switch (status) {
       case 'pendiente':
         return (
@@ -62,9 +98,13 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
           </span>
         );
       case 'entregada':
-        return (
+        return isPaid ? (
+          <span className="flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-[#ebffe8] text-[#446147] border border-[#aecfae]">
+            <CheckCircle2 className="w-3.5 h-3.5" /> Cobrada & Finalizada
+          </span>
+        ) : (
           <span className="flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-[#f5ede3] text-[#7c5641] border border-[#dec0b6]">
-            <PackageCheck className="w-3.5 h-3.5" /> Entregada
+            <PackageCheck className="w-3.5 h-3.5" /> Entregada (Pendiente Cobro)
           </span>
         );
       default:
@@ -93,6 +133,14 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
     return `Hace ${Math.floor(diff / 60)}h`;
   };
 
+  const handleConfirmPayment = async (orderId: string, paymentData: any) => {
+    if (onPayOrder) {
+      await onPayOrder(orderId, paymentData);
+    } else {
+      await onUpdateStatus(orderId, 'entregada');
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Top Bar KDS: Stats & Action Button */}
@@ -106,7 +154,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
               Comandas en Cocina y Salón (KDS)
             </h2>
             <p className="text-xs text-[#7c5641]">
-              {activeOrders.length} comandas en curso de preparación o entrega
+              {activeOrders.length} comandas en curso de preparación, entrega o cobro
             </p>
           </div>
         </div>
@@ -120,39 +168,53 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
         </button>
       </div>
 
-      {/* Franja de Disponibilidad en Vitrina (Stock Elaborado) */}
-      <div className="bg-[#f5ede3] p-3.5 rounded-2xl border border-[#dec0b6] shadow-sm">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
-            Stock en Vitrina / Productos Elaborados Listos
-          </span>
-          <span className="text-[11px] text-[#7c5641] hidden sm:inline">
-            Se descuenta automáticamente al entregar comanda
+      {/* Franja de Disponibilidad en Vitrina (Stock Elaborado) con Alertas Inteligentes */}
+      <div className="bg-[#f5ede3] p-4 rounded-2xl border border-[#dec0b6] shadow-sm space-y-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
+              Disponibilidad en Vitrina (Stock Cocinado)
+            </span>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-white text-[#7c5641] font-semibold border border-[#dec0b6]">
+              Tiempo Real
+            </span>
+          </div>
+          <span className="text-[11px] text-[#7c5641] hidden md:inline">
+            Descuento automático al despachar comanda
           </span>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
           {preparations.map(p => {
-            const hasStock = (p.stock_available || 0) > 0;
+            const alertInfo = getVitrinaAlert(p.stock_available || 0, p.unit_type);
+
             return (
               <div
                 key={p.id}
-                className="bg-white p-2.5 rounded-xl border border-[#dec0b6] flex items-center justify-between shadow-xs"
+                className={`p-3 rounded-xl border flex flex-col justify-between transition-all ${
+                  alertInfo.level === 'out'
+                    ? 'bg-[#ffdad6]/40 border-[#ba1a1a] shadow-xs'
+                    : alertInfo.level === 'low'
+                    ? 'bg-[#fef3c7]/30 border-[#d97736]'
+                    : 'bg-white border-[#dec0b6]'
+                }`}
               >
-                <div className="min-w-0 pr-2">
+                <div className="flex items-start justify-between gap-1 mb-1">
                   <h4 className="text-xs font-bold text-[#1c120c] truncate">
                     {p.name}
                   </h4>
                   <span className="text-[10px] text-[#7c5641] uppercase font-semibold">
-                    {p.category}
+                    {p.unit_type}
                   </span>
                 </div>
-                <div className="text-right shrink-0">
-                  <span className={`text-sm font-bold ${hasStock ? 'text-[#446147]' : 'text-[#ba1a1a]'}`}>
-                    {p.stock_available}
+
+                <div className="flex items-center justify-between mt-1">
+                  <span className="text-[11px] font-bold text-[#1c120c]">
+                    ${p.price.toLocaleString('es-AR')}
                   </span>
-                  <span className="text-[10px] text-[#7c5641] ml-0.5 uppercase">
-                    {p.unit_type}
+                  <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full border ${alertInfo.badgeClass}`}>
+                    {alertInfo.icon}
+                    <span>{alertInfo.label}</span>
                   </span>
                 </div>
               </div>
@@ -167,8 +229,8 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
           { id: 'activas', label: `Activas (${activeOrders.length})` },
           { id: 'pendiente', label: 'Pendientes' },
           { id: 'en_preparacion', label: 'En Preparación' },
-          { id: 'lista', label: 'Listas' },
-          { id: 'entregada', label: 'Entregadas' },
+          { id: 'lista', label: 'Listas para Servir' },
+          { id: 'entregada', label: 'Entregadas / Cobros' },
           { id: 'todas', label: 'Historial Completo' }
         ].map(filter => (
           <button
@@ -202,119 +264,157 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {filteredOrders.map(order => (
-            <div
-              key={order.id}
-              className={`rounded-2xl border p-5 flex flex-col justify-between transition-all shadow-sm ${
-                order.status === 'lista'
-                  ? 'bg-[#fffdfa] border-[#446147] ring-2 ring-[#446147]/20'
-                  : order.status === 'en_preparacion'
-                  ? 'bg-white border-[#bd5324]'
-                  : order.status === 'entregada'
-                  ? 'bg-[#f5ede3]/60 border-[#dec0b6] opacity-80'
-                  : 'bg-white border-[#dec0b6]'
-              }`}
-            >
-              <div>
-                {/* Header de la tarjeta */}
-                <div className="flex items-start justify-between gap-2 pb-3 border-b border-[#dec0b6]/60">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-serif font-bold text-lg text-[#1c120c]">
-                        #{order.order_number}
-                      </span>
-                      <span className="flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded bg-[#f5ede3] text-[#1c120c]">
-                        {getOriginIcon(order.origin)}
-                        <span className="capitalize">{order.origin}</span>
-                        {order.table_number && ` • ${order.table_number}`}
+          {filteredOrders.map(order => {
+            const isPaid = order.notes && order.notes.includes('[PAGADO');
+            const total = (order.items || []).reduce((s, it) => s + (it.quantity * it.unit_price), 0);
+
+            return (
+              <div
+                key={order.id}
+                className={`rounded-2xl border p-5 flex flex-col justify-between transition-all shadow-sm ${
+                  isPaid
+                    ? 'bg-[#f5ede3]/40 border-[#aecfae] opacity-90'
+                    : order.status === 'lista'
+                    ? 'bg-[#fffdfa] border-[#446147] ring-2 ring-[#446147]/20'
+                    : order.status === 'en_preparacion'
+                    ? 'bg-white border-[#bd5324]'
+                    : order.status === 'entregada'
+                    ? 'bg-white border-[#d97736] ring-1 ring-[#d97736]/20'
+                    : 'bg-white border-[#dec0b6]'
+                }`}
+              >
+                <div>
+                  {/* Header de la tarjeta */}
+                  <div className="flex items-start justify-between gap-2 pb-3 border-b border-[#dec0b6]/60">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-serif font-bold text-lg text-[#1c120c]">
+                          #{order.order_number}
+                        </span>
+                        <span className="flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded bg-[#f5ede3] text-[#1c120c]">
+                          {getOriginIcon(order.origin)}
+                          <span className="capitalize">{order.origin}</span>
+                          {order.table_number && ` • ${order.table_number}`}
+                        </span>
+                      </div>
+                      <span className="text-xs text-[#7c5641] flex items-center gap-1 mt-1">
+                        <Clock className="w-3 h-3" />
+                        {getTimeAgo(order.created_at)}
                       </span>
                     </div>
-                    <span className="text-xs text-[#7c5641] flex items-center gap-1 mt-1">
-                      <Clock className="w-3 h-3" />
-                      {getTimeAgo(order.created_at)}
+
+                    <div>{getStatusBadge(order.status, order.notes)}</div>
+                  </div>
+
+                  {/* Lista de Ítems */}
+                  <div className="py-3 space-y-2">
+                    {(order.items || []).map((item, idx) => {
+                      const prepName = item.preparation?.name || 
+                        preparations.find(p => p.id === item.preparation_id)?.name || 
+                        'Producto';
+
+                      return (
+                        <div key={idx} className="flex items-start justify-between gap-2 text-sm">
+                          <div className="flex items-start gap-2">
+                            <span className="w-6 h-6 rounded-md bg-[#efe7dd] text-[#9d3c0c] font-bold text-xs flex items-center justify-center shrink-0">
+                              {item.quantity}x
+                            </span>
+                            <div>
+                              <span className="font-bold text-[#1c120c]">{prepName}</span>
+                              {item.notes && (
+                                <p className="text-xs text-[#9d3c0c] italic font-medium">
+                                  Nota: {item.notes}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          <span className="text-xs font-bold text-[#7c5641]">
+                            ${(item.quantity * item.unit_price).toLocaleString('es-AR')}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Observación General */}
+                  {order.notes && (
+                    <div className="p-2.5 rounded-xl bg-[#f5ede3] border border-[#dec0b6] text-xs text-[#57423a] my-2">
+                      <span className="font-bold block">Observación:</span>
+                      {order.notes}
+                    </div>
+                  )}
+                </div>
+
+                {/* Footer de Tarjeta: Total y Botones Táctiles de Acción */}
+                <div className="pt-3 border-t border-[#dec0b6]/60 mt-2 space-y-2">
+                  <div className="flex items-center justify-between text-xs pb-1">
+                    <span className="text-[#7c5641] font-semibold">Total comanda:</span>
+                    <span className="font-serif text-base font-bold text-[#9d3c0c]">
+                      ${total.toLocaleString('es-AR')}
                     </span>
                   </div>
 
-                  <div>{getStatusBadge(order.status)}</div>
+                  {order.status === 'pendiente' && (
+                    <button
+                      onClick={() => onUpdateStatus(order.id, 'en_preparacion')}
+                      className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#9d3c0c] text-white text-sm font-bold hover:bg-[#7f2b00] active:scale-95 shadow-sm transition-all"
+                    >
+                      <ChefHat className="w-4 h-4" />
+                      <span>Iniciar Preparación</span>
+                    </button>
+                  )}
+
+                  {order.status === 'en_preparacion' && (
+                    <button
+                      onClick={() => onUpdateStatus(order.id, 'lista')}
+                      className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#446147] text-white text-sm font-bold hover:bg-[#314d34] active:scale-95 shadow-sm transition-all"
+                    >
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>Marcar como Lista</span>
+                    </button>
+                  )}
+
+                  {order.status === 'lista' && (
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => onUpdateStatus(order.id, 'entregada')}
+                        className="flex items-center justify-center gap-1.5 py-3 rounded-xl bg-[#1c120c] text-white text-xs font-bold hover:bg-black active:scale-95 shadow-sm transition-all"
+                        title="Descuenta del stock de producto cocinado en vitrina"
+                      >
+                        <PackageCheck className="w-4 h-4" />
+                        <span>Entregar</span>
+                      </button>
+
+                      <button
+                        onClick={() => setPayingOrder(order)}
+                        className="flex items-center justify-center gap-1.5 py-3 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold hover:bg-[#7f2b00] active:scale-95 shadow-sm transition-all"
+                      >
+                        <Banknote className="w-4 h-4" />
+                        <span>Cobrar</span>
+                      </button>
+                    </div>
+                  )}
+
+                  {order.status === 'entregada' && !isPaid && (
+                    <button
+                      onClick={() => setPayingOrder(order)}
+                      className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#9d3c0c] text-white text-sm font-bold hover:bg-[#7f2b00] active:scale-95 shadow-md shadow-[#9d3c0c]/20 transition-all"
+                    >
+                      <Banknote className="w-5 h-5" />
+                      <span>Cobrar Cuenta (${total.toLocaleString('es-AR')})</span>
+                    </button>
+                  )}
+
+                  {order.status === 'entregada' && isPaid && (
+                    <div className="text-center py-2 px-3 rounded-xl bg-[#ebffe8] border border-[#aecfae] text-xs font-bold text-[#446147] flex items-center justify-center gap-1.5">
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>Cuenta Cobrada • Comprobante Emitido</span>
+                    </div>
+                  )}
                 </div>
-
-                {/* Lista de Ítems */}
-                <div className="py-3 space-y-2">
-                  {(order.items || []).map((item, idx) => {
-                    const prepName = item.preparation?.name || 
-                      preparations.find(p => p.id === item.preparation_id)?.name || 
-                      'Producto';
-
-                    return (
-                      <div key={idx} className="flex items-start justify-between gap-2 text-sm">
-                        <div className="flex items-start gap-2">
-                          <span className="w-6 h-6 rounded-md bg-[#efe7dd] text-[#9d3c0c] font-bold text-xs flex items-center justify-center shrink-0">
-                            {item.quantity}x
-                          </span>
-                          <div>
-                            <span className="font-bold text-[#1c120c]">{prepName}</span>
-                            {item.notes && (
-                              <p className="text-xs text-[#9d3c0c] italic font-medium">
-                                Nota: {item.notes}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Observación General */}
-                {order.notes && (
-                  <div className="p-2.5 rounded-xl bg-[#f5ede3] border border-[#dec0b6] text-xs text-[#57423a] my-2">
-                    <span className="font-bold block">Observación general:</span>
-                    {order.notes}
-                  </div>
-                )}
               </div>
-
-              {/* Botones táctiles de cambio de estado */}
-              <div className="pt-4 border-t border-[#dec0b6]/60 mt-2">
-                {order.status === 'pendiente' && (
-                  <button
-                    onClick={() => onUpdateStatus(order.id, 'en_preparacion')}
-                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#9d3c0c] text-white text-sm font-bold hover:bg-[#7f2b00] active:scale-95 shadow-sm transition-all"
-                  >
-                    <ChefHat className="w-4 h-4" />
-                    <span>Iniciar Preparación</span>
-                  </button>
-                )}
-
-                {order.status === 'en_preparacion' && (
-                  <button
-                    onClick={() => onUpdateStatus(order.id, 'lista')}
-                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#446147] text-white text-sm font-bold hover:bg-[#314d34] active:scale-95 shadow-sm transition-all"
-                  >
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span>Marcar como Lista</span>
-                  </button>
-                )}
-
-                {order.status === 'lista' && (
-                  <button
-                    onClick={() => onUpdateStatus(order.id, 'entregada')}
-                    className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#1c120c] text-white text-sm font-bold hover:bg-black active:scale-95 shadow-sm transition-all"
-                    title="Descuenta del stock de producto cocinado en vitrina y cierra la orden"
-                  >
-                    <PackageCheck className="w-4 h-4" />
-                    <span>Entregar & Descontar Vitrina</span>
-                  </button>
-                )}
-
-                {order.status === 'entregada' && (
-                  <div className="text-center py-2 text-xs font-semibold text-[#7c5641]">
-                    Comanda completada y despachada
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -324,6 +424,14 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
         onClose={() => setIsModalOpen(false)}
         preparations={preparations}
         onSubmit={onCreateOrder}
+      />
+
+      {/* Modal de Cobro & Comprobante */}
+      <PaymentModal
+        order={payingOrder}
+        isOpen={Boolean(payingOrder)}
+        onClose={() => setPayingOrder(null)}
+        onConfirmPayment={handleConfirmPayment}
       />
     </div>
   );
