@@ -69,7 +69,7 @@ export const orderService = {
       id: 'ord-' + Date.now(),
       order_number: newOrderNumber,
       origin: orderData.origin,
-      table_number: orderData.table_number || (orderData.origin === 'salon' ? 'Mesa 1' : 'Mostrador'),
+      table_number: orderData.table_number || (orderData.origin === 'salon' ? 'Mesa 01' : 'Mostrador'),
       status: 'pendiente',
       notes: orderData.notes,
       created_by: userId,

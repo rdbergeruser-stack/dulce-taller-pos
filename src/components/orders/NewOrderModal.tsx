@@ -19,7 +19,7 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
   onSubmit
 }) => {
   const [origin, setOrigin] = useState<OrderOrigin>('salon');
-  const [tableNumber, setTableNumber] = useState<string>('Mesa 1');
+  const [tableNumber, setTableNumber] = useState<string>('Mesa 01');
   const [orderNotes, setOrderNotes] = useState<string>('');
   const [cart, setCart] = useState<Record<string, { quantity: number; notes: string }>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -172,21 +172,24 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
             {origin === 'salon' && (
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
-                  Mesa / Ubicación
+                  Mesa de Salón (4 mesas)
                 </label>
-                <select
-                  value={tableNumber}
-                  onChange={(e) => setTableNumber(e.target.value)}
-                  className="w-full h-[46px] px-3 rounded-xl border border-[#dec0b6] bg-white text-sm font-bold text-[#1c120c] focus:outline-none focus:ring-2 focus:ring-[#9d3c0c]"
-                >
-                  <option value="Mesa 1">Mesa 1</option>
-                  <option value="Mesa 2">Mesa 2</option>
-                  <option value="Mesa 3">Mesa 3</option>
-                  <option value="Mesa 4">Mesa 4</option>
-                  <option value="Mesa 5">Mesa 5</option>
-                  <option value="Barra">Barra Principal</option>
-                  <option value="Patio">Mesa Patio</option>
-                </select>
+                <div className="grid grid-cols-4 gap-1.5">
+                  {['Mesa 01', 'Mesa 02', 'Mesa 03', 'Mesa 04'].map((mesa) => (
+                    <button
+                      key={mesa}
+                      type="button"
+                      onClick={() => setTableNumber(mesa)}
+                      className={`h-[46px] rounded-xl text-xs font-bold border transition-all ${
+                        tableNumber === mesa
+                          ? 'bg-[#1c120c] text-white border-[#1c120c] shadow-sm'
+                          : 'bg-white text-[#1c120c] border-[#dec0b6] hover:bg-[#efe7dd]'
+                      }`}
+                    >
+                      {mesa}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
           </div>
