@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dulce Taller · Validación de Voucher &amp; Experiencias</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-fixed-dim": "#ffb599",
+            "table-occupied": "#BD5324",
+            "caramel-glow": "#D97736",
+            "surface-tint": "#a23f10",
+            "on-tertiary": "#ffffff",
+            "on-background": "#1e1b15",
+            "on-tertiary-fixed-variant": "#314d34",
+            "on-error-container": "#93000a",
+            "outline-variant": "#dec0b6",
+            "on-secondary-fixed-variant": "#623e2b",
+            "surface-dim": "#e1d9cf",
+            "tertiary": "#446147",
+            "on-tertiary-container": "#ebffe8",
+            "secondary": "#7c5641",
+            "surface-container-low": "#fbf2e8",
+            "espresso-dark": "#1C120C",
+            "table-free": "#5E7C60",
+            "surface-container-highest": "#e9e1d7",
+            "surface-variant": "#e9e1d7",
+            "inverse-on-surface": "#f8f0e5",
+            "inverse-primary": "#ffb599",
+            "on-secondary-fixed": "#2f1405",
+            "surface-container-lowest": "#ffffff",
+            "on-secondary": "#ffffff",
+            "table-bill": "#D99B26",
+            "surface-container-high": "#efe7dd",
+            "powder-blush": "#E8C8BE",
+            "error-container": "#ffdad6",
+            "background": "#fff8f2",
+            "inverse-surface": "#343029",
+            "primary-container": "#bd5324",
+            "on-surface-variant": "#57423a",
+            "on-tertiary-fixed": "#05210c",
+            "surface": "#fff8f2",
+            "outline": "#8a7269",
+            "tertiary-fixed": "#caebc9",
+            "error": "#ba1a1a",
+            "on-primary": "#ffffff",
+            "surface-bright": "#fff8f2",
+            "surface-container": "#f5ede3",
+            "on-surface": "#1e1b15",
+            "secondary-fixed-dim": "#eebca2",
+            "table-reserved": "#7A6882",
+            "espresso-subtle": "#221610",
+            "tertiary-container": "#5c7a5e",
+            "on-error": "#ffffff",
+            "secondary-container": "#fdc9af",
+            "primary": "#9d3c0c",
+            "tertiary-fixed-dim": "#aecfae",
+            "on-primary-container": "#fff9f7",
+            "on-secondary-container": "#79533e",
+            "on-primary-fixed": "#370e00",
+            "primary-fixed": "#ffdbce",
+            "surface-cream": "#FDFBF7",
+            "secondary-fixed": "#ffdbca",
+            "on-primary-fixed-variant": "#7f2b00"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter-tablet": "1.25rem",
+            "space-lg": "1.25rem",
+            "space-xl": "2rem",
+            "space-md": "0.875rem",
+            "gutter": "1rem",
+            "margin": "1rem",
+            "space-sm": "0.5rem",
+            "space-xs": "0.25rem",
+            "margin-tablet": "1.5rem"
+          },
+          "fontFamily": {
+            "title-lg": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "headline-lg": ["Playfair Display"],
+            "label-md": ["Plus Jakarta Sans"],
+            "headline-md": ["Playfair Display"],
+            "body-md": ["Plus Jakarta Sans"],
+            "display-lg": ["Playfair Display"],
+            "headline-lg-mobile": ["Playfair Display"],
+            "display-lg-mobile": ["Playfair Display"]
+          },
+          "fontSize": {
+            "title-lg": ["20px", { "lineHeight": "26px", "fontWeight": "700" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "title-md": ["17px", { "lineHeight": "22px", "fontWeight": "600" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "30px", "fontWeight": "600" }],
+            "display-lg-mobile": ["30px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="h-full bg-background text-on-surface font-body-md overflow-hidden antialiased select-none">
+<!-- ========================================================== -->
+<!-- LEVEL 0 & 1: BACKGROUND CASHIER / CHECKOUT POS SCREEN (BLURRED) -->
+<!-- ========================================================== -->
+<div class="h-full w-full flex flex-col pointer-events-none filter blur-sm scale-[0.99] transition-all duration-300">
+<!-- Top Bar Mock -->
+<header class="bg-surface-cream px-space-lg py-space-sm flex justify-between items-center shadow-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="storefront">storefront</span>
+<span class="font-title-lg text-title-lg font-bold text-espresso-dark">Dulce Taller · Salón</span>
+<span class="bg-secondary-container text-on-secondary-container px-3 py-0.5 rounded-full text-label-md font-label-md">Mesa 06 · Turno Mañana</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="text-right">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Cajero Activo</p>
+<p class="font-title-md text-title-md text-on-surface">Martín Soler</p>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center font-bold text-primary">MS</div>
+</div>
+</header>
+<!-- POS Landscape Split Screen (Catalog 60% / Ticket 40%) -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Left: Background Category & Products -->
+<section class="w-7/12 p-6 bg-surface-container-low flex flex-col gap-4">
+<div class="flex gap-3">
+<span class="px-4 py-2 rounded-xl bg-primary text-on-primary font-label-lg text-label-lg">Cafetería de Especialidad</span>
+<span class="px-4 py-2 rounded-xl bg-surface-container text-on-surface-variant font-label-lg text-label-lg">Pastelería &amp; Hojaldres</span>
+<span class="px-4 py-2 rounded-xl bg-surface-container text-on-surface-variant font-label-lg text-label-lg">Brunch Salado</span>
+</div>
+<div class="grid grid-cols-3 gap-4">
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant/30 flex flex-col gap-2">
+<div class="h-24 rounded-lg bg-surface-container-high flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-3xl" data-icon="local_cafe">local_cafe</span>
+</div>
+<p class="font-title-md text-title-md">Café Flat White</p>
+<p class="font-body-md text-body-md text-secondary">$380,00</p>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant/30 flex flex-col gap-2">
+<div class="h-24 rounded-lg bg-surface-container-high flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-3xl" data-icon="bakery_dining">bakery_dining</span>
+</div>
+<p class="font-title-md text-title-md">Croissant Almendras</p>
+<p class="font-body-md text-body-md text-secondary">$520,00</p>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant/30 flex flex-col gap-2">
+<div class="h-24 rounded-lg bg-surface-container-high flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-3xl" data-icon="cake">cake</span>
+</div>
+<p class="font-title-md text-title-md">Tarta Pistacho &amp; Frambuesa</p>
+<p class="font-body-md text-body-md text-secondary">$890,80</p>
+</div>
+</div>
+</section>
+<!-- Right: Active Order Drawer -->
+<section class="w-5/12 bg-surface-container-lowest border-l border-outline-variant/30 p-6 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-center pb-4 border-b border-outline-variant/20">
+<div>
+<h2 class="font-title-lg text-title-lg">Comanda #1048</h2>
+<p class="font-label-md text-label-md text-on-surface-variant">2 Comensales · Salón Principal</p>
+</div>
+<span class="bg-table-occupied/10 text-table-occupied px-3 py-1 rounded-full font-label-md text-label-md">Cobro Pendiente</span>
+</div>
+<div class="py-4 space-y-3">
+<div class="flex justify-between">
+<span>1x Café Latte (Doble Shot)</span>
+<span class="font-bold">$380,00</span>
+</div>
+<div class="flex justify-between">
+<span>2x Croissant Mantequilla Normandie</span>
+<span class="font-bold">$520,00</span>
+</div>
+<div class="flex justify-between">
+<span>1x Porción Pastel Selva Negra</span>
+<span class="font-bold">$890,80</span>
+</div>
+</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/30 space-y-2">
+<div class="flex justify-between text-body-lg font-body-lg">
+<span>Total Comanda</span>
+<span class="font-title-lg text-title-lg text-espresso-dark font-bold">$1.790,80</span>
+</div>
+<button class="w-full py-4 bg-primary text-on-primary font-title-md text-title-md rounded-xl">Procesar Pago</button>
+</div>
+</section>
+</div>
+</div>
+<!-- ========================================================== -->
+<!-- LEVEL 3: MODAL OVERLAY (CANJE & VALIDACIÓN DE VOUCHER)       -->
+<!-- ========================================================== -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-espresso-dark/60 backdrop-blur-md">
+<!-- Tablet POS Modal Card (Width strictly optimized for 10-13 inch POS landscape display) -->
+<div class="relative w-full max-w-5xl max-h-[942px] bg-surface-cream rounded-2xl shadow-2xl border border-outline-variant/40 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+<!-- 1. Header del Modal -->
+<header class="px-space-xl py-space-md bg-surface-container-low border-b border-outline-variant/30 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-secondary-container text-on-secondary-container flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-2xl" data-icon="redeem" data-weight="fill" style="font-variation-settings: 'FILL' 1;">redeem</span>
+</div>
+<div>
+<div class="flex items-center gap-3">
+<h1 class="font-headline-md text-headline-md text-espresso-dark">Validar Voucher o Cupón Digital</h1>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed text-label-sm font-label-sm px-2.5 py-0.5 rounded-full uppercase tracking-wider">BigBox Partner Verificado</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Canje de experiencias BigBox, Gift Cards de Pastelería o cupones de descuento vigentes.</p>
+</div>
+</div>
+<button class="w-11 h-11 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-2xl" data-icon="close">close</span>
+</button>
+</header>
+<!-- Modal Body (Two Column Split for Tablet Landscape Touch Ergonomics) -->
+<div class="flex-1 p-space-xl overflow-y-auto grid grid-cols-12 gap-gutter-tablet">
+<!-- LEFT COLUMN (Cols 1-7): Entrada táctil, escáner y teclado numérico POS -->
+<div class="col-span-7 flex flex-col gap-space-md pr-2">
+<!-- Large Touch Input Block -->
+<div>
+<div class="flex justify-between items-center mb-1.5">
+<label class="font-label-lg text-label-lg text-espresso-dark flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-base" data-icon="key">key</span>
+                Código Alfanumérico del Cupón / Voucher
+              </label>
+<span class="font-label-sm text-label-sm text-table-free font-bold flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-table-free animate-pulse"></span>
+                Servidor BigBox en Línea
+              </span>
+</div>
+<div class="relative flex items-center">
+<input class="w-full bg-surface-container-lowest border-2 border-primary text-espresso-dark font-title-lg text-title-lg font-bold tracking-wider px-4 py-3.5 rounded-xl shadow-inner focus:outline-none" readonly="" type="text" value="BBX-TALLER-9482"/>
+<div class="absolute right-2 flex items-center gap-1.5">
+<button class="p-2 text-outline hover:text-espresso-dark rounded-lg hover:bg-surface-container" title="Limpiar código">
+<span class="material-symbols-outlined text-xl" data-icon="cancel">cancel</span>
+</button>
+<button class="bg-primary hover:bg-primary-container text-on-primary px-4 py-2.5 rounded-lg font-label-lg text-label-lg flex items-center gap-1.5 shadow-sm active:scale-95 transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="search_check">search_check</span>
+                  Validar en Línea
+                </button>
+</div>
+</div>
+</div>
+<!-- Secondary Actions / Scan Buttons -->
+<div class="grid grid-cols-2 gap-3">
+<button class="py-3 px-4 rounded-xl bg-surface-container border border-outline-variant/50 text-espresso-dark hover:bg-surface-container-high font-label-lg text-label-lg flex items-center justify-center gap-2 active:scale-98 transition-all">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="qr_code_scanner">qr_code_scanner</span>
+              Escanear con Cámara / Lector
+            </button>
+<button class="py-3 px-4 rounded-xl bg-surface-container border border-outline-variant/50 text-espresso-dark hover:bg-surface-container-high font-label-lg text-label-lg flex items-center justify-center gap-2 active:scale-98 transition-all">
+<span class="material-symbols-outlined text-secondary text-xl" data-icon="nfc">nfc</span>
+              Aproximar Tarjeta Regalo (NFC)
+            </button>
+</div>
+<!-- Touch Screen POS Quick Keypad / Rapid Voucher Presets -->
+<div class="bg-surface-container-low p-4 rounded-xl border border-outline-variant/40 flex flex-col gap-3">
+<div class="flex justify-between items-center">
+<span class="font-label-md text-label-md text-on-surface-variant font-bold uppercase tracking-wider">Teclado Rápido de Terminal</span>
+<span class="font-label-sm text-label-sm text-secondary">Prefijo actual: BBX-</span>
+</div>
+<!-- Keypad Grid (Ergonomic 48px+ touch targets) -->
+<div class="grid grid-cols-4 gap-2">
+<button class="h-12 bg-surface-container-lowest hover:bg-surface-cream text-espresso-dark font-title-md text-title-md font-bold rounded-lg border border-outline-variant/30 shadow-sm active:scale-95 transition-all">1</button>
+<button class="h-12 bg-surface-container-lowest hover:bg-surface-cream text-espresso-dark font-title-md text-title-md font-bold rounded-lg border border-outline-variant/30 shadow-sm active:scale-95 transition-all">2</button>
+<button class="h-12 bg-surface-container-lowest hover:bg-surface-cream text-espresso-dark font-title-md text-title-md font-bold rounded-lg border border-outline-variant/30 shadow-sm active:scale-95 transition-all">3</button>
+<button class="h-12 bg-secondary-fixed/50 hover:bg-secondary-fixed text-on-secondary-fixed font-title-md text-title-md font-bold rounded-lg border border-outline-variant/30 shadow-sm active:scale-95 transition-all">BBX-</button>
+<button class="h-12 bg-surface-container-lowest hover:bg-surface-cream text-espresso-dark font-title-md text-title-md font-bold rounded-lg border border-outline-variant/30 shadow-sm active:scale-95 transition-all">4</button>
+<button class="h-12 bg-surface-container-lowest hover:bg-surface-cream text-espresso-dark font-title-md text-title-md font-bold rounded-lg border border-outline-variant/30 shadow-sm active:scale-95 transition-all">5</button>
+<button class="h-12 bg-surface-container-lowest hover:bg-surface-cream text-espresso-dark font-title-md text-title-md font-bold rounded-lg border border-outline-variant/30 shadow-sm active:scale-95 transition-all">6</button>
+<button class="h-12 bg-secondary-fixed/50 hover:bg-secondary-fixed text-on-secondary-fixed font-title-md text-title-md font-bold rounded-lg border border-outline-variant/30 shadow-sm active:scale-95 transition-all">GIFT-</button>
+<button class="h-12 bg-surface-container-lowest hover:bg-surface-cream text-espresso-dark font-title-md text-title-md font-bold rounded-lg border border-outline-variant/30 shadow-sm active:scale-95 transition-all">7</button>
+<button class="h-12 bg-surface-container-lowest hover:bg-surface-cream text-espresso-dark font-title-md text-title-md font-bold rounded-lg border border-outline-variant/30 shadow-sm active:scale-95 transition-all">8</button>
+<button class="h-12 bg-surface-container-lowest hover:bg-surface-cream text-espresso-dark font-title-md text-title-md font-bold rounded-lg border border-outline-variant/30 shadow-sm active:scale-95 transition-all">9</button>
+<button class="h-12 bg-powder-blush/60 hover:bg-powder-blush text-primary font-title-md text-title-md font-bold rounded-lg border border-outline-variant/30 shadow-sm active:scale-95 transition-all flex items-center justify-center">
+<span class="material-symbols-outlined text-xl" data-icon="backspace">backspace</span>
+</button>
+<button class="h-12 bg-surface-container-lowest hover:bg-surface-cream text-espresso-dark font-title-md text-title-md font-bold rounded-lg border border-outline-variant/30 shadow-sm active:scale-95 transition-all">0</button>
+<button class="h-12 bg-surface-container-lowest hover:bg-surface-cream text-espresso-dark font-title-md text-title-md font-bold rounded-lg border border-outline-variant/30 shadow-sm active:scale-95 transition-all">-</button>
+<button class="h-12 bg-surface-container-lowest hover:bg-surface-cream text-espresso-dark font-title-md text-title-md font-bold rounded-lg border border-outline-variant/30 shadow-sm active:scale-95 transition-all">TALLER</button>
+<button class="h-12 bg-surface-variant text-on-surface-variant hover:bg-surface-dim font-label-md text-label-md font-bold rounded-lg border border-outline-variant/30 shadow-sm active:scale-95 transition-all">PROMO</button>
+</div>
+</div>
+<!-- Quick Active Promos Chips -->
+<div class="flex items-center gap-2 overflow-x-auto pb-1">
+<span class="font-label-sm text-label-sm text-outline uppercase font-semibold">Atajos:</span>
+<span class="cursor-pointer bg-surface-container text-on-surface-variant hover:text-primary px-3 py-1 rounded-full text-label-sm font-label-sm border border-outline-variant/30 transition-colors">BigBox Délices #44</span>
+<span class="cursor-pointer bg-surface-container text-on-surface-variant hover:text-primary px-3 py-1 rounded-full text-label-sm font-label-sm border border-outline-variant/30 transition-colors">GiftCard $500 Dulce</span>
+<span class="cursor-pointer bg-surface-container text-on-surface-variant hover:text-primary px-3 py-1 rounded-full text-label-sm font-label-sm border border-outline-variant/30 transition-colors">Experiencia Latte &amp; Croissant</span>
+</div>
+</div>
+<!-- RIGHT COLUMN (Cols 8-12): Resultado de validación exitosa (Live Voucher Reconocido) -->
+<div class="col-span-5 flex flex-col justify-between bg-surface-container-lowest rounded-xl p-space-lg border-2 border-tertiary/40 shadow-sm relative overflow-hidden">
+<!-- Watermark Brand Accent -->
+<div class="absolute -right-8 -bottom-8 w-36 h-36 rounded-full bg-tertiary-fixed/30 pointer-events-none blur-2xl"></div>
+<div class="space-y-4">
+<!-- Voucher Status Pill -->
+<div class="flex items-center justify-between">
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary/10 text-tertiary font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-base" data-icon="verified" data-weight="fill" style="font-variation-settings: 'FILL' 1;">verified</span>
+                Voucher Verificado &amp; Válido
+              </div>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">BigBox ID: #8841-92</span>
+</div>
+<!-- Voucher Title & Provider -->
+<div class="border-b border-outline-variant/20 pb-3">
+<h2 class="font-headline-md text-headline-md text-espresso-dark font-bold">BigBox Brunch para Dos &amp; Degustación</h2>
+<p class="font-body-md text-body-md text-secondary mt-0.5">Categoría Experiencias Gourmet · Dulce Taller</p>
+</div>
+<!-- Coverage Details breakdown -->
+<div class="space-y-2.5">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase font-bold tracking-wider">Cobertura de la Comanda Activa:</p>
+<div class="bg-surface-cream rounded-lg p-3 border border-outline-variant/30 space-y-2">
+<div class="flex justify-between items-center text-body-md text-body-md">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-lg" data-icon="check_circle">check_circle</span>
+                    1x Café Latte Especialidad
+                  </span>
+<span class="font-semibold text-espresso-dark">$380,00</span>
+</div>
+<div class="flex justify-between items-center text-body-md text-body-md">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-lg" data-icon="check_circle">check_circle</span>
+                    2x Croissant Mantequilla
+                  </span>
+<span class="font-semibold text-espresso-dark">$520,00</span>
+</div>
+<div class="flex justify-between items-center text-body-md text-body-md">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-lg" data-icon="check_circle">check_circle</span>
+                    1x Porción Pastel Selva Negra
+                  </span>
+<span class="font-semibold text-espresso-dark">$890,80</span>
+</div>
+</div>
+</div>
+<!-- Holder and validity metadata -->
+<div class="grid grid-cols-2 gap-2 text-label-md font-label-md pt-1">
+<div class="bg-surface-container-low p-2.5 rounded-lg border border-outline-variant/20">
+<span class="text-on-surface-variant block text-label-sm font-label-sm">Titular Declarado:</span>
+<strong class="text-espresso-dark truncate block">Valeria M. Domínguez</strong>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg border border-outline-variant/20">
+<span class="text-on-surface-variant block text-label-sm font-label-sm">Caducidad Cupón:</span>
+<strong class="text-table-free flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="event_available">event_available</span>
+                  28 Nov 2025
+                </strong>
+</div>
+</div>
+</div>
+<!-- Balance & Remaining Calculation Card -->
+<div class="mt-4 pt-3 border-t-2 border-dashed border-outline-variant/40 space-y-2">
+<div class="flex justify-between items-center text-body-md">
+<span class="text-on-surface-variant">Valor Total Cubierto:</span>
+<span class="font-title-md text-title-md text-tertiary font-bold">-$1.790,80</span>
+</div>
+<div class="flex justify-between items-center p-3 rounded-xl bg-table-free/10 border border-table-free/30">
+<div>
+<span class="font-label-md text-label-md text-table-free uppercase font-bold tracking-wider block">Saldo Restante a Cobrar</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Sin excedentes pendientes</span>
+</div>
+<span class="font-headline-md text-headline-md text-table-free font-bold">$0,00</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 4. Footer con Botones de Acción Táctiles (Ergonomic Tablet Spacing) -->
+<footer class="px-space-xl py-space-md bg-surface-container-low border-t border-outline-variant/30 flex items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<button class="px-5 py-3.5 rounded-xl bg-surface-container hover:bg-surface-container-high border border-outline-variant/50 text-espresso-dark font-label-lg text-label-lg font-bold flex items-center gap-2 active:scale-98 transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="restart_alt">restart_alt</span>
+            Cancelar / Ingresar otro código
+          </button>
+<button class="px-4 py-3.5 rounded-xl text-on-surface-variant hover:text-espresso-dark font-label-lg text-label-lg flex items-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="help_outline">help_outline</span>
+            Manual de Políticas BigBox
+          </button>
+</div>
+<div class="flex items-center gap-3">
+<div class="text-right mr-2 hidden sm:block">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Al confirmar se enviará</span>
+<span class="font-label-md text-label-md font-bold text-espresso-dark">Comprobante Fiscal $0 con Cupón #9482</span>
+</div>
+<button class="min-h-[54px] px-8 py-3.5 bg-primary hover:bg-primary-container text-on-primary rounded-xl font-title-md text-title-md font-bold flex items-center gap-3 shadow-md hover:shadow-lg active:scale-98 transition-all">
+<span class="material-symbols-outlined text-2xl" data-icon="task_alt" data-weight="fill" style="font-variation-settings: 'FILL' 1;">task_alt</span>
+            Aplicar y Confirmar Canje de Voucher
+          </button>
+</div>
+</footer>
+</div>
+</div>
+</body></html>

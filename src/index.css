@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+    background-color: #fff8f2;
+    color: #1e1b15;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  }
+
+  input, textarea, select {
+    user-select: auto;
+    -webkit-user-select: auto;
+  }
+}
+
+/* Ocultar barra de scroll para navegación táctil suave */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

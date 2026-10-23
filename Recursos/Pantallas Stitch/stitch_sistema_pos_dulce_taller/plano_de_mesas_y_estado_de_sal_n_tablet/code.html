@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-background" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dulce Taller Pastelería - Salón (Tablet POS)</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Playfair Display & Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-high": "#efe7dd",
+            "secondary": "#7c5641",
+            "espresso-dark": "#1C120C",
+            "primary": "#9d3c0c",
+            "tertiary": "#446147",
+            "primary-fixed": "#ffdbce",
+            "surface": "#fff8f2",
+            "surface-bright": "#fff8f2",
+            "on-secondary-container": "#79533e",
+            "table-reserved": "#7A6882",
+            "on-primary-fixed": "#370e00",
+            "secondary-container": "#fdc9af",
+            "surface-dim": "#e1d9cf",
+            "on-tertiary-fixed": "#05210c",
+            "table-free": "#5E7C60",
+            "powder-blush": "#E8C8BE",
+            "tertiary-container": "#5c7a5e",
+            "table-bill": "#D99B26",
+            "inverse-primary": "#ffb599",
+            "on-secondary": "#ffffff",
+            "on-tertiary": "#ffffff",
+            "surface-tint": "#a23f10",
+            "error": "#ba1a1a",
+            "table-occupied": "#BD5324",
+            "surface-container-lowest": "#ffffff",
+            "inverse-on-surface": "#f8f0e5",
+            "outline": "#8a7269",
+            "outline-variant": "#dec0b6",
+            "on-secondary-fixed": "#2f1405",
+            "on-error": "#ffffff",
+            "surface-cream": "#FDFBF7",
+            "primary-container": "#bd5324",
+            "secondary-fixed": "#ffdbca",
+            "on-surface": "#1e1b15",
+            "on-primary-container": "#fff9f7",
+            "on-primary": "#ffffff",
+            "inverse-surface": "#343029",
+            "on-tertiary-container": "#ebffe8",
+            "error-container": "#ffdad6",
+            "caramel-glow": "#D97736",
+            "tertiary-fixed-dim": "#aecfae",
+            "surface-variant": "#e9e1d7",
+            "tertiary-fixed": "#caebc9",
+            "background": "#fff8f2",
+            "surface-container-low": "#fbf2e8",
+            "on-tertiary-fixed-variant": "#314d34",
+            "on-error-container": "#93000a",
+            "on-primary-fixed-variant": "#7f2b00",
+            "surface-container": "#f5ede3",
+            "secondary-fixed-dim": "#eebca2",
+            "on-surface-variant": "#57423a",
+            "on-background": "#1e1b15",
+            "surface-container-highest": "#e9e1d7",
+            "on-secondary-fixed-variant": "#623e2b",
+            "espresso-subtle": "#221610",
+            "primary-fixed-dim": "#ffb599"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "fontFamily": {
+            "display-lg": ["Playfair Display"],
+            "headline-lg": ["Playfair Display"],
+            "headline-md": ["Playfair Display"],
+            "title-lg": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    /* Estilos táctiles específicos para ergonomía POS en tablet horizontal */
+    .touch-ripple:active {
+      transform: scale(0.985);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface h-screen w-screen overflow-hidden flex flex-col font-body-md select-none antialiased">
+<!-- TOP APP BAR (Landscape POS Tablet Optimized Header) -->
+<header class="h-16 bg-surface-cream border-b border-outline-variant/30 px-5 flex items-center justify-between gap-4 flex-shrink-0 z-30 shadow-xs">
+<!-- Brand & Identity & Status -->
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2.5">
+<div class="w-10 h-10 rounded-xl bg-primary-container text-on-primary flex items-center justify-center shadow-xs">
+<span class="material-symbols-outlined text-2xl" data-icon="storefront">storefront</span>
+</div>
+<div>
+<div class="text-base font-bold text-espresso-dark font-title-lg tracking-tight flex items-center gap-1.5">
+<span>Dulce Taller Pastelería</span>
+<span class="text-primary font-normal">·</span>
+<span class="text-primary">Salón</span>
+</div>
+<div class="flex items-center gap-2 text-xs text-on-surface-variant font-medium">
+<!-- Connection / Caja Indicator -->
+<span class="inline-flex items-center gap-1 text-tertiary">
+<span class="w-2 h-2 rounded-full bg-table-free animate-pulse"></span>
+<span>Caja 01 Conectada</span>
+</span>
+<span class="text-outline-variant">•</span>
+<span>Turno Mañana</span>
+<span class="text-outline-variant">•</span>
+<span class="text-espresso-dark font-semibold">Mozo: Sofía Calvo</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Real-time Occupancy & Quick Salon State Counters -->
+<div class="hidden md:flex items-center gap-2 lg:gap-3 bg-surface-container-low px-3 py-1.5 rounded-xl border border-outline-variant/20">
+<div class="flex items-center gap-2 pr-3 border-r border-outline-variant/30">
+<span class="material-symbols-outlined text-secondary text-lg" data-icon="group">group</span>
+<span class="text-xs text-on-surface-variant uppercase font-bold tracking-wider">Ocupación:</span>
+<span class="text-xs font-bold text-espresso-dark">10/16 Pax <span class="text-primary">(62%)</span></span>
+</div>
+<!-- Mini Status Chips -->
+<div class="flex items-center gap-1.5">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-table-occupied/15 text-table-occupied text-xs font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-table-occupied"></span>
+        2 Ocupadas
+      </span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-table-bill/20 text-table-bill text-xs font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-table-bill animate-ping"></span>
+        1 Cuenta solicitada
+      </span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-table-free/15 text-tertiary text-xs font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-table-free"></span>
+        1 Libre
+      </span>
+</div>
+</div>
+<!-- Action: Take Away Prominent Button -->
+<div class="flex items-center gap-3">
+<button class="touch-ripple bg-primary hover:bg-primary-container text-on-primary font-bold px-4 py-2 rounded-xl text-sm flex items-center gap-2 shadow-sm transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="add_circle">add_circle</span>
+<span>+ Take Away / Mostrador</span>
+</button>
+</div>
+</header>
+<!-- MAIN WORKSPACE: 2 COLUMNS (TABLET LANDSCAPE 4:3 / 16:10 LAYOUT) -->
+<div class="flex-1 flex overflow-hidden">
+<!-- LEFT COLUMN (~62%): PLANO VISUAL DE SALÓN / MESAS TÁCTILES -->
+<section class="flex-1 flex flex-col h-full bg-background overflow-y-auto p-5 border-r border-outline-variant/30">
+<!-- Top Filter & Title Bar -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+<div>
+<h2 class="text-xl lg:text-2xl font-bold font-headline-lg text-espresso-dark flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="table_restaurant">table_restaurant</span>
+          Plano Salón &amp; Cafetería
+        </h2>
+<p class="text-xs text-on-surface-variant font-medium mt-0.5">4 Mesas distribuidas · Capacidad 4 Pax c/u · Toque una mesa para seleccionar comanda</p>
+</div>
+<!-- Quick Filter Tabs / State Legend (Todas, Ocupadas, Pidiendo Cuenta, Libres) -->
+<div class="inline-flex p-1 bg-surface-container rounded-xl border border-outline-variant/25 self-start sm:self-auto text-xs font-semibold">
+<button class="px-2.5 py-1 rounded-lg bg-surface-container-lowest text-primary shadow-xs">
+          Todas (4)
+        </button>
+<button class="px-2.5 py-1 rounded-lg text-on-surface-variant hover:text-espresso-dark transition-colors">
+          Ocupadas (2)
+        </button>
+<button class="px-2.5 py-1 rounded-lg text-table-bill hover:text-espresso-dark transition-colors">
+          Pidiendo Cuenta (1)
+        </button>
+<button class="px-2.5 py-1 rounded-lg text-tertiary hover:text-espresso-dark transition-colors">
+          Libres (1)
+        </button>
+</div>
+</div>
+<!-- 4-MESAS ARCHITECTURAL GRID (Large touch targets for tablet landscape) -->
+<div class="grid grid-cols-2 gap-4 flex-1 items-stretch">
+<!-- MESA 01: OCUPADA -->
+<div class="touch-ripple rounded-2xl bg-surface-container-lowest p-4 border border-outline-variant/40 hover:border-table-occupied/60 shadow-xs hover:shadow transition-all cursor-pointer flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2">
+<span class="text-lg font-bold font-title-lg text-espresso-dark">Mesa 01</span>
+<span class="px-2 py-0.5 rounded-full bg-table-occupied/15 text-table-occupied text-[11px] font-bold uppercase tracking-wider">
+              Ocupada
+            </span>
+</div>
+<span class="inline-flex items-center gap-1 text-xs text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-md font-medium">
+<span class="material-symbols-outlined text-xs" data-icon="schedule">schedule</span>
+            38 min
+          </span>
+</div>
+<!-- Architectural Visual: Table with 4 Chairs (3 Seated) -->
+<div class="py-3 flex items-center justify-center">
+<div class="relative w-44 h-28 flex items-center justify-center">
+<!-- Top Chairs -->
+<div class="absolute -top-2 left-6 w-9 h-3.5 rounded-t-lg bg-surface-dim border border-outline-variant/60 flex items-center justify-center">
+<span class="w-4 h-1 rounded-full bg-table-occupied"></span>
+</div>
+<div class="absolute -top-2 right-6 w-9 h-3.5 rounded-t-lg bg-surface-dim border border-outline-variant/60 flex items-center justify-center">
+<span class="w-4 h-1 rounded-full bg-table-occupied"></span>
+</div>
+<!-- Central Table Surface -->
+<div class="w-36 h-20 rounded-xl bg-surface-cream border-2 border-table-occupied/40 shadow-xs flex flex-col items-center justify-center text-center p-2 z-10">
+<span class="text-xs font-semibold text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-table-occupied" data-icon="person">person</span>
+<span class="font-bold text-espresso-dark">3</span> / 4 Pax
+              </span>
+<span class="text-base font-bold font-title-lg text-table-occupied tracking-tight">$14.200</span>
+</div>
+<!-- Bottom Chairs -->
+<div class="absolute -bottom-2 left-6 w-9 h-3.5 rounded-b-lg bg-surface-dim border border-outline-variant/60 flex items-center justify-center">
+<span class="w-4 h-1 rounded-full bg-table-occupied"></span>
+</div>
+<div class="absolute -bottom-2 right-6 w-9 h-3.5 rounded-b-lg bg-surface-container-high border border-dashed border-outline-variant/50 flex items-center justify-center">
+<span class="w-4 h-1 rounded-full bg-outline-variant/40"></span>
+</div>
+</div>
+</div>
+<div class="pt-2 border-t border-outline-variant/20 flex items-center justify-between text-xs text-on-surface-variant">
+<span>Mozo: Sofía Calvo</span>
+<span class="text-primary font-bold flex items-center">Seleccionar mesa →</span>
+</div>
+</div>
+<!-- MESA 02: PIDIENDO CUENTA (SELECTED ACTIVE STATE) -->
+<div class="touch-ripple rounded-2xl bg-amber-50/40 p-4 border-2 border-table-bill shadow-md ring-4 ring-table-bill/15 transition-all cursor-pointer flex flex-col justify-between relative overflow-hidden">
+<!-- Top active selection banner -->
+<div class="absolute top-0 right-0 bg-table-bill text-on-primary text-[10px] font-bold px-2 py-0.5 rounded-bl-lg flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="check_circle">check_circle</span>
+          En Pantalla
+        </div>
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2">
+<span class="text-lg font-bold font-title-lg text-espresso-dark">Mesa 02</span>
+<span class="px-2 py-0.5 rounded-full bg-table-bill/20 text-table-bill text-[11px] font-bold uppercase tracking-wider flex items-center gap-1 animate-pulse">
+<span class="material-symbols-outlined text-xs" data-icon="notifications_active">notifications_active</span>
+              Cuenta solicitada
+            </span>
+</div>
+<span class="inline-flex items-center gap-1 text-xs text-table-bill font-bold bg-amber-100/60 px-2 py-0.5 rounded-md border border-table-bill/30 mr-16">
+<span class="material-symbols-outlined text-xs" data-icon="schedule">schedule</span>
+            52 min
+          </span>
+</div>
+<!-- Architectural Visual: Table with 4 Chairs (All 4 Seated) -->
+<div class="py-3 flex items-center justify-center">
+<div class="relative w-44 h-28 flex items-center justify-center">
+<!-- Top Chairs -->
+<div class="absolute -top-2 left-6 w-9 h-3.5 rounded-t-lg bg-surface-dim border border-outline-variant/60 flex items-center justify-center">
+<span class="w-4 h-1 rounded-full bg-table-bill"></span>
+</div>
+<div class="absolute -top-2 right-6 w-9 h-3.5 rounded-t-lg bg-surface-dim border border-outline-variant/60 flex items-center justify-center">
+<span class="w-4 h-1 rounded-full bg-table-bill"></span>
+</div>
+<!-- Central Table Surface Highlighted -->
+<div class="w-36 h-20 rounded-xl bg-surface-container-lowest border-2 border-table-bill shadow-sm flex flex-col items-center justify-center text-center p-2 z-10">
+<span class="text-xs font-semibold text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-table-bill" data-icon="group">group</span>
+<span class="font-bold text-espresso-dark">4</span> / 4 Pax
+              </span>
+<span class="text-xl font-bold font-headline-md text-table-bill tracking-tight">$18.600</span>
+</div>
+<!-- Bottom Chairs -->
+<div class="absolute -bottom-2 left-6 w-9 h-3.5 rounded-b-lg bg-surface-dim border border-outline-variant/60 flex items-center justify-center">
+<span class="w-4 h-1 rounded-full bg-table-bill"></span>
+</div>
+<div class="absolute -bottom-2 right-6 w-9 h-3.5 rounded-b-lg bg-surface-dim border border-outline-variant/60 flex items-center justify-center">
+<span class="w-4 h-1 rounded-full bg-table-bill"></span>
+</div>
+</div>
+</div>
+<div class="pt-2 border-t border-table-bill/20 flex items-center justify-between text-xs text-table-bill font-semibold">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="receipt">receipt</span>
+            Ticket fiscal pedido
+          </span>
+<span class="bg-table-bill/10 px-2 py-0.5 rounded text-table-bill font-bold">Mesa Seleccionada</span>
+</div>
+</div>
+<!-- MESA 03: LIBRE -->
+<div class="touch-ripple rounded-2xl bg-surface-container-lowest/70 p-4 border-2 border-dashed border-table-free/40 hover:border-table-free shadow-xs transition-all cursor-pointer flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2">
+<span class="text-lg font-bold font-title-lg text-espresso-dark">Mesa 03</span>
+<span class="px-2 py-0.5 rounded-full bg-table-free/15 text-table-free text-[11px] font-bold uppercase tracking-wider">
+              Libre
+            </span>
+</div>
+<span class="inline-flex items-center gap-1 text-xs text-table-free font-medium bg-table-free/10 px-2 py-0.5 rounded-md">
+<span class="material-symbols-outlined text-xs" data-icon="sanitizer">sanitizer</span>
+            Limpia &amp; Lista
+          </span>
+</div>
+<!-- Architectural Visual: Table with 4 Empty Chairs -->
+<div class="py-3 flex items-center justify-center">
+<div class="relative w-44 h-28 flex items-center justify-center">
+<!-- Empty Chairs Outline -->
+<div class="absolute -top-2 left-6 w-9 h-3.5 rounded-t-lg bg-surface-container-high border border-dashed border-outline-variant/60"></div>
+<div class="absolute -top-2 right-6 w-9 h-3.5 rounded-t-lg bg-surface-container-high border border-dashed border-outline-variant/60"></div>
+<!-- Central Table Surface -->
+<div class="w-36 h-20 rounded-xl bg-surface-cream border-2 border-dashed border-table-free/40 flex flex-col items-center justify-center text-center p-2 z-10 group-hover:bg-table-free/10 transition-colors">
+<span class="material-symbols-outlined text-table-free text-2xl" data-icon="add_circle">add_circle</span>
+<span class="text-xs font-bold text-table-free mt-0.5">Abrir comanda</span>
+</div>
+<div class="absolute -bottom-2 left-6 w-9 h-3.5 rounded-b-lg bg-surface-container-high border border-dashed border-outline-variant/60"></div>
+<div class="absolute -bottom-2 right-6 w-9 h-3.5 rounded-b-lg bg-surface-container-high border border-dashed border-outline-variant/60"></div>
+</div>
+</div>
+<div class="pt-2 border-t border-outline-variant/20 flex items-center justify-between text-xs text-on-surface-variant">
+<span>Capacidad: 4 Pax</span>
+<span class="text-table-free font-bold">+ Asignar clientes</span>
+</div>
+</div>
+<!-- MESA 04: OCUPADA -->
+<div class="touch-ripple rounded-2xl bg-surface-container-lowest p-4 border border-outline-variant/40 hover:border-table-occupied/60 shadow-xs hover:shadow transition-all cursor-pointer flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2">
+<span class="text-lg font-bold font-title-lg text-espresso-dark">Mesa 04</span>
+<span class="px-2 py-0.5 rounded-full bg-table-occupied/15 text-table-occupied text-[11px] font-bold uppercase tracking-wider">
+              Ocupada
+            </span>
+</div>
+<span class="inline-flex items-center gap-1 text-xs text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-md font-medium">
+<span class="material-symbols-outlined text-xs" data-icon="schedule">schedule</span>
+            10 min
+          </span>
+</div>
+<!-- Architectural Visual: Table with 4 Chairs (3 Seated) -->
+<div class="py-3 flex items-center justify-center">
+<div class="relative w-44 h-28 flex items-center justify-center">
+<!-- Top Chairs -->
+<div class="absolute -top-2 left-6 w-9 h-3.5 rounded-t-lg bg-surface-dim border border-outline-variant/60 flex items-center justify-center">
+<span class="w-4 h-1 rounded-full bg-table-occupied"></span>
+</div>
+<div class="absolute -top-2 right-6 w-9 h-3.5 rounded-t-lg bg-surface-dim border border-outline-variant/60 flex items-center justify-center">
+<span class="w-4 h-1 rounded-full bg-table-occupied"></span>
+</div>
+<!-- Central Table Surface -->
+<div class="w-36 h-20 rounded-xl bg-surface-cream border-2 border-table-occupied/40 shadow-xs flex flex-col items-center justify-center text-center p-2 z-10">
+<span class="text-xs font-semibold text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-table-occupied" data-icon="person">person</span>
+<span class="font-bold text-espresso-dark">3</span> / 4 Pax
+              </span>
+<span class="text-base font-bold font-title-lg text-espresso-dark tracking-tight">$5.650</span>
+</div>
+<!-- Bottom Chairs -->
+<div class="absolute -bottom-2 left-6 w-9 h-3.5 rounded-b-lg bg-surface-dim border border-outline-variant/60 flex items-center justify-center">
+<span class="w-4 h-1 rounded-full bg-table-occupied"></span>
+</div>
+<div class="absolute -bottom-2 right-6 w-9 h-3.5 rounded-b-lg bg-surface-container-high border border-dashed border-outline-variant/50 flex items-center justify-center">
+<span class="w-4 h-1 rounded-full bg-outline-variant/40"></span>
+</div>
+</div>
+</div>
+<div class="pt-2 border-t border-outline-variant/20 flex items-center justify-between text-xs text-on-surface-variant">
+<span class="truncate max-w-[150px]">Capuccino, Medialunas...</span>
+<span class="text-primary font-bold flex items-center">Seleccionar mesa →</span>
+</div>
+</div>
+</div>
+</section>
+<!-- RIGHT COLUMN (~38%): PANEL LATERAL DE MESA SELECCIONADA (MESA 02) -->
+<aside class="w-[390px] xl:w-[430px] flex-shrink-0 bg-surface-cream flex flex-col h-full overflow-hidden shadow-lg border-l border-outline-variant/30">
+<!-- Header: Mesa Seleccionada -->
+<div class="p-4 bg-surface-container-low border-b border-outline-variant/30 flex items-center justify-between flex-shrink-0">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-2xl bg-table-bill/20 text-table-bill flex items-center justify-center border-2 border-table-bill font-bold text-xl font-headline-md shadow-xs">
+          02
+        </div>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="text-lg font-bold font-title-lg text-espresso-dark">Mesa 02</h3>
+<span class="px-2 py-0.5 rounded-md bg-table-bill/25 text-table-bill text-[11px] font-bold">
+              Cuenta solicitada
+            </span>
+</div>
+<div class="text-xs text-on-surface-variant flex items-center gap-1.5 mt-0.5 font-medium">
+<span>4 comensales</span>
+<span>•</span>
+<span>Mozo: Sofía Calvo</span>
+<span>•</span>
+<span class="flex items-center text-table-bill font-semibold">
+<span class="material-symbols-outlined text-xs mr-0.5" data-icon="timer">timer</span>
+              52 min
+            </span>
+</div>
+</div>
+</div>
+<button class="w-9 h-9 rounded-xl hover:bg-surface-container flex items-center justify-center text-on-surface-variant transition-colors" title="Opciones avanzadas">
+<span class="material-symbols-outlined text-xl" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+<!-- Active Ticket Items List -->
+<div class="flex-1 overflow-y-auto p-4 space-y-2.5">
+<div class="flex items-center justify-between text-[11px] font-bold text-on-surface-variant uppercase tracking-wider px-1">
+<span>Comanda Activa #284</span>
+<span>4 Ítems</span>
+</div>
+<!-- Item 1: Café con Leche x2 -->
+<div class="p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/20 flex items-center justify-between shadow-xs">
+<div class="flex items-start gap-3">
+<span class="w-7 h-7 rounded-lg bg-surface-container text-primary font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+            2x
+          </span>
+<div>
+<h4 class="text-sm font-bold text-espresso-dark">Café con Leche</h4>
+<p class="text-xs text-on-surface-variant">Taza doble · 1x Leche Entera, 1x Avena</p>
+</div>
+</div>
+<span class="text-sm font-bold text-espresso-dark">$5.200</span>
+</div>
+<!-- Item 2: Capuccino x1 -->
+<div class="p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/20 flex items-center justify-between shadow-xs">
+<div class="flex items-start gap-3">
+<span class="w-7 h-7 rounded-lg bg-surface-container text-primary font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+            1x
+          </span>
+<div>
+<h4 class="text-sm font-bold text-espresso-dark">Capuccino Especial</h4>
+<p class="text-xs text-on-surface-variant">Con cacao amargo y canela</p>
+</div>
+</div>
+<span class="text-sm font-bold text-espresso-dark">$3.400</span>
+</div>
+<!-- Item 3: Porción Cheesecake Frutos Rojos x1 -->
+<div class="p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/20 flex items-center justify-between shadow-xs">
+<div class="flex items-start gap-3">
+<span class="w-7 h-7 rounded-lg bg-surface-container text-primary font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+            1x
+          </span>
+<div>
+<h4 class="text-sm font-bold text-espresso-dark">Porción Cheesecake Frutos Rojos</h4>
+<p class="text-xs text-on-surface-variant">Coulis artesanal de frambuesa</p>
+</div>
+</div>
+<span class="text-sm font-bold text-espresso-dark">$5.800</span>
+</div>
+<!-- Item 4: Medialunas con Jamón y Queso x2 -->
+<div class="p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/20 flex items-center justify-between shadow-xs">
+<div class="flex items-start gap-3">
+<span class="w-7 h-7 rounded-lg bg-surface-container text-primary font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+            2x
+          </span>
+<div>
+<h4 class="text-sm font-bold text-espresso-dark">Medialunas con Jamón y Queso</h4>
+<p class="text-xs text-on-surface-variant">Calentitas al horno de barro</p>
+</div>
+</div>
+<span class="text-sm font-bold text-espresso-dark">$4.200</span>
+</div>
+<!-- Note / Alert regarding payment preference -->
+<div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-2 text-xs text-secondary font-medium">
+<span class="material-symbols-outlined text-base text-table-bill flex-shrink-0" data-icon="credit_card">credit_card</span>
+<span>Cliente abona con Posnet / Tarjeta de Crédito (Ticket A).</span>
+</div>
+</div>
+<!-- Financial Breakdown & Primary Tablet Touch Actions -->
+<div class="p-4 bg-surface-container-low border-t border-outline-variant/30 flex-shrink-0 space-y-3">
+<!-- Subtotal & Discount -->
+<div class="space-y-1 text-xs">
+<div class="flex justify-between text-on-surface-variant">
+<span>Subtotal Consumos (4 ítems)</span>
+<span class="font-medium">$18.600</span>
+</div>
+<div class="flex justify-between text-on-surface-variant">
+<span>Descuento / Promoción</span>
+<span class="text-tertiary font-medium">-$0</span>
+</div>
+<div class="pt-2 border-t border-outline-variant/25 flex justify-between items-baseline">
+<span class="text-base font-bold text-espresso-dark font-title-lg">Total a Cobrar</span>
+<span class="text-2xl font-bold text-primary font-headline-lg tracking-tight">$18.600</span>
+</div>
+</div>
+<!-- Large Tactile Auxiliary Buttons -->
+<div class="grid grid-cols-2 gap-2 pt-1">
+<button class="touch-ripple h-11 rounded-xl bg-surface-container-lowest text-secondary border border-outline-variant/40 hover:bg-surface-container font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-2xs">
+<span class="material-symbols-outlined text-base text-primary" data-icon="add_circle">add_circle</span>
+<span>+ Agregar Ítems</span>
+</button>
+<button class="touch-ripple h-11 rounded-xl bg-surface-container-lowest text-secondary border border-outline-variant/40 hover:bg-surface-container font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-2xs">
+<span class="material-symbols-outlined text-base" data-icon="print">print</span>
+<span>Imprimir Pre-cuenta</span>
+</button>
+</div>
+<!-- MAIN PROMINENT TRANSACTION BUTTON -->
+<button class="touch-ripple w-full h-13 py-3 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-bold text-base flex items-center justify-center gap-2.5 shadow-md transition-all active:scale-[0.985]">
+<span class="material-symbols-outlined text-2xl" data-icon="payments">payments</span>
+<span>Cobrar Mesa ($18.600)</span>
+</button>
+</div>
+</aside>
+</div>
+<!-- BOTTOM NAVIGATION BAR FOR TABLET POS -->
+<nav class="h-14 bg-surface-cream border-t border-outline-variant/30 flex justify-around items-center px-6 flex-shrink-0 z-30 shadow-sm">
+<!-- Salón (Activo) -->
+<a class="flex items-center gap-2 bg-secondary-container text-on-secondary-container rounded-xl px-5 py-2 font-bold text-sm transition-all" href="#salon">
+<span class="material-symbols-outlined text-xl" data-icon="table_restaurant">table_restaurant</span>
+<span>Salón</span>
+</a>
+<!-- Mostrador / Take Away -->
+<a class="flex items-center gap-2 text-on-surface-variant hover:text-espresso-dark hover:bg-surface-container-high rounded-xl px-5 py-2 font-semibold text-sm transition-all" href="#mostrador">
+<span class="material-symbols-outlined text-xl" data-icon="takeout_dining">takeout_dining</span>
+<span>Mostrador / Take Away</span>
+</a>
+<!-- Comandas / Cocina -->
+<a class="flex items-center gap-2 text-on-surface-variant hover:text-espresso-dark hover:bg-surface-container-high rounded-xl px-5 py-2 font-semibold text-sm transition-all" href="#comandas">
+<span class="material-symbols-outlined text-xl" data-icon="receipt_long">receipt_long</span>
+<span>Comandas / Cocina</span>
+</a>
+<!-- Cierre de Turno -->
+<a class="flex items-center gap-2 text-on-surface-variant hover:text-espresso-dark hover:bg-surface-container-high rounded-xl px-5 py-2 font-semibold text-sm transition-all" href="#cierre-turno">
+<span class="material-symbols-outlined text-xl" data-icon="point_of_sale">point_of_sale</span>
+<span>Cierre de Turno</span>
+</a>
+</nav>
+</body></html>
