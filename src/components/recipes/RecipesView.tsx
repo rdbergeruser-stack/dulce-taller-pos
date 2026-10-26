@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Preparation, PreparationIngredient, RawMaterial, PreparationCategory, PreparationUnitType } from '../../types/database';
 import { recipeService } from '../../services/recipeService';
-import { BookOpen, Plus, Trash2, X, ChefHat } from 'lucide-react';
+import { BookOpen, Plus, Trash2, X, ChefHat, Pencil, Check } from 'lucide-react';
 
 interface RecipesViewProps {
   preparations: Preparation[];
@@ -47,6 +47,67 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
   const [isSavingNewRecipe, setIsSavingNewRecipe] = useState(false);
   const [prepToDelete, setPrepToDelete] = useState<Preparation | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Modal para EDITAR NOMBRE, PRECIO Y DATOS DE LA RECETA
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editPrice, setEditPrice] = useState('');
+  const [editCategory, setEditCategory] = useState<PreparationCategory>('pasteleria');
+  const [editUnitType, setEditUnitType] = useState<PreparationUnitType>('entera');
+  const [editYield, setEditYield] = useState('1');
+  const [editDescription, setEditDescription] = useState('');
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
+
+  const handleOpenEditModal = (prep: Preparation) => {
+    setEditName(prep.name);
+    setEditPrice(prep.price.toString());
+    setEditCategory(prep.category);
+    setEditUnitType(prep.unit_type);
+    setEditYield((prep.portion_yield || 1).toString());
+    setEditDescription(prep.description || '');
+    setEditError(null);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedPrep) return;
+    if (!editName.trim()) {
+      setEditError('El nombre no puede estar vacío.');
+      return;
+    }
+    const priceNum = parseFloat(editPrice);
+    if (isNaN(priceNum) || priceNum < 0) {
+      setEditError('El precio de venta debe ser un número válido mayor o igual a 0.');
+      return;
+    }
+    const yieldNum = parseFloat(editYield);
+    if (isNaN(yieldNum) || yieldNum <= 0) {
+      setEditError('El rendimiento en porciones debe ser mayor a 0.');
+      return;
+    }
+
+    setIsSavingEdit(true);
+    setEditError(null);
+    try {
+      const updated = await recipeService.updatePreparation(selectedPrep.id, {
+        name: editName.trim(),
+        price: priceNum,
+        category: editCategory,
+        unit_type: editUnitType,
+        portion_yield: yieldNum,
+        description: editDescription.trim() || undefined
+      });
+      setSelectedPrep(updated);
+      await onRefresh();
+      setIsEditModalOpen(false);
+    } catch (err: any) {
+      setEditError(err.message || 'Error al actualizar los datos de la receta.');
+    } finally {
+      setIsSavingEdit(false);
+    }
+  };
 
   useEffect(() => {
     if (selectedPrep) {
@@ -250,6 +311,18 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
+                          setSelectedPrep(prep);
+                          handleOpenEditModal(prep);
+                        }}
+                        className="p-1 rounded-lg text-[#7c5641] hover:text-[#9d3c0c] hover:bg-[#fff8f2] active:scale-95 transition-all"
+                        title={`Editar nombre y precio de ${prep.name}`}
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setPrepToDelete(prep);
                         }}
                         className="p-1 rounded-lg text-[#7c5641] hover:text-[#ba1a1a] hover:bg-[#ffdad6] active:scale-95 transition-all"
@@ -286,9 +359,18 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                   <span className="text-xs font-mono font-bold text-[#9d3c0c]">
                     FICHA TÉCNICA {selectedPrep.code}
                   </span>
-                  <h3 className="font-serif font-bold text-2xl text-[#1c120c]">
-                    {selectedPrep.name}
-                  </h3>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <h3 className="font-serif font-bold text-2xl text-[#1c120c]">
+                      {selectedPrep.name}
+                    </h3>
+                    <button
+                      onClick={() => handleOpenEditModal(selectedPrep)}
+                      className="p-1.5 rounded-xl border border-[#dec0b6] bg-white text-[#7c5641] hover:text-[#9d3c0c] hover:bg-[#fff8f2] active:scale-95 transition-all shadow-xs"
+                      title="Editar nombre, precio y datos de la receta"
+                    >
+                      <Pencil className="w-4 h-4 text-[#9d3c0c]" />
+                    </button>
+                  </div>
                   <p className="text-xs text-[#7c5641] mt-0.5">
                     {selectedPrep.description || 'Sin descripción'}
                   </p>
@@ -296,12 +378,20 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
 
                 <div className="flex items-center gap-2">
                   <button
+                    onClick={() => handleOpenEditModal(selectedPrep)}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#dec0b6] bg-white text-[#7c5641] hover:text-[#9d3c0c] hover:bg-[#fff8f2] text-xs font-bold transition-all shadow-xs"
+                    title="Editar datos de la receta"
+                  >
+                    <Pencil className="w-3.5 h-3.5 text-[#9d3c0c]" />
+                    <span>Editar Ficha</span>
+                  </button>
+                  <button
                     onClick={() => setPrepToDelete(selectedPrep)}
                     className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#ffdad6] text-[#ba1a1a] hover:bg-[#ffb4ab] text-xs font-bold transition-all"
                     title="Eliminar preparación"
                   >
                     <Trash2 className="w-4 h-4" />
-                    <span>Eliminar Receta</span>
+                    <span>Eliminar</span>
                   </button>
                   <button
                     onClick={() => setIsAddIngModalOpen(true)}
@@ -720,6 +810,162 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal EDITAR PREPARACIÓN / RECETA (Nombre, Precio de Venta, etc.) */}
+      {isEditModalOpen && selectedPrep && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-[#fff8f2] rounded-2xl border border-[#dec0b6] shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="p-4 border-b border-[#dec0b6] bg-[#f5ede3] flex items-center justify-between">
+              <div className="flex items-center gap-2 text-[#9d3c0c]">
+                <Pencil className="w-5 h-5" />
+                <div>
+                  <h3 className="font-serif font-bold text-lg text-[#1c120c]">
+                    Editar Ficha de Receta
+                  </h3>
+                  <span className="text-[11px] font-mono font-bold text-[#7c5641]">
+                    Código: {selectedPrep.code}
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsEditModalOpen(false)}
+                disabled={isSavingEdit}
+                className="p-1.5 rounded-lg text-[#7c5641] hover:bg-[#efe7dd] transition-all"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEdit} className="p-5 space-y-4 overflow-y-auto">
+              {editError && (
+                <div className="p-3 bg-[#ffdad6] text-[#ba1a1a] rounded-xl text-xs font-bold border border-[#ba1a1a]/20">
+                  {editError}
+                </div>
+              )}
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
+                  Nombre de la Receta / Preparación *
+                </label>
+                <input
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  placeholder="Ej: Torta de Frutillas con Crema"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#dec0b6] bg-white text-sm font-bold text-[#1c120c] focus:outline-none focus:ring-2 focus:ring-[#9d3c0c]"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
+                    Precio de Venta ($) *
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    min="0"
+                    value={editPrice}
+                    onChange={(e) => setEditPrice(e.target.value)}
+                    placeholder="35000"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#dec0b6] bg-white text-sm font-bold text-[#9d3c0c] focus:outline-none focus:ring-2 focus:ring-[#9d3c0c]"
+                    required
+                  />
+                  <span className="text-[10px] text-[#7c5641]">
+                    Precio de venta al público en salón / mostrador
+                  </span>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
+                    Rendimiento (Porciones) *
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    min="1"
+                    value={editYield}
+                    onChange={(e) => setEditYield(e.target.value)}
+                    placeholder="8"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#dec0b6] bg-white text-sm font-bold text-[#1c120c] focus:outline-none focus:ring-2 focus:ring-[#9d3c0c]"
+                    required
+                  />
+                  <span className="text-[10px] text-[#7c5641]">
+                    Cantidad de porciones que rinde la unidad
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
+                    Categoría
+                  </label>
+                  <select
+                    value={editCategory}
+                    onChange={(e) => setEditCategory(e.target.value as PreparationCategory)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#dec0b6] bg-white text-sm font-bold text-[#1c120c] focus:outline-none focus:ring-2 focus:ring-[#9d3c0c]"
+                  >
+                    <option value="pasteleria">Pastelería</option>
+                    <option value="cafeteria">Cafetería</option>
+                    <option value="taller">Taller / Workshop</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
+                    Tipo de Unidad
+                  </label>
+                  <select
+                    value={editUnitType}
+                    onChange={(e) => setEditUnitType(e.target.value as PreparationUnitType)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#dec0b6] bg-white text-sm font-bold text-[#1c120c] focus:outline-none focus:ring-2 focus:ring-[#9d3c0c]"
+                  >
+                    <option value="entera">Torta Entera (entera)</option>
+                    <option value="porcion">Porción Individual (porcion)</option>
+                    <option value="taza">Taza / Pocillo (taza)</option>
+                    <option value="kit">Kit Individual (kit)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
+                  Descripción de la Ficha Técnica
+                </label>
+                <textarea
+                  rows={2}
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                  placeholder="Descripción artesanal de la preparación, base, rellenos..."
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#dec0b6] bg-white text-xs font-medium text-[#1c120c] focus:outline-none focus:ring-2 focus:ring-[#9d3c0c]"
+                />
+              </div>
+
+              <div className="pt-3 border-t border-[#dec0b6]/60 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsEditModalOpen(false)}
+                  disabled={isSavingEdit}
+                  className="px-4 py-2.5 rounded-xl border border-[#dec0b6] text-xs font-bold text-[#7c5641] hover:bg-[#efe7dd] active:scale-95 transition-all"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSavingEdit}
+                  className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold shadow-md shadow-[#9d3c0c]/25 hover:bg-[#7f2b00] active:scale-95 transition-all disabled:opacity-50"
+                >
+                  <Check className="w-4 h-4" />
+                  <span>{isSavingEdit ? 'Guardando...' : 'Guardar Cambios'}</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
