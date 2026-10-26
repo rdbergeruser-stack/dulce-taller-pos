@@ -130,3 +130,4 @@
   <text x="674" y="432" class="box-sub">• Transmisión de comandas por WebSockets</text>
   <text x="674" y="448" class="box-sub">• Fallback local resiliente sin conexión</text>
 </svg>
+

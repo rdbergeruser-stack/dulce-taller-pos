@@ -310,6 +310,32 @@ function buildAcademicHtml(title, bodyHtml) {
     }
 
     /* ================= IMÁGENES & GRÁFICOS SVG ================= */
+    .diagram-container {
+      margin: 20px 0;
+      text-align: center;
+      page-break-inside: avoid;
+    }
+
+    .diagram-container svg {
+      width: 100%;
+      max-width: 900px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+      border: 1px solid #cbd5e1;
+    }
+
+    .diagram-caption {
+      font-size: 8.5pt;
+      font-weight: 600;
+      color: #64748b;
+      margin-top: 6px;
+      text-align: center;
+      font-style: italic;
+    }
+
     img {
       max-width: 100%;
       height: auto;
@@ -530,14 +556,17 @@ async function convert(mdFile, pdfFile, title, isAcademic = false) {
     mdContent = mdContent.replace(/^# DULCE TALLER[\s\S]*?\*\*Fecha:\*\* [^\n]*\n+/i, '');
   }
 
-  // Resolver rutas de imágenes relativas para que Edge las cargue desde disco
-  const docsDir = path.resolve('docs').replace(/\\/g, '/');
-  mdContent = mdContent.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, src) => {
-    let absSrc = src;
-    if (!src.startsWith('http') && !src.startsWith('file:///')) {
-      absSrc = 'file:///' + path.resolve('docs', src).replace(/\\/g, '/');
+  // Inyectar SVGs directamente como elementos HTML vectoriales nativos (evita problemas de rutas relativas y espacios)
+  mdContent = mdContent.replace(/!\[(.*?)\]\((.*?\.svg)\)/g, (match, alt, src) => {
+    const cleanSrc = src.replace(/^file:\/\/\//, '').replace(/^docs\//, '').replace(/^\//, '');
+    const svgFile = path.resolve('docs', cleanSrc);
+    if (fs.existsSync(svgFile)) {
+      let svgContent = fs.readFileSync(svgFile, 'utf8')
+        .replace(/<\?xml[\s\S]*?\?>/i, '')
+        .trim();
+      return `\n\n<figure class="diagram-container">\n${svgContent}\n<figcaption class="diagram-caption">${alt}</figcaption>\n</figure>\n\n`;
     }
-    return `![${alt}](${absSrc})`;
+    return match;
   });
 
   const parsedHtml = marked.parse(mdContent);
