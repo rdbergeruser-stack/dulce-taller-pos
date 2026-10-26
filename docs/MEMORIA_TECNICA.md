@@ -43,36 +43,7 @@ Desarrollar una aplicación web táctil de alta confiabilidad para tablets que a
 
 ## 3. ARQUITECTURA TECNOLÓGICA Y STACK
 
-```text
-┌────────────────────────────────────────────────────────────────────────┐
-│                        FRONTEND (SPA TÁCTIL)                          │
-│   React 18/19 + TypeScript + Vite + Tailwind CSS + Lucide Icons       │
-│                                                                        │
-│   ┌────────────────┐  ┌──────────────────┐  ┌───────────────────────┐  │
-│   │  KDS & Orders  │  │ Inventory/Kardex │  │ Recipes & Food Costing│  │
-│   └────────────────┘  └──────────────────┘  └───────────────────────┘  │
-│           │                    │                        │              │
-│   ┌───────┴────────────────────┴────────────────────────┴──────────┐  │
-│   │           Capa de Servicios de Negocio (TypeScript)            │  │
-│   │   orderService | inventoryService | recipeService | portion... │  │
-│   └────────────────────────────────┬───────────────────────────────┘  │
-└────────────────────────────────────┼───────────────────────────────────┘
-                                     │ HTTPS / WSS
-┌────────────────────────────────────▼───────────────────────────────────┐
-│                    BACKEND AS A SERVICE (SUPABASE)                     │
-│                                                                        │
-│   ┌──────────────────────────┐      ┌──────────────────────────────┐   │
-│   │ REST API / Realtime Hub  │      │ Row Level Security (RLS)     │   │
-│   └────────────┬─────────────┘      └──────────────┬───────────────┘   │
-│                │                                   │                   │
-│   ┌────────────▼───────────────────────────────────▼───────────────┐   │
-│   │                   PostgreSQL 15+ Engine                        │   │
-│   │  • Funciones RPC Almacenadas (PL/pgSQL)                        │   │
-│   │  • Transacciones Atómicas ACID con SELECT FOR UPDATE           │   │
-│   │  • Triggers de Integridad y Timestamping                       │   │
-│   └────────────────────────────────────────────────────────────────┘   │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Diagrama de Arquitectura de Software](assets/architecture_diagram.svg)
 
 ### 3.1 Stack Tecnológico
 * **Lenguaje:** TypeScript 5.x (Tipado estricto de extremo a extremo).
@@ -88,88 +59,13 @@ Desarrollar una aplicación web táctil de alta confiabilidad para tablets que a
 
 El sistema opera sobre **9 tablas relacionales** normalizadas en Tercera Forma Normal (3FN), con restricciones de integridad referencial, borrado controlado y políticas de seguridad RLS:
 
-```mermaid
-erDiagram
-    PROFILES ||--o{ ORDERS : "registra comanda"
-    PROFILES ||--o{ PRODUCTION_RECORDS : "elabora lote"
-    PROFILES ||--o{ STOCK_MOVEMENTS : "audita movimiento"
-
-    RAW_MATERIALS ||--o{ PREPARATION_INGREDIENTS : "compone receta"
-    RAW_MATERIALS ||--o{ STOCK_MOVEMENTS : "registra kardex"
-    RAW_MATERIALS ||--o{ PURCHASE_LIST_ITEMS : "solicita compra"
-
-    PREPARATIONS ||--o{ PREPARATION_INGREDIENTS : "tiene ingredientes"
-    PREPARATIONS ||--o{ PRODUCTION_RECORDS : "produce lotes"
-    PREPARATIONS ||--o{ ORDER_ITEMS : "se vende en"
-    PREPARATIONS ||--o{ STOCK_MOVEMENTS : "mueve stock vitrina"
-
-    ORDERS ||--|{ ORDER_ITEMS : "contiene lineas"
-
-    RAW_MATERIALS {
-        uuid id PK
-        varchar code UK
-        varchar name
-        varchar unit
-        numeric current_stock
-        numeric min_stock
-        numeric unit_cost
-        boolean is_active
-    }
-
-    PREPARATIONS {
-        uuid id PK
-        varchar code UK
-        varchar name
-        varchar category
-        varchar unit_type
-        numeric portion_yield
-        numeric price
-        numeric stock_available
-        boolean is_active
-    }
-
-    PREPARATION_INGREDIENTS {
-        uuid id PK
-        uuid preparation_id FK
-        uuid raw_material_id FK
-        numeric quantity_required
-        varchar unit
-    }
-
-    ORDERS {
-        uuid id PK
-        bigint order_number UK
-        varchar origin
-        varchar table_number
-        varchar status
-        text notes
-        uuid created_by FK
-    }
-
-    ORDER_ITEMS {
-        uuid id PK
-        uuid order_id FK
-        uuid preparation_id FK
-        integer quantity
-        numeric unit_price
-        text notes
-    }
-
-    STOCK_MOVEMENTS {
-        uuid id PK
-        uuid raw_material_id FK
-        uuid preparation_id FK
-        varchar movement_type
-        numeric quantity
-        numeric previous_stock
-        numeric new_stock
-        text reason
-    }
-```
+![Diagrama Entidad-Relación (DER)](assets/database_erd.svg)
 
 ---
 
 ## 5. DECISIONES DE DISEÑO CRÍTICAS
+
+![Circuito de Doble Nivel de Stock y Fraccionamiento](assets/stock_lifecycle_diagram.svg)
 
 ### 5.1 El Modelo de Doble Nivel de Stock
 El sistema divide tajantemente el inventario en dos planos:

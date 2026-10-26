@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" width="100%" height="100%">
+  <defs>
+    <style>
+      .title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-weight: 800; font-size: 16px; fill: #0f172a; }
+      .subtitle { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 12px; fill: #64748b; }
+      .box-title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-weight: 700; font-size: 14px; fill: #1e293b; }
+      .box-sub { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 11px; fill: #475569; }
+      .tech-badge { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-weight: 600; font-size: 10px; fill: #2563eb; }
+      .layer-label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-weight: 800; font-size: 11px; letter-spacing: 1px; fill: #64748b; text-transform: uppercase; }
+      .arrow-text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10px; font-weight: 600; fill: #475569; }
+    </style>
+    <filter id="card-shadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f172a" flood-opacity="0.08" />
+    </filter>
+    <linearGradient id="primary-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+    <linearGradient id="bg-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#f1f5f9" />
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#3b82f6" />
+    </marker>
+    <marker id="arrow-down" viewBox="0 0 10 10" refX="5" refY="6" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 1 0 L 5 8 L 9 0 z" fill="#3b82f6" />
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="960" height="520" fill="url(#bg-grad)" rx="12" stroke="#e2e8f0" stroke-width="1.5" />
+
+  <!-- Main Title Header -->
+  <text x="40" y="42" class="title">ARQUITECTURA DE SOFTWARE - SISTEMA POS DULCE TALLER</text>
+  <text x="40" y="60" class="subtitle">Modelo Desacoplado Cliente-Servidor (SPA React + BaaS PostgreSQL Transaccional)</text>
+
+  <!-- ================= LAYER 1: CLIENTE / FRONTEND ================= -->
+  <rect x="40" y="85" width="880" height="155" fill="#ffffff" rx="10" stroke="#cbd5e1" stroke-width="1.5" filter="url(#card-shadow)" />
+  <rect x="40" y="85" width="880" height="28" fill="#f8fafc" rx="10" />
+  <rect x="40" y="103" width="880" height="10" fill="#f8fafc" />
+  <line x1="40" y1="113" x2="920" y2="113" stroke="#e2e8f0" stroke-width="1" />
+  <text x="56" y="104" class="layer-label">CAPA DE PRESENTACIÓN &amp; EXPERIENCIA TÁCTIL (SPA - SINGLE PAGE APPLICATION)</text>
+  <text x="730" y="104" class="tech-badge" fill="#2563eb">React 18 / Vite 6 / TypeScript / Tailwind CSS</text>
+
+  <!-- Card: KDS / Orders -->
+  <rect x="56" y="125" width="200" height="98" fill="#f8fafc" rx="8" stroke="#e2e8f0" stroke-width="1" />
+  <rect x="56" y="125" width="6" height="98" fill="#2563eb" rx="3" />
+  <text x="72" y="147" class="box-title">Módulo KDS &amp; Salón</text>
+  <text x="72" y="166" class="box-sub">• Comandas táctiles (Mesas 1-4)</text>
+  <text x="72" y="182" class="box-sub">• Tablero de cocina en vivo</text>
+  <text x="72" y="198" class="box-sub">• Modal de cobro y vuelto rápido</text>
+
+  <!-- Card: Inventario / Vitrina -->
+  <rect x="272" y="125" width="200" height="98" fill="#f8fafc" rx="8" stroke="#e2e8f0" stroke-width="1" />
+  <rect x="272" y="125" width="6" height="98" fill="#0891b2" rx="3" />
+  <text x="288" y="147" class="box-title">Inventario &amp; Vitrina</text>
+  <text x="288" y="166" class="box-sub">• Semáforo stock materias primas</text>
+  <text x="288" y="182" class="box-sub">• Fraccionamiento tortas (+8)</text>
+  <text x="288" y="198" class="box-sub">• Auditoría y mermas en Kardex</text>
+
+  <!-- Card: Recetas / Costeo -->
+  <rect x="488" y="125" width="200" height="98" fill="#f8fafc" rx="8" stroke="#e2e8f0" stroke-width="1" />
+  <rect x="488" y="125" width="6" height="98" fill="#d97706" rx="3" />
+  <text x="504" y="147" class="box-title">Fichas Técnicas &amp; Costeo</text>
+  <text x="504" y="166" class="box-sub">• Costeo dinámico de insumos</text>
+  <text x="504" y="182" class="box-sub">• Cálculo de margen teórico %</text>
+  <text x="504" y="198" class="box-sub">• Edición rápida y rendimientos</text>
+
+  <!-- Card: Producción & Compras -->
+  <rect x="704" y="125" width="200" height="98" fill="#f8fafc" rx="8" stroke="#e2e8f0" stroke-width="1" />
+  <rect x="704" y="125" width="6" height="98" fill="#16a34a" rx="3" />
+  <text x="720" y="147" class="box-title">Producción &amp; Compras</text>
+  <text x="720" y="166" class="box-sub">• Previsualización de insumos</text>
+  <text x="720" y="182" class="box-sub">• Generador de Lote único</text>
+  <text x="720" y="198" class="box-sub">• Reposición automática compras</text>
+
+  <!-- ================= MIDDLE ARROW: SERVICIOS Y COMUNICACIÓN ================= -->
+  <!-- Line Left -->
+  <path d="M 240 240 L 240 280" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow-down)" />
+  <text x="250" y="265" class="arrow-text">orderService / portionService</text>
+
+  <!-- Line Center -->
+  <path d="M 480 240 L 480 280" fill="none" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow-down)" />
+  <rect x="415" y="252" width="130" height="20" fill="#ffffff" rx="4" stroke="#bfdbfe" />
+  <text x="480" y="266" text-anchor="middle" class="arrow-text" fill="#1d4ed8">HTTPS REST / WebSockets</text>
+
+  <!-- Line Right -->
+  <path d="M 720 240 L 720 280" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4,4" marker-end="url(#arrow-down)" />
+  <text x="730" y="265" class="arrow-text">productionService / inventoryService</text>
+
+  <!-- ================= LAYER 2: BACKEND & BASE DE DATOS ================= -->
+  <rect x="40" y="285" width="880" height="200" fill="#ffffff" rx="10" stroke="#cbd5e1" stroke-width="1.5" filter="url(#card-shadow)" />
+  <rect x="40" y="285" width="880" height="28" fill="#f8fafc" rx="10" />
+  <rect x="40" y="303" width="880" height="10" fill="#f8fafc" />
+  <line x1="40" y1="313" x2="920" y2="313" stroke="#e2e8f0" stroke-width="1" />
+  <text x="56" y="304" class="layer-label">CAPA DE PERSISTENCIA, SEGURIDAD &amp; TRANSACCIONES (SUPABASE / POSTGRESQL ENGINE)</text>
+  <text x="760" y="304" class="tech-badge" fill="#0f766e">PostgreSQL 15+ / ACID / RLS</text>
+
+  <!-- Sub-block: RPC Functions -->
+  <rect x="56" y="325" width="270" height="142" fill="#eff6ff" rx="8" stroke="#bfdbfe" stroke-width="1" />
+  <rect x="56" y="325" width="6" height="142" fill="#2563eb" rx="3" />
+  <text x="72" y="347" class="box-title" fill="#1d4ed8">Procedimientos Almacenados (RPC)</text>
+  <text x="72" y="368" class="box-sub" font-weight="bold">confirm_production_batch()</text>
+  <text x="72" y="384" class="box-sub">• Bloqueo atómico con SELECT FOR UPDATE</text>
+  <text x="72" y="400" class="box-sub">• Rollback íntegro si falta 1 insumo</text>
+  <text x="72" y="420" class="box-sub" font-weight="bold">dispatch_order()</text>
+  <text x="72" y="436" class="box-sub">• Descuento instantáneo de vitrina</text>
+  <text x="72" y="452" class="box-sub">• Genera asiento de Kardex con user ID</text>
+
+  <!-- Sub-block: Relational DB Schema -->
+  <rect x="342" y="325" width="300" height="142" fill="#f8fafc" rx="8" stroke="#e2e8f0" stroke-width="1" />
+  <rect x="342" y="325" width="6" height="142" fill="#475569" rx="3" />
+  <text x="358" y="347" class="box-title">Motor Relacional 3FN (9 Tablas)</text>
+  <text x="358" y="368" class="box-sub">• raw_materials / preparations / ingredients</text>
+  <text x="358" y="384" class="box-sub">• orders / order_items (Comandas KDS)</text>
+  <text x="358" y="400" class="box-sub">• stock_movements (Kardex histórico)</text>
+  <text x="358" y="416" class="box-sub">• production_records (Lotes de horneado)</text>
+  <text x="358" y="432" class="box-sub">• purchase_list_items / profiles (Roles)</text>
+  <text x="358" y="448" class="box-sub">• Integridad referencial y constraints CHECK</text>
+
+  <!-- Sub-block: Security & Realtime -->
+  <rect x="658" y="325" width="246" height="142" fill="#f0fdf4" rx="8" stroke="#bbf7d0" stroke-width="1" />
+  <rect x="658" y="325" width="6" height="142" fill="#16a34a" rx="3" />
+  <text x="674" y="347" class="box-title" fill="#15803d">Seguridad &amp; Conectividad</text>
+  <text x="674" y="368" class="box-sub">• Row Level Security (RLS) en 9 tablas</text>
+  <text x="674" y="384" class="box-sub">• Políticas de Mozo (Select/Insert pedidos)</text>
+  <text x="674" y="400" class="box-sub">• Políticas de Admin (Full CRUD recetas/stock)</text>
+  <text x="674" y="416" class="box-sub">• Realtime Change Data Capture (CDC)</text>
+  <text x="674" y="432" class="box-sub">• Transmisión de comandas por WebSockets</text>
+  <text x="674" y="448" class="box-sub">• Fallback local resiliente sin conexión</text>
+</svg>

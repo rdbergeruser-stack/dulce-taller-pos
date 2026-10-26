@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" width="100%" height="100%">
+  <defs>
+    <style>
+      .title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-weight: 800; font-size: 16px; fill: #0f172a; }
+      .subtitle { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 12px; fill: #64748b; }
+      .tbl-header { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-weight: 700; font-size: 12px; fill: #ffffff; }
+      .tbl-col { font-family: "JetBrains Mono", Consolas, monospace; font-size: 9.5px; fill: #1e293b; }
+      .tbl-type { font-family: "JetBrains Mono", Consolas, monospace; font-size: 9px; fill: #64748b; }
+      .pk { fill: #d97706; font-weight: 700; }
+      .fk { fill: #2563eb; font-weight: 700; }
+      .rel-line { stroke: #94a3b8; stroke-width: 1.5; stroke-dasharray: 4,4; fill: none; }
+      .rel-line-solid { stroke: #3b82f6; stroke-width: 1.5; fill: none; }
+    </style>
+    <filter id="erd-shadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.08" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="960" height="620" fill="#f8fafc" rx="12" stroke="#e2e8f0" stroke-width="1.5" />
+
+  <!-- Header -->
+  <text x="35" y="38" class="title">DIAGRAMA ENTIDAD-RELACIÓN (DER) - POSTGRESQL</text>
+  <text x="35" y="55" class="subtitle">Estructura Relacional Normalizada (3FN) con Constraints de Integridad y Llaves Foráneas</text>
+
+  <!-- RELATION LINES (UNDER TABLES) -->
+  <!-- preparations to preparation_ingredients -->
+  <path d="M 230 180 L 260 180 L 260 180 L 290 180" class="rel-line-solid" />
+  <!-- raw_materials to preparation_ingredients -->
+  <path d="M 490 180 L 520 180" class="rel-line-solid" />
+  <!-- preparations to order_items -->
+  <path d="M 130 250 L 130 400 L 290 400" class="rel-line-solid" />
+  <!-- orders to order_items -->
+  <path d="M 490 400 L 520 400" class="rel-line-solid" />
+  <!-- raw_materials to purchase_list_items -->
+  <path d="M 640 250 L 640 330 L 740 330" class="rel-line-solid" />
+  <!-- preparations to production_records -->
+  <path d="M 180 250 L 180 300 L 740 300 L 740 180" class="rel-line" />
+  <!-- raw_materials to stock_movements -->
+  <path d="M 600 250 L 600 500 L 520 500" class="rel-line-solid" />
+
+  <!-- TABLE 1: PREPARATIONS -->
+  <g transform="translate(35, 80)" filter="url(#erd-shadow)">
+    <rect width="195" height="175" fill="#ffffff" rx="6" stroke="#cbd5e1" stroke-width="1" />
+    <path d="M 0 6 Q 0 0 6 0 L 189 0 Q 195 0 195 6 L 195 24 L 0 24 Z" fill="#0f172a" />
+    <text x="10" y="16" class="tbl-header">preparations</text>
+    <text x="10" y="40" class="tbl-col pk">id</text><text x="120" y="40" class="tbl-type">uuid [PK]</text>
+    <text x="10" y="56" class="tbl-col">code</text><text x="120" y="56" class="tbl-type">varchar (UK)</text>
+    <text x="10" y="72" class="tbl-col">name</text><text x="120" y="72" class="tbl-type">varchar</text>
+    <text x="10" y="88" class="tbl-col">category</text><text x="120" y="88" class="tbl-type">varchar</text>
+    <text x="10" y="104" class="tbl-col">unit_type</text><text x="120" y="104" class="tbl-type">varchar</text>
+    <text x="10" y="120" class="tbl-col">portion_yield</text><text x="120" y="120" class="tbl-type">numeric</text>
+    <text x="10" y="136" class="tbl-col">price</text><text x="120" y="136" class="tbl-type">numeric</text>
+    <text x="10" y="152" class="tbl-col">stock_available</text><text x="120" y="152" class="tbl-type">numeric</text>
+    <text x="10" y="168" class="tbl-col">is_active</text><text x="120" y="168" class="tbl-type">boolean</text>
+  </g>
+
+  <!-- TABLE 2: PREPARATION_INGREDIENTS -->
+  <g transform="translate(290, 110)" filter="url(#erd-shadow)">
+    <rect width="200" height="120" fill="#ffffff" rx="6" stroke="#cbd5e1" stroke-width="1" />
+    <path d="M 0 6 Q 0 0 6 0 L 194 0 Q 200 0 200 6 L 200 24 L 0 24 Z" fill="#1e3a8a" />
+    <text x="10" y="16" class="tbl-header">preparation_ingredients</text>
+    <text x="10" y="40" class="tbl-col pk">id</text><text x="125" y="40" class="tbl-type">uuid [PK]</text>
+    <text x="10" y="56" class="tbl-col fk">preparation_id</text><text x="125" y="56" class="tbl-type">uuid [FK]</text>
+    <text x="10" y="72" class="tbl-col fk">raw_material_id</text><text x="125" y="72" class="tbl-type">uuid [FK]</text>
+    <text x="10" y="88" class="tbl-col">quantity_required</text><text x="125" y="88" class="tbl-type">numeric</text>
+    <text x="10" y="104" class="tbl-col">unit</text><text x="125" y="104" class="tbl-type">varchar</text>
+  </g>
+
+  <!-- TABLE 3: RAW_MATERIALS -->
+  <g transform="translate(520, 80)" filter="url(#erd-shadow)">
+    <rect width="185" height="160" fill="#ffffff" rx="6" stroke="#cbd5e1" stroke-width="1" />
+    <path d="M 0 6 Q 0 0 6 0 L 179 0 Q 185 0 185 6 L 185 24 L 0 24 Z" fill="#0f172a" />
+    <text x="10" y="16" class="tbl-header">raw_materials</text>
+    <text x="10" y="40" class="tbl-col pk">id</text><text x="115" y="40" class="tbl-type">uuid [PK]</text>
+    <text x="10" y="56" class="tbl-col">code</text><text x="115" y="56" class="tbl-type">varchar (UK)</text>
+    <text x="10" y="72" class="tbl-col">name</text><text x="115" y="72" class="tbl-type">varchar</text>
+    <text x="10" y="88" class="tbl-col">unit</text><text x="115" y="88" class="tbl-type">varchar</text>
+    <text x="10" y="104" class="tbl-col">current_stock</text><text x="115" y="104" class="tbl-type">numeric</text>
+    <text x="10" y="120" class="tbl-col">min_stock</text><text x="115" y="120" class="tbl-type">numeric</text>
+    <text x="10" y="136" class="tbl-col">unit_cost</text><text x="115" y="136" class="tbl-type">numeric</text>
+    <text x="10" y="152" class="tbl-col">is_active</text><text x="115" y="152" class="tbl-type">boolean</text>
+  </g>
+
+  <!-- TABLE 4: PRODUCTION_RECORDS -->
+  <g transform="translate(740, 80)" filter="url(#erd-shadow)">
+    <rect width="185" height="145" fill="#ffffff" rx="6" stroke="#cbd5e1" stroke-width="1" />
+    <path d="M 0 6 Q 0 0 6 0 L 179 0 Q 185 0 185 6 L 185 24 L 0 24 Z" fill="#047857" />
+    <text x="10" y="16" class="tbl-header">production_records</text>
+    <text x="10" y="40" class="tbl-col pk">id</text><text x="115" y="40" class="tbl-type">uuid [PK]</text>
+    <text x="10" y="56" class="tbl-col">batch_code</text><text x="115" y="56" class="tbl-type">varchar (UK)</text>
+    <text x="10" y="72" class="tbl-col fk">preparation_id</text><text x="115" y="72" class="tbl-type">uuid [FK]</text>
+    <text x="10" y="88" class="tbl-col">quantity_produced</text><text x="115" y="88" class="tbl-type">numeric</text>
+    <text x="10" y="104" class="tbl-col">notes</text><text x="115" y="104" class="tbl-type">text</text>
+    <text x="10" y="120" class="tbl-col fk">created_by</text><text x="115" y="120" class="tbl-type">uuid [FK]</text>
+    <text x="10" y="136" class="tbl-col">created_at</text><text x="115" y="136" class="tbl-type">timestamptz</text>
+  </g>
+
+  <!-- TABLE 5: ORDER_ITEMS -->
+  <g transform="translate(290, 325)" filter="url(#erd-shadow)">
+    <rect width="200" height="135" fill="#ffffff" rx="6" stroke="#cbd5e1" stroke-width="1" />
+    <path d="M 0 6 Q 0 0 6 0 L 194 0 Q 200 0 200 6 L 200 24 L 0 24 Z" fill="#1e3a8a" />
+    <text x="10" y="16" class="tbl-header">order_items</text>
+    <text x="10" y="40" class="tbl-col pk">id</text><text x="125" y="40" class="tbl-type">uuid [PK]</text>
+    <text x="10" y="56" class="tbl-col fk">order_id</text><text x="125" y="56" class="tbl-type">uuid [FK]</text>
+    <text x="10" y="72" class="tbl-col fk">preparation_id</text><text x="125" y="72" class="tbl-type">uuid [FK]</text>
+    <text x="10" y="88" class="tbl-col">quantity</text><text x="125" y="88" class="tbl-type">integer</text>
+    <text x="10" y="104" class="tbl-col">unit_price</text><text x="125" y="104" class="tbl-type">numeric</text>
+    <text x="10" y="120" class="tbl-col">notes</text><text x="125" y="120" class="tbl-type">text</text>
+  </g>
+
+  <!-- TABLE 6: ORDERS -->
+  <g transform="translate(520, 290)" filter="url(#erd-shadow)">
+    <rect width="185" height="155" fill="#ffffff" rx="6" stroke="#cbd5e1" stroke-width="1" />
+    <path d="M 0 6 Q 0 0 6 0 L 179 0 Q 185 0 185 6 L 185 24 L 0 24 Z" fill="#0f172a" />
+    <text x="10" y="16" class="tbl-header">orders</text>
+    <text x="10" y="40" class="tbl-col pk">id</text><text x="115" y="40" class="tbl-type">uuid [PK]</text>
+    <text x="10" y="56" class="tbl-col">order_number</text><text x="115" y="56" class="tbl-type">bigint (UK)</text>
+    <text x="10" y="72" class="tbl-col">origin</text><text x="115" y="72" class="tbl-type">varchar</text>
+    <text x="10" y="88" class="tbl-col">table_number</text><text x="115" y="88" class="tbl-type">varchar</text>
+    <text x="10" y="104" class="tbl-col">status</text><text x="115" y="104" class="tbl-type">varchar</text>
+    <text x="10" y="120" class="tbl-col">notes</text><text x="115" y="120" class="tbl-type">text</text>
+    <text x="10" y="136" class="tbl-col fk">created_by</text><text x="115" y="136" class="tbl-type">uuid [FK]</text>
+    <text x="10" y="150" class="tbl-col">created_at</text><text x="115" y="150" class="tbl-type">timestamptz</text>
+  </g>
+
+  <!-- TABLE 7: PURCHASE_LIST_ITEMS -->
+  <g transform="translate(740, 270)" filter="url(#erd-shadow)">
+    <rect width="185" height="130" fill="#ffffff" rx="6" stroke="#cbd5e1" stroke-width="1" />
+    <path d="M 0 6 Q 0 0 6 0 L 179 0 Q 185 0 185 6 L 185 24 L 0 24 Z" fill="#b45309" />
+    <text x="10" y="16" class="tbl-header">purchase_list_items</text>
+    <text x="10" y="40" class="tbl-col pk">id</text><text x="115" y="40" class="tbl-type">uuid [PK]</text>
+    <text x="10" y="56" class="tbl-col fk">raw_material_id</text><text x="115" y="56" class="tbl-type">uuid [FK]</text>
+    <text x="10" y="72" class="tbl-col">suggested_qty</text><text x="115" y="72" class="tbl-type">numeric</text>
+    <text x="10" y="88" class="tbl-col">is_purchased</text><text x="115" y="88" class="tbl-type">boolean</text>
+    <text x="10" y="104" class="tbl-col">notes</text><text x="115" y="104" class="tbl-type">text</text>
+    <text x="10" y="120" class="tbl-col">created_at</text><text x="115" y="120" class="tbl-type">timestamptz</text>
+  </g>
+
+  <!-- TABLE 8: STOCK_MOVEMENTS (KARDEX) -->
+  <g transform="translate(35, 390)" filter="url(#erd-shadow)">
+    <rect width="230" height="175" fill="#ffffff" rx="6" stroke="#cbd5e1" stroke-width="1" />
+    <path d="M 0 6 Q 0 0 6 0 L 224 0 Q 230 0 230 6 L 230 24 L 0 24 Z" fill="#475569" />
+    <text x="10" y="16" class="tbl-header">stock_movements (KARDEX)</text>
+    <text x="10" y="40" class="tbl-col pk">id</text><text x="145" y="40" class="tbl-type">uuid [PK]</text>
+    <text x="10" y="56" class="tbl-col fk">raw_material_id</text><text x="145" y="56" class="tbl-type">uuid [FK]</text>
+    <text x="10" y="72" class="tbl-col fk">preparation_id</text><text x="145" y="72" class="tbl-type">uuid [FK]</text>
+    <text x="10" y="88" class="tbl-col">movement_type</text><text x="145" y="88" class="tbl-type">varchar</text>
+    <text x="10" y="104" class="tbl-col">quantity</text><text x="145" y="104" class="tbl-type">numeric</text>
+    <text x="10" y="120" class="tbl-col">previous_stock</text><text x="145" y="120" class="tbl-type">numeric</text>
+    <text x="10" y="136" class="tbl-col">new_stock</text><text x="145" y="136" class="tbl-type">numeric</text>
+    <text x="10" y="152" class="tbl-col">reason</text><text x="145" y="152" class="tbl-type">text</text>
+    <text x="10" y="168" class="tbl-col fk">created_by</text><text x="145" y="168" class="tbl-type">uuid [FK]</text>
+  </g>
+
+  <!-- TABLE 9: PROFILES -->
+  <g transform="translate(520, 480)" filter="url(#erd-shadow)">
+    <rect width="185" height="110" fill="#ffffff" rx="6" stroke="#cbd5e1" stroke-width="1" />
+    <path d="M 0 6 Q 0 0 6 0 L 179 0 Q 185 0 185 6 L 185 24 L 0 24 Z" fill="#64748b" />
+    <text x="10" y="16" class="tbl-header">profiles</text>
+    <text x="10" y="40" class="tbl-col pk">id</text><text x="115" y="40" class="tbl-type">uuid [PK]</text>
+    <text x="10" y="56" class="tbl-col">full_name</text><text x="115" y="56" class="tbl-type">varchar</text>
+    <text x="10" y="72" class="tbl-col">role</text><text x="115" y="72" class="tbl-type">varchar (CHECK)</text>
+    <text x="10" y="88" class="tbl-col">created_at</text><text x="115" y="88" class="tbl-type">timestamptz</text>
+  </g>
+
+  <!-- LEGEND -->
+  <g transform="translate(740, 450)">
+    <rect width="185" height="140" fill="#ffffff" rx="6" stroke="#cbd5e1" stroke-width="1" />
+    <text x="10" y="20" class="box-title" font-size="11px">REFERENCIAS DER</text>
+    <circle cx="18" cy="40" r="4" fill="#d97706" />
+    <text x="28" y="43" class="tbl-type" font-size="9.5px">PK: Clave Primaria (UUID)</text>
+    <circle cx="18" cy="60" r="4" fill="#2563eb" />
+    <text x="28" y="63" class="tbl-type" font-size="9.5px">FK: Clave Foránea referencial</text>
+    <line x1="14" y1="80" x2="26" y2="80" stroke="#3b82f6" stroke-width="2" />
+    <text x="32" y="83" class="tbl-type" font-size="9.5px">Relación 1 a Muchos (1:N)</text>
+    <line x1="14" y1="100" x2="26" y2="100" stroke="#94a3b8" stroke-width="2" stroke-dasharray="3,3" />
+    <text x="32" y="103" class="tbl-type" font-size="9.5px">Asociación Auditada / Asíncrona</text>
+    <text x="10" y="125" class="tbl-type" font-size="8.5px" fill="#15803d">PostgreSQL 15+ / RLS Active</text>
+  </g>
+</svg>

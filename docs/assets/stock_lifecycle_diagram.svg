@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="100%" height="100%">
+  <defs>
+    <style>
+      .title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-weight: 800; font-size: 16px; fill: #0f172a; }
+      .subtitle { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 12px; fill: #64748b; }
+      .step-title { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-weight: 700; font-size: 13px; fill: #0f172a; }
+      .step-desc { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 10.5px; fill: #475569; }
+      .step-badge { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-weight: 800; font-size: 10px; fill: #ffffff; }
+      .flow-label { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-weight: 700; font-size: 10.5px; fill: #2563eb; }
+    </style>
+    <filter id="step-shadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.08" />
+    </filter>
+    <marker id="arrowhead" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#2563eb" />
+    </marker>
+    <marker id="arrowhead-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#d97706" />
+    </marker>
+  </defs>
+
+  <rect width="960" height="480" fill="#f8fafc" rx="12" stroke="#e2e8f0" stroke-width="1.5" />
+
+  <!-- Header -->
+  <text x="35" y="38" class="title">FLUJO DE DOBLE NIVEL DE STOCK &amp; FRACCIONAMIENTO HÍBRIDO</text>
+  <text x="35" y="55" class="subtitle">Circuito de Producción Atómica, Descuento en Cámara y Fraccionamiento Inteligente de Vitrina</text>
+
+  <!-- STEP 1: MATERIAS PRIMAS -->
+  <g transform="translate(35, 90)" filter="url(#step-shadow)">
+    <rect width="240" height="150" fill="#ffffff" rx="8" stroke="#cbd5e1" stroke-width="1.5" />
+    <rect x="0" y="0" width="240" height="30" fill="#f1f5f9" rx="8" />
+    <rect x="0" y="20" width="240" height="10" fill="#f1f5f9" />
+    <circle cx="20" cy="15" r="9" fill="#475569" />
+    <text x="20" y="19" text-anchor="middle" class="step-badge">1</text>
+    <text x="36" y="19" class="step-title">Stock Materias Primas</text>
+
+    <text x="14" y="50" class="step-desc" font-weight="bold">Depósito de Insumos:</text>
+    <text x="14" y="66" class="step-desc">• Harina, manteca, azúcar, huevos...</text>
+    <text x="14" y="82" class="step-desc">• Monitoreo por stock mínimo</text>
+    <rect x="14" y="96" width="212" height="40" fill="#fef2f2" rx="4" stroke="#fecaca" />
+    <text x="20" y="112" class="step-desc" fill="#991b1b" font-weight="bold">⚠️ REGLA DE ARQUITECTURA:</text>
+    <text x="20" y="126" class="step-desc" fill="#7f1d1d">NUNCA descuenta por comanda</text>
+  </g>
+
+  <!-- ARROW 1 -> 2: RPC CONFIRM_PRODUCTION -->
+  <path d="M 275 165 L 350 165" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowhead)" />
+  <rect x="285" y="140" width="60" height="18" fill="#eff6ff" rx="3" stroke="#bfdbfe" />
+  <text x="315" y="153" text-anchor="middle" class="flow-label" font-size="9px">Cocinar Lote</text>
+
+  <!-- STEP 2: HORNEADO & RPC ATOMICA -->
+  <g transform="translate(360, 90)" filter="url(#step-shadow)">
+    <rect width="250" height="150" fill="#ffffff" rx="8" stroke="#3b82f6" stroke-width="1.5" />
+    <rect x="0" y="0" width="250" height="30" fill="#eff6ff" rx="8" />
+    <rect x="0" y="20" width="250" height="10" fill="#eff6ff" />
+    <circle cx="20" cy="15" r="9" fill="#2563eb" />
+    <text x="20" y="19" text-anchor="middle" class="step-badge">2</text>
+    <text x="36" y="19" class="step-title" fill="#1d4ed8">Transacción de Horneado</text>
+
+    <text x="14" y="50" class="step-desc" font-weight="bold">RPC confirm_production_batch():</text>
+    <text x="14" y="66" class="step-desc">• Bloqueo fila (SELECT FOR UPDATE)</text>
+    <text x="14" y="82" class="step-desc">• Valida existencias vs. Receta estándar</text>
+    <text x="14" y="98" class="step-desc">• Descuento atómico de insumos</text>
+    <text x="14" y="114" class="step-desc">• Generación de código LOTE único</text>
+    <text x="14" y="130" class="step-desc">• Registro instantáneo en Kardex</text>
+  </g>
+
+  <!-- ARROW 2 -> 3: INGRESO A VITRINA -->
+  <path d="M 610 165 L 685 165" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowhead)" />
+  <rect x="620" y="140" width="60" height="18" fill="#eff6ff" rx="3" stroke="#bfdbfe" />
+  <text x="650" y="153" text-anchor="middle" class="flow-label" font-size="9px">+ Lote Elaborado</text>
+
+  <!-- STEP 3: STOCK PRODUCTO TERMINADO (CÁMARA / TORTAS ENTERAS) -->
+  <g transform="translate(695, 90)" filter="url(#step-shadow)">
+    <rect width="230" height="150" fill="#ffffff" rx="8" stroke="#cbd5e1" stroke-width="1.5" />
+    <rect x="0" y="0" width="230" height="30" fill="#f1f5f9" rx="8" />
+    <rect x="0" y="20" width="230" height="10" fill="#f1f5f9" />
+    <circle cx="20" cy="15" r="9" fill="#047857" />
+    <text x="20" y="19" text-anchor="middle" class="step-badge">3</text>
+    <text x="36" y="19" class="step-title">Stock Cámara (Enteras)</text>
+
+    <text x="14" y="50" class="step-desc" font-weight="bold">Tortas Enteras Disponibles:</text>
+    <text x="14" y="68" class="step-desc">• Lemon Pie Entero (1 un.)</text>
+    <text x="14" y="84" class="step-desc">• Torta Frutillas Entera (1 un.)</text>
+    <rect x="14" y="100" width="202" height="36" fill="#f0fdf4" rx="4" stroke="#bbf7d0" />
+    <text x="20" y="116" class="step-desc" fill="#15803d" font-weight="bold">Destinos posibles:</text>
+    <text x="20" y="128" class="step-desc" fill="#166534">Venta entera O Corte en porciones</text>
+  </g>
+
+  <!-- DOWNWARD PATH: SPLIT FOR WHOLE SALE VS PORTION SLICE -->
+  <!-- Branch A: Direct Whole Sale -->
+  <path d="M 810 240 L 810 320" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowhead)" />
+  <rect x="815" y="270" width="115" height="18" fill="#eff6ff" rx="3" stroke="#bfdbfe" />
+  <text x="872" y="283" text-anchor="middle" class="flow-label" font-size="9px">Venta Torta Entera (-1)</text>
+
+  <!-- Branch B: Fractioning (Manual or Auto) -->
+  <path d="M 740 240 L 740 320" fill="none" stroke="#d97706" stroke-width="2" marker-end="url(#arrowhead-amber)" />
+  <rect x="640" y="270" width="95" height="18" fill="#fffbeb" rx="3" stroke="#fde68a" />
+  <text x="687" y="283" text-anchor="middle" class="flow-label" fill="#b45309" font-size="9px">Fraccionar (-1)</text>
+
+  <!-- STEP 4A: DISPATCH WHOLE -->
+  <g transform="translate(735, 330)" filter="url(#step-shadow)">
+    <rect width="190" height="120" fill="#ffffff" rx="8" stroke="#cbd5e1" stroke-width="1.5" />
+    <rect x="0" y="0" width="190" height="26" fill="#f8fafc" rx="8" />
+    <text x="14" y="18" class="step-title" font-size="11px">Despacho Torta Entera</text>
+    <text x="14" y="44" class="step-desc">• RPC dispatch_order()</text>
+    <text x="14" y="60" class="step-desc">• Descuenta 1 un. de vitrina</text>
+    <text x="14" y="76" class="step-desc">• Salón o Take-Away</text>
+    <text x="14" y="92" class="step-desc">• Emisión de ticket fiscal</text>
+    <text x="14" y="108" class="step-desc" font-weight="bold" fill="#047857">✓ Comprobante Digital</text>
+  </g>
+
+  <!-- STEP 4B: FRACTIONING / SLICES IN SHOWCASE -->
+  <g transform="translate(360, 310)" filter="url(#step-shadow)">
+    <rect width="320" height="140" fill="#fffdfa" rx="8" stroke="#f59e0b" stroke-width="1.5" />
+    <rect x="0" y="0" width="320" height="28" fill="#fef3c7" rx="8" />
+    <text x="14" y="18" class="step-title" fill="#92400e" font-size="12px">OPCIÓN 3: Fraccionamiento de Vitrina</text>
+
+    <!-- Sub-options inside Step 4B -->
+    <rect x="12" y="38" width="140" height="88" fill="#ffffff" rx="6" stroke="#fde68a" />
+    <text x="20" y="54" class="step-desc" font-weight="bold" fill="#b45309">1. Corte Manual:</text>
+    <text x="20" y="70" class="step-desc">• Botón "Cortar 1 Torta"</text>
+    <text x="20" y="86" class="step-desc">• Resta 1 torta entera</text>
+    <text x="20" y="102" class="step-desc">• Suma +8 porciones</text>
+    <text x="20" y="118" class="step-desc">• Asiento en Kardex</text>
+
+    <rect x="164" y="38" width="144" height="88" fill="#ffffff" rx="6" stroke="#fde68a" />
+    <text x="172" y="54" class="step-desc" font-weight="bold" fill="#b45309">2. Apertura Auto:</text>
+    <text x="172" y="70" class="step-desc">• Pedido salón (stock 0)</text>
+    <text x="172" y="86" class="step-desc">• Abre torta en despacho</text>
+    <text x="172" y="102" class="step-desc">• Descuenta 1 porción</text>
+    <text x="172" y="118" class="step-desc" fill="#047857" font-weight="bold">• Quedan 7 disponibles</text>
+  </g>
+
+  <!-- ARROW 4B -> 5: DISPATCH SLICE -->
+  <path d="M 360 380 L 260 380" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowhead)" />
+  <rect x="270" y="365" width="80" height="18" fill="#eff6ff" rx="3" stroke="#bfdbfe" />
+  <text x="310" y="378" text-anchor="middle" class="flow-label" font-size="9px">Despachar Porc.</text>
+
+  <!-- STEP 5: KDS SERVED & BILLED -->
+  <g transform="translate(35, 330)" filter="url(#step-shadow)">
+    <rect width="215" height="120" fill="#ffffff" rx="8" stroke="#cbd5e1" stroke-width="1.5" />
+    <rect x="0" y="0" width="215" height="26" fill="#f8fafc" rx="8" />
+    <text x="14" y="18" class="step-title" font-size="11px">Salón: Servicio &amp; Cobro</text>
+    <text x="14" y="44" class="step-desc">• KDS: "Lista para Servir"</text>
+    <text x="14" y="60" class="step-desc">• Mozo entrega en mesa</text>
+    <text x="14" y="76" class="step-desc">• Pasa a "Entregadas/Por Cobrar"</text>
+    <text x="14" y="92" class="step-desc">• Cobro: Efectivo / Tarjeta / QR</text>
+    <text x="14" y="108" class="step-desc" font-weight="bold" fill="#047857">✓ Historial Completo &amp; Cierre</text>
+  </g>
+</svg>
