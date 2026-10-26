@@ -173,3 +173,4 @@ El modal de cobro te muestra el vuelto sugerido antes de confirmar. Si necesitas
 
 **¿Se pueden eliminar recetas viejas que ya no se comercializan?**  
 Sí, desde la solapa **Recetas**, seleccionando la preparación y pulsando **`Eliminar Receta`**. El sistema solicitará una confirmación de seguridad para evitar borrados accidentales.
+

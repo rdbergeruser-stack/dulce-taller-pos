@@ -261,3 +261,4 @@ El proyecto cuenta con **9 pruebas automatizadas** en Vitest integradas contra b
 2. Salida de **ticket físico térmico** en impresoras ESC/POS de 58mm/80mm y envío de comprobante digital por WhatsApp.
 3. Gestión de **encargos y reservas de tortas** con seña previa y fecha de retiro.
 4. Módulo de **Workshops y Talleres** para reserva de cupos de pastelería participativa.
+
