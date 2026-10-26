@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const { execSync } = require('child_process');
 const { marked } = require('marked');
 
@@ -557,9 +558,16 @@ async function convert(mdFile, pdfFile, title, isAcademic = false) {
   }
 
   // Inyectar SVGs directamente como elementos HTML vectoriales nativos (evita problemas de rutas relativas y espacios)
-  mdContent = mdContent.replace(/!\[(.*?)\]\((.*?\.svg)\)/g, (match, alt, src) => {
-    const cleanSrc = src.replace(/^file:\/\/\//, '').replace(/^docs\//, '').replace(/^\//, '');
-    const svgFile = path.resolve('docs', cleanSrc);
+  mdContent = mdContent.replace(/!\[(.*?)\]\((.*?\.svg)\)/gi, (match, alt, src) => {
+    let cleanSrc = decodeURIComponent(src).replace(/^file:\/\/\//i, '').replace(/^\/+/, '');
+    let svgFile = path.isAbsolute(cleanSrc) ? cleanSrc : path.resolve('docs', cleanSrc);
+    if (!fs.existsSync(svgFile)) {
+      const baseName = path.basename(cleanSrc);
+      const fallback = path.resolve('docs/assets', baseName);
+      if (fs.existsSync(fallback)) {
+        svgFile = fallback;
+      }
+    }
     if (fs.existsSync(svgFile)) {
       let svgContent = fs.readFileSync(svgFile, 'utf8')
         .replace(/<\?xml[\s\S]*?\?>/i, '')
@@ -578,7 +586,7 @@ async function convert(mdFile, pdfFile, title, isAcademic = false) {
 
   console.log(`Generando PDF con Edge Headless hacia ${pdfFile}...`);
   const fileUrl = 'file:///' + tempHtmlPath.replace(/\\/g, '/');
-  const tempTargetPdf = pdfPath.replace('.pdf', '_tmp_gen.pdf');
+  const tempTargetPdf = path.join(os.tmpdir(), `edge_pdf_${Date.now()}_${path.basename(pdfFile)}`);
   const cmd = `"${edgePath}" --headless --disable-gpu --run-all-compositor-stages-before-draw --print-to-pdf="${tempTargetPdf}" --print-to-pdf-no-header "${fileUrl}"`;
 
   execSync(cmd, { stdio: 'pipe' });
@@ -595,10 +603,14 @@ async function convert(mdFile, pdfFile, title, isAcademic = false) {
     console.log(`✓ Creado / Actualizado: ${pdfFile} (${(stats.size / 1024).toFixed(1)} KB)`);
   } catch (err) {
     finalPath = pdfPath.replace('.pdf', '_PROFESIONAL.pdf');
-    fs.copyFileSync(tempTargetPdf, finalPath);
-    fs.unlinkSync(tempTargetPdf);
-    const stats = fs.statSync(finalPath);
-    console.log(`⚠️ El archivo original está abierto en tu lector de PDF. Se generó: ${path.basename(finalPath)} (${(stats.size / 1024).toFixed(1)} KB)`);
+    try {
+      fs.copyFileSync(tempTargetPdf, finalPath);
+      fs.unlinkSync(tempTargetPdf);
+      const stats = fs.statSync(finalPath);
+      console.log(`⚠️ El archivo original está abierto en tu lector de PDF. Se generó: ${path.basename(finalPath)} (${(stats.size / 1024).toFixed(1)} KB)`);
+    } catch (innerErr) {
+      console.error(`Error guardando PDF: ${innerErr.message}`);
+    }
   }
 }
 
