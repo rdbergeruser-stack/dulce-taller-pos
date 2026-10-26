@@ -312,12 +312,14 @@ function buildAcademicHtml(title, bodyHtml) {
 
     /* ================= IMÁGENES & GRÁFICOS SVG ================= */
     .diagram-container {
-      margin: 20px 0;
+      margin: 22px 0;
       text-align: center;
       page-break-inside: avoid;
     }
 
-    .diagram-container svg {
+    .diagram-container svg,
+    .diagram-container img,
+    .diagram-img {
       width: 100%;
       max-width: 900px;
       height: auto;
@@ -326,13 +328,14 @@ function buildAcademicHtml(title, bodyHtml) {
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
       border: 1px solid #cbd5e1;
+      background-color: #ffffff;
     }
 
     .diagram-caption {
       font-size: 8.5pt;
       font-weight: 600;
       color: #64748b;
-      margin-top: 6px;
+      margin-top: 8px;
       text-align: center;
       font-style: italic;
     }
@@ -557,7 +560,7 @@ async function convert(mdFile, pdfFile, title, isAcademic = false) {
     mdContent = mdContent.replace(/^# DULCE TALLER[\s\S]*?\*\*Fecha:\*\* [^\n]*\n+/i, '');
   }
 
-  // Inyectar SVGs directamente como elementos HTML vectoriales nativos (evita problemas de rutas relativas y espacios)
+  // Inyectar SVGs como imágenes vectoriales aisladas en Data URI (garantiza aislamiento total del parser HTML y de marked)
   mdContent = mdContent.replace(/!\[(.*?)\]\((.*?\.svg)\)/gi, (match, alt, src) => {
     let cleanSrc = decodeURIComponent(src).replace(/^file:\/\/\//i, '').replace(/^\/+/, '');
     let svgFile = path.isAbsolute(cleanSrc) ? cleanSrc : path.resolve('docs', cleanSrc);
@@ -569,10 +572,9 @@ async function convert(mdFile, pdfFile, title, isAcademic = false) {
       }
     }
     if (fs.existsSync(svgFile)) {
-      let svgContent = fs.readFileSync(svgFile, 'utf8')
-        .replace(/<\?xml[\s\S]*?\?>/i, '')
-        .trim();
-      return `\n\n<figure class="diagram-container">\n${svgContent}\n<figcaption class="diagram-caption">${alt}</figcaption>\n</figure>\n\n`;
+      const svgBase64 = fs.readFileSync(svgFile).toString('base64');
+      const dataUri = `data:image/svg+xml;base64,${svgBase64}`;
+      return `\n\n<figure class="diagram-container">\n<img src="${dataUri}" alt="${alt}" class="diagram-img" />\n<figcaption class="diagram-caption">${alt}</figcaption>\n</figure>\n\n`;
     }
     return match;
   });
