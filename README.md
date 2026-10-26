@@ -30,19 +30,24 @@ Inspirado en la calidez y precisión de una pastelería artesanal europea:
 ## 👥 Roles de Usuario y Funcionalidades
 
 ### 🍽️ Mozo (Personal de Salón / Mostrador)
+- Pantalla táctil de **Inicio de Turno / Login** con identificación de usuario y perfil activo.
 - Acceso directo a la pantalla de **Comandas & KDS**.
-- Toma de pedidos táctil con botones de alta rotación, origen (**Salón** con selección de mesa o **Take Away**) y notas para cocina.
-- Actualización de estados: *Pendiente* &rarr; *En Preparación* &rarr; *Lista para Servir* &rarr; *Entregada*.
-- **Cobro Táctil Integrado:** Soporte para cobro con Efectivo (con atajos de vuelto rápido), Tarjeta de Débito/Crédito y QR Interoperable, con emisión de comprobante de pago digital.
-- Visualización de stock disponible en vitrina y porciones potenciales en tiempo real.
+- Toma de pedidos táctil con botones de alta rotación, origen (**Salón** con selección táctil de mesa o **Take Away**) y notas personalizadas para cocina.
+- Flujo de estados en KDS: *Pendiente* &rarr; *En Preparación* &rarr; *Lista para Servir* &rarr; *Entregada*.
+- **Pestaña "Entregadas / Por Cobrar"**: Muestra de forma estricta sólo las comandas entregadas a la mesa que aún están pendientes de pago.
+- **Cobro Táctil Integrado**: Soporte para cobro con Efectivo (con cálculo de vuelto y billetes rápidos), Tarjeta de Débito/Crédito y QR Interoperable, con emisión y sello de comprobante de pago digital.
+- **Pestaña "Cobradas" & "Historial Completo"**: Archivo de comandas cobradas y registro histórico del turno con contadores en vivo.
+- Visualización de stock disponible en vitrina y porciones potenciales en tiempo real con sistema de alertas semafóricas.
 
 ### 👨‍🍳 Admin / Encargado de Stock
 - Acceso total a todas las funciones del sistema.
-- **Materias Primas & Kardex:** Control de inventario, stock mínimo con alertas visuales automáticas, ajustes manuales con motivo auditado y registro histórico de movimientos.
+- **Materias Primas & Kardex:** Control de inventario, stock mínimo con sistema de alertas semafóricas (Óptimo, Bajo Mínimo, Agotado), ajustes manuales con motivo auditado y registro histórico de movimientos.
 - **Fichas Técnicas & Recetas:** 
   - Cálculo de costo teórico de insumos vs. precio de venta y margen comercial.
   - Creación de nuevas recetas y asignación dinámica de ingredientes.
+  - **Edición rápida de recetas:** Modificación de nombre, precio de venta al público, rendimiento en porciones y descripción artesanal mediante modal táctil dedicado.
   - **Eliminación de recetas/preparaciones** con confirmación de seguridad y borrado o desvinculación en cascada.
+  - Catálogo artesanal precargado con *Lemon Pie*, *Torta de Frutillas con Crema*, *Café Capuccino*, etc.
 - **Registrar Producción:** Validación de existencias en tiempo real con bloqueo si falta algún insumo, descuento transaccional atómico y asignación de código de lote (`LOTE-YYYYMMDD-PREP`).
 - **Lista de Compras Inteligente:** Generación automática basada en alertas de stock mínimo y reposición sugerida editable.
 
@@ -98,11 +103,11 @@ La aplicación abrirá en `http://localhost:5173`.
 ```bash
 npm test
 ```
-Ejecuta la suite con **Vitest** validando:
-- Alertas de stock mínimo.
-- Cálculo de insumos teóricos y costeo de recetas.
-- Descuento transaccional atómico de producción.
-- Fraccionamiento inteligente de tortas y porciones.
+Ejecuta la suite con **Vitest** (9 tests automatizados) validando:
+- Alertas de stock mínimo y niveles semafóricos.
+- Cálculo de insumos teóricos y costeo dinámico de recetas.
+- Descuento transaccional atómico de producción de lotes.
+- Fraccionamiento inteligente de tortas (Opción 3: corte manual y automático por porción).
 
 ### 5. Compilar para producción
 ```bash
