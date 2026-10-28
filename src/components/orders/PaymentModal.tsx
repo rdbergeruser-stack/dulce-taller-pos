@@ -122,7 +122,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                           {item.quantity}x {item.preparation?.name || 'Producto'}
                         </span>
                         {item.notes && (
-                          <p className="text-[10px] text-[#7c5641] italic">{item.notes}</p>
+                          <p className="text-xs text-[#7c5641] italic">{item.notes}</p>
                         )}
                       </div>
                       <span className="font-bold text-[#1c120c]">
@@ -195,7 +195,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
 
                     {/* Botones rápidos de billetes */}
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="text-[10px] text-[#7c5641] uppercase font-bold w-full">
+                      <span className="text-xs text-[#7c5641] uppercase font-bold w-full">
                         Atajos rápidos:
                       </span>
                       <button

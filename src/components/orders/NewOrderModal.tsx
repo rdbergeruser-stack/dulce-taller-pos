@@ -237,19 +237,19 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
                   >
                     <div>
                       <div className="flex items-start justify-between gap-1 mb-1">
-                        <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-[#f5ede3] text-[#7c5641]">
+                        <span className="text-xs font-bold uppercase px-1.5 py-0.5 rounded bg-[#f5ede3] text-[#7c5641]">
                           {prep.category}
                         </span>
                         {isOutOfStock ? (
-                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#ffdad6] text-[#ba1a1a] border border-[#ba1a1a]/30">
+                          <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-[#ffdad6] text-[#ba1a1a] border border-[#ba1a1a]/30">
                             AGOTADO
                           </span>
                         ) : canAutoOpenMother ? (
-                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#fef3c7] text-[#92400e] border border-[#fde68a]" title="Se abrirá automáticamente 1 torta entera al despachar">
+                          <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-[#fef3c7] text-[#92400e] border border-[#fde68a]" title="Se abrirá automáticamente 1 torta entera al despachar">
                             Abrir torta ({effective.motherStock} disp.)
                           </span>
                         ) : isLowStock ? (
-                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#fef3c7] text-[#92400e] border border-[#fde68a]">
+                          <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-[#fef3c7] text-[#92400e] border border-[#fde68a]">
                             Poco ({stock})
                           </span>
                         ) : (

@@ -134,7 +134,7 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
               <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
                 Preparación / Torta Base
               </label>
-              <span className="text-[10px] text-[#7c5641] font-medium bg-[#f5ede3] px-2 py-0.5 rounded-full border border-[#dec0b6]">
+              <span className="text-xs text-[#7c5641] font-medium bg-[#f5ede3] px-2 py-0.5 rounded-full border border-[#dec0b6]">
                 Tortas Enteras y Cafetería
               </span>
             </div>
@@ -242,7 +242,7 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
                         >
                           <td className="py-2.5 px-3 font-bold text-[#1c120c]">
                             {req.rawMaterial.name}
-                            <span className="font-mono text-[10px] text-[#7c5641] ml-1">
+                            <span className="font-mono text-xs text-[#7c5641] ml-1">
                               ({req.rawMaterial.code})
                             </span>
                           </td>

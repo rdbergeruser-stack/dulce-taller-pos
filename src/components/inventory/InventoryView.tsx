@@ -528,7 +528,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                         {mat ? `${mat.name} (${mat.code})` : prep ? `${prep.name} (Vitrina)` : 'Stock'}
                       </td>
                       <td className="py-3 px-4">
-                        <span className="font-semibold uppercase tracking-wider text-[10px] px-2 py-0.5 rounded bg-[#efe7dd] text-[#7c5641]">
+                        <span className="font-semibold uppercase tracking-wider text-xs px-2 py-0.5 rounded bg-[#efe7dd] text-[#7c5641]">
                           {mov.movement_type}
                         </span>
                       </td>

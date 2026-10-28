@@ -300,7 +300,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-[#f5ede3] text-[#7c5641]">
+                    <span className="text-xs font-bold uppercase px-2 py-0.5 rounded bg-[#f5ede3] text-[#7c5641]">
                       {prep.category}
                     </span>
                     <div className="flex items-center gap-1.5">
@@ -463,7 +463,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                           return (
                             <tr key={ing.id} className="hover:bg-[#fffbf8] text-xs font-medium">
                               <td className="py-2.5 px-3 font-bold text-[#1c120c]">
-                                {mat?.name || 'Insumo'} <span className="font-mono text-[10px] text-[#7c5641]">({mat?.code})</span>
+                                {mat?.name || 'Insumo'} <span className="font-mono text-xs text-[#7c5641]">({mat?.code})</span>
                               </td>
                               <td className="py-2.5 px-3 font-bold text-[#9d3c0c]">
                                 {ing.quantity_required} {ing.unit}
@@ -771,7 +771,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
             <div className="p-5 space-y-4">
               <div className="p-3.5 bg-white rounded-xl border border-[#dec0b6]">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-[#f5ede3] text-[#7c5641]">
+                  <span className="text-xs font-bold uppercase px-2 py-0.5 rounded bg-[#f5ede3] text-[#7c5641]">
                     {prepToDelete.category}
                   </span>
                   <span className="text-xs font-mono font-bold text-[#7c5641]">
@@ -876,7 +876,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                     className="w-full px-3.5 py-2.5 rounded-xl border border-[#dec0b6] bg-white text-sm font-bold text-[#9d3c0c] focus:outline-none focus:ring-2 focus:ring-[#9d3c0c]"
                     required
                   />
-                  <span className="text-[10px] text-[#7c5641]">
+                  <span className="text-xs text-[#7c5641]">
                     Precio de venta al público en salón / mostrador
                   </span>
                 </div>
@@ -895,7 +895,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                     className="w-full px-3.5 py-2.5 rounded-xl border border-[#dec0b6] bg-white text-sm font-bold text-[#1c120c] focus:outline-none focus:ring-2 focus:ring-[#9d3c0c]"
                     required
                   />
-                  <span className="text-[10px] text-[#7c5641]">
+                  <span className="text-xs text-[#7c5641]">
                     Cantidad de porciones que rinde la unidad
                   </span>
                 </div>

@@ -227,11 +227,11 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
             <h3 className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
               Disponibilidad en Vitrina (Stock Cocinado)
             </h3>
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-white text-[#7c5641] font-semibold border border-[#dec0b6]">
+            <span className="text-xs px-2 py-0.5 rounded-full bg-white text-[#7c5641] font-semibold border border-[#dec0b6]">
               Tiempo Real
             </span>
           </div>
-          <span className="text-[11px] text-[#7c5641] hidden md:inline">
+          <span className="text-xs text-[#7c5641] hidden md:inline">
             Descuento automático al despachar comanda
           </span>
         </div>
@@ -255,16 +255,16 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                   <h4 className="text-xs font-bold text-[#1c120c] truncate">
                     {p.name}
                   </h4>
-                  <span className="text-[10px] text-[#7c5641] uppercase font-semibold">
+                  <span className="text-xs text-[#7c5641] uppercase font-semibold">
                     {p.unit_type}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between mt-1">
-                  <span className="text-[11px] font-bold text-[#1c120c]">
+                  <span className="text-xs font-bold text-[#1c120c]">
                     ${p.price.toLocaleString('es-AR')}
                   </span>
-                  <span className={`inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full border ${alertInfo.badgeClass}`}>
+                  <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full border ${alertInfo.badgeClass}`}>
                     {alertInfo.icon}
                     <span>{alertInfo.label}</span>
                   </span>
