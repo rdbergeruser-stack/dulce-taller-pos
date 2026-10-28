@@ -88,7 +88,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-sm ${
                   isAdmin ? 'bg-[#1c120c]' : 'bg-[#9d3c0c]'
                 }`}>
-                  {isAdmin ? <Shield className="w-4 h-4" /> : <User className="w-4 h-4" />}
+                  {isAdmin ? <Shield className="w-4 h-4" aria-hidden="true" focusable="false" /> : <User className="w-4 h-4" aria-hidden="true" focusable="false" />}
                 </div>
                 <div className="text-left">
                   <div className="text-sm font-bold text-[#1c120c] leading-tight">
@@ -106,9 +106,10 @@ export const Header: React.FC<HeaderProps> = ({
                 type="button"
                 onClick={logout}
                 title="Cerrar turno y salir"
+                aria-label="Cerrar turno y salir"
                 className="p-2 ml-1 rounded-xl text-[#7c5641] hover:text-[#ba1a1a] hover:bg-[#ffdad6]/40 active:scale-95 transition-all"
               >
-                <LogOut className="w-5 h-5" />
+                <LogOut className="w-5 h-5" aria-hidden="true" focusable="false" />
               </button>
             </div>
           )}

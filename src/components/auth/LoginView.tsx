@@ -42,10 +42,10 @@ export const LoginView: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#fff8f2] flex flex-col justify-center items-center p-4 select-none">
+    <main role="main" className="min-h-screen bg-[#fff8f2] flex flex-col justify-center items-center p-4 select-none">
       <div className="w-full max-w-md bg-white rounded-3xl border border-[#dec0b6] shadow-xl overflow-hidden">
         {/* Header con identidad Dulce Taller Oficial */}
-        <div className="p-8 text-center bg-gradient-to-b from-[#f5ede3] to-white border-b border-[#dec0b6]/60">
+        <header className="p-8 text-center bg-gradient-to-b from-[#f5ede3] to-white border-b border-[#dec0b6]/60">
           <div className="w-20 h-20 mx-auto mb-4 rounded-3xl bg-white p-2 border border-[#dec0b6] shadow-md flex items-center justify-center">
             <img 
               src="/logo.png" 
@@ -62,28 +62,29 @@ export const LoginView: React.FC = () => {
           <p className="text-xs text-[#7c5641] mt-2 font-medium">
             Sistema Interno de Comandas y Gestión de Stock
           </p>
-        </div>
+        </header>
 
         {/* Cuerpo del Login */}
         <div className="p-6 md:p-8 space-y-6">
           {errorMessage && (
-            <div className="p-3 bg-[#ffdad6] text-[#ba1a1a] rounded-xl text-xs font-bold border border-[#ba1a1a]/20">
+            <div role="alert" className="p-3 bg-[#ffdad6] text-[#ba1a1a] rounded-xl text-xs font-bold border border-[#ba1a1a]/20">
               {errorMessage}
             </div>
           )}
 
           {!useManualForm ? (
             /* Modo 1: Selección Táctil de Personal de Turno */
-            <div className="space-y-4">
-              <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641] block text-center">
+            <section aria-labelledby="role-selection-title" className="space-y-4">
+              <h2 id="role-selection-title" className="text-xs font-bold uppercase tracking-wider text-[#7c5641] block text-center">
                 Selecciona tu Usuario para Iniciar Turno
-              </label>
+              </h2>
 
               <div className="space-y-3">
                 {/* Perfil Mozo */}
                 <button
                   type="button"
                   onClick={() => handleQuickLogin('mozo')}
+                  aria-label={`Iniciar turno como ${PRESET_USERS.mozo.full_name}, Mozo de Salón`}
                   className={`w-full p-4 rounded-2xl border text-left transition-all flex items-center justify-between group ${
                     selectedRole === 'mozo'
                       ? 'bg-[#ffdbce]/40 border-[#9d3c0c] ring-2 ring-[#9d3c0c]/30 shadow-sm'
@@ -92,7 +93,7 @@ export const LoginView: React.FC = () => {
                 >
                   <div className="flex items-center gap-3.5">
                     <div className="w-12 h-12 rounded-xl bg-[#efe7dd] text-[#9d3c0c] flex items-center justify-center font-bold">
-                      <Coffee className="w-6 h-6" />
+                      <Coffee className="w-6 h-6" aria-hidden="true" focusable="false" />
                     </div>
                     <div>
                       <h3 className="font-bold text-base text-[#1c120c]">
@@ -103,13 +104,14 @@ export const LoginView: React.FC = () => {
                       </span>
                     </div>
                   </div>
-                  <ArrowRight className="w-5 h-5 text-[#7c5641] group-hover:text-[#9d3c0c] group-hover:translate-x-1 transition-all" />
+                  <ArrowRight className="w-5 h-5 text-[#7c5641] group-hover:text-[#9d3c0c] group-hover:translate-x-1 transition-all" aria-hidden="true" focusable="false" />
                 </button>
 
                 {/* Perfil Admin / Encargada */}
                 <button
                   type="button"
                   onClick={() => handleQuickLogin('admin')}
+                  aria-label={`Iniciar turno como ${PRESET_USERS.admin.full_name}, Admin y Encargada de Stock`}
                   className={`w-full p-4 rounded-2xl border text-left transition-all flex items-center justify-between group ${
                     selectedRole === 'admin'
                       ? 'bg-[#ffdbce]/40 border-[#9d3c0c] ring-2 ring-[#9d3c0c]/30 shadow-sm'
@@ -118,7 +120,7 @@ export const LoginView: React.FC = () => {
                 >
                   <div className="flex items-center gap-3.5">
                     <div className="w-12 h-12 rounded-xl bg-[#1c120c] text-white flex items-center justify-center font-bold">
-                      <ShieldCheck className="w-6 h-6" />
+                      <ShieldCheck className="w-6 h-6" aria-hidden="true" focusable="false" />
                     </div>
                     <div>
                       <h3 className="font-bold text-base text-[#1c120c]">
@@ -129,7 +131,7 @@ export const LoginView: React.FC = () => {
                       </span>
                     </div>
                   </div>
-                  <ArrowRight className="w-5 h-5 text-[#7c5641] group-hover:text-[#9d3c0c] group-hover:translate-x-1 transition-all" />
+                  <ArrowRight className="w-5 h-5 text-[#7c5641] group-hover:text-[#9d3c0c] group-hover:translate-x-1 transition-all" aria-hidden="true" focusable="false" />
                 </button>
               </div>
 
@@ -142,15 +144,16 @@ export const LoginView: React.FC = () => {
                   O ingresar con correo y contraseña
                 </button>
               </div>
-            </div>
+            </section>
           ) : (
             /* Modo 2: Formulario Manual */
-            <form onSubmit={handleFormSubmit} className="space-y-4">
+            <form onSubmit={handleFormSubmit} className="space-y-4" aria-label="Formulario de ingreso">
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[#7c5641]">Correo Electrónico</label>
+                <label htmlFor="login-email" className="text-xs font-bold text-[#7c5641]">Correo Electrónico</label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-[#7c5641] absolute left-3 top-3.5" />
+                  <Mail className="w-4 h-4 text-[#7c5641] absolute left-3 top-3.5" aria-hidden="true" focusable="false" />
                   <input
+                    id="login-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -162,10 +165,11 @@ export const LoginView: React.FC = () => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[#7c5641]">Contraseña</label>
+                <label htmlFor="login-password" className="text-xs font-bold text-[#7c5641]">Contraseña</label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-[#7c5641] absolute left-3 top-3.5" />
+                  <Lock className="w-4 h-4 text-[#7c5641] absolute left-3 top-3.5" aria-hidden="true" focusable="false" />
                   <input
+                    id="login-password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -198,10 +202,10 @@ export const LoginView: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-[#f5ede3] border-t border-[#dec0b6] text-center text-[11px] text-[#7c5641]">
+        <footer className="p-4 bg-[#f5ede3] border-t border-[#dec0b6] text-center text-[11px] text-[#7c5641]">
           Conexión segura activa con PostgreSQL en Supabase
-        </div>
+        </footer>
       </div>
-    </div>
+    </main>
   );
 };
