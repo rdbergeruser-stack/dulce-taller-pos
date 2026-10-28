@@ -83,7 +83,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#dec0b6] bg-[#f5ede3]">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-[#9d3c0c] text-white rounded-xl shadow-sm">
-              <ReceiptText className="w-5 h-5" />
+              <ReceiptText className="w-5 h-5" aria-hidden="true" focusable="false" />
             </div>
             <div>
               <h2 className="font-serif font-bold text-xl text-[#1c120c]">
@@ -99,7 +99,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
             onClick={handleFinish}
             className="p-2 rounded-xl text-[#7c5641] hover:bg-[#efe7dd] active:scale-95 transition-all"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" focusable="false" />
           </button>
         </div>
 
@@ -154,10 +154,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                 {/* Grilla de Métodos */}
                 <div className="grid grid-cols-2 gap-2.5">
                   {[
-                    { id: 'efectivo', label: 'Efectivo', icon: <Banknote className="w-5 h-5" /> },
-                    { id: 'tarjeta', label: 'Tarjeta Débito/Crédito', icon: <CreditCard className="w-5 h-5" /> },
-                    { id: 'qr', label: 'QR / Transferencia', icon: <QrCode className="w-5 h-5" /> },
-                    { id: 'voucher', label: 'Voucher / Gift Card', icon: <Ticket className="w-5 h-5" /> }
+                    { id: 'efectivo', label: 'Efectivo', icon: <Banknote className="w-5 h-5" aria-hidden="true" focusable="false" /> },
+                    { id: 'tarjeta', label: 'Tarjeta Débito/Crédito', icon: <CreditCard className="w-5 h-5" aria-hidden="true" focusable="false" /> },
+                    { id: 'qr', label: 'QR / Transferencia', icon: <QrCode className="w-5 h-5" aria-hidden="true" focusable="false" /> },
+                    { id: 'voucher', label: 'Voucher / Gift Card', icon: <Ticket className="w-5 h-5" aria-hidden="true" focusable="false" /> }
                   ].map(m => (
                     <button
                       key={m.id}
@@ -251,7 +251,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                 disabled={isProcessing || !isCashSufficient}
                 className="w-full py-4 rounded-2xl bg-[#9d3c0c] text-white text-base font-bold shadow-lg shadow-[#9d3c0c]/30 hover:bg-[#7f2b00] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
               >
-                <CheckCircle2 className="w-5 h-5" />
+                <CheckCircle2 className="w-5 h-5" aria-hidden="true" focusable="false" />
                 <span>
                   {isProcessing ? 'Procesando Pago...' : `Confirmar Cobro ($${totalAmount.toLocaleString('es-AR')})`}
                 </span>
@@ -262,7 +262,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
           /* PANTALLA DE COMPROBANTE EMITIDO CON ÉXITO */
           <div className="p-8 text-center space-y-6 flex-1 flex flex-col items-center justify-center">
             <div className="w-16 h-16 rounded-2xl bg-[#ebffe8] text-[#446147] border border-[#aecfae] flex items-center justify-center mx-auto shadow-md">
-              <CheckCircle2 className="w-10 h-10" />
+              <CheckCircle2 className="w-10 h-10" aria-hidden="true" focusable="false" />
             </div>
 
             <div className="space-y-1">
@@ -307,7 +307,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                 onClick={() => window.print()}
                 className="flex items-center gap-2 px-5 py-3 rounded-xl border border-[#dec0b6] bg-white text-xs font-bold text-[#1c120c] hover:bg-[#efe7dd] active:scale-95"
               >
-                <Printer className="w-4 h-4" />
+                <Printer className="w-4 h-4" aria-hidden="true" focusable="false" />
                 <span>Imprimir Ticket</span>
               </button>
 
@@ -317,7 +317,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
                 className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#1c120c] text-white text-xs font-bold hover:bg-black active:scale-95 shadow-md"
               >
                 <span>Finalizar y Salir</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4" aria-hidden="true" focusable="false" />
               </button>
             </div>
           </div>

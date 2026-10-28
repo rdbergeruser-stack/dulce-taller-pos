@@ -28,37 +28,37 @@ export const Navigation: React.FC<NavigationProps> = ({
     {
       id: 'orders',
       label: 'Comandas & KDS',
-      icon: <ClipboardList className="w-5 h-5" />,
+      icon: <ClipboardList className="w-5 h-5" aria-hidden="true" focusable="false" />,
       badge: pendingOrdersCount > 0 ? pendingOrdersCount : undefined
     },
     {
       id: 'production',
       label: 'Registrar Producción',
-      icon: <CookingPot className="w-5 h-5" />,
+      icon: <CookingPot className="w-5 h-5" aria-hidden="true" focusable="false" />,
       requiresAdmin: true
     },
     {
       id: 'recipes',
       label: 'Recetas & Preparaciones',
-      icon: <BookOpen className="w-5 h-5" />,
+      icon: <BookOpen className="w-5 h-5" aria-hidden="true" focusable="false" />,
       requiresAdmin: true
     },
     {
       id: 'inventory',
       label: 'Materias Primas & Stock',
-      icon: <Package className="w-5 h-5" />,
+      icon: <Package className="w-5 h-5" aria-hidden="true" focusable="false" />,
       requiresAdmin: true
     },
     {
       id: 'purchases',
       label: 'Lista de Compras',
-      icon: <ShoppingCart className="w-5 h-5" />,
+      icon: <ShoppingCart className="w-5 h-5" aria-hidden="true" focusable="false" />,
       requiresAdmin: true
     }
   ];
 
   return (
-    <nav className="bg-[#f5ede3] border-b border-[#dec0b6] px-3 md:px-6 py-2 overflow-x-auto select-none no-scrollbar">
+    <nav aria-label="Módulos de trabajo" className="bg-[#f5ede3] border-b border-[#dec0b6] px-3 md:px-6 py-2 overflow-x-auto select-none no-scrollbar">
       <div className="flex items-center gap-2 min-w-max">
         {tabs.map(tab => {
           const isActive = activeTab === tab.id;
@@ -73,6 +73,8 @@ export const Navigation: React.FC<NavigationProps> = ({
                 }
               }}
               disabled={isDisabled}
+              aria-current={isActive ? 'page' : undefined}
+              aria-label={isDisabled ? `${tab.label} (Solo administradores)` : tab.label}
               className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl font-medium text-sm transition-all relative ${
                 isActive
                   ? 'bg-[#9d3c0c] text-white shadow-md shadow-[#9d3c0c]/25 font-semibold'
@@ -95,7 +97,7 @@ export const Navigation: React.FC<NavigationProps> = ({
               )}
 
               {isDisabled && (
-                <Lock className="w-3.5 h-3.5 text-[#7c5641] ml-1" />
+                <Lock className="w-3.5 h-3.5 text-[#7c5641] ml-1" aria-hidden="true" focusable="false" />
               )}
             </button>
           );

@@ -62,7 +62,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Alerta de Stock Mínimo Insumos */}
           {lowStockCount > 0 && (
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#ffdad6] text-[#ba1a1a] text-xs font-semibold animate-pulse">
-              <AlertCircle className="w-4 h-4 shrink-0" />
+              <AlertCircle className="w-4 h-4 shrink-0" aria-hidden="true" focusable="false" />
               <span>{lowStockCount} insumos bajos</span>
             </div>
           )}
@@ -105,8 +105,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 type="button"
                 onClick={logout}
-                title="Cerrar turno y salir"
-                aria-label="Cerrar turno y salir"
+                aria-label="Cerrar turno y salir del sistema"
                 className="p-2 ml-1 rounded-xl text-[#7c5641] hover:text-[#ba1a1a] hover:bg-[#ffdad6]/40 active:scale-95 transition-all"
               >
                 <LogOut className="w-5 h-5" aria-hidden="true" focusable="false" />

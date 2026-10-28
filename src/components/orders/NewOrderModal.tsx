@@ -127,9 +127,10 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
           </div>
           <button
             onClick={onClose}
+            aria-label="Cerrar modal"
             className="p-2 rounded-xl text-[#7c5641] hover:bg-[#efe7dd] active:scale-95 transition-all"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" focusable="false" />
           </button>
         </div>
 
@@ -149,8 +150,8 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
               </label>
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { id: 'salon', label: 'Salón', icon: <Utensils className="w-4 h-4" /> },
-                  { id: 'takeaway', label: 'Take Away', icon: <Coffee className="w-4 h-4" /> }
+                  { id: 'salon', label: 'Salón', icon: <Utensils className="w-4 h-4" aria-hidden="true" focusable="false" /> },
+                  { id: 'takeaway', label: 'Take Away', icon: <Coffee className="w-4 h-4" aria-hidden="true" focusable="false" /> }
 
                 ].map(opt => (
                   <button
@@ -321,7 +322,7 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
                           onClick={() => handleRemoveItem(item.preparation_id)}
                           className="w-8 h-8 flex items-center justify-center text-[#7c5641] hover:text-[#1c120c] active:scale-95"
                         >
-                          <Minus className="w-4 h-4" />
+                          <Minus className="w-4 h-4" aria-hidden="true" focusable="false" />
                         </button>
                         <span className="w-8 text-center font-bold text-sm text-[#1c120c]">
                           {item.quantity}
@@ -331,7 +332,7 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
                           onClick={() => handleAddItem(item.preparation_id)}
                           className="w-8 h-8 flex items-center justify-center text-[#7c5641] hover:text-[#1c120c] active:scale-95"
                         >
-                          <Plus className="w-4 h-4" />
+                          <Plus className="w-4 h-4" aria-hidden="true" focusable="false" />
                         </button>
                       </div>
 
@@ -375,7 +376,7 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
             disabled={isSubmitting || selectedItems.length === 0}
             className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#9d3c0c] text-white text-sm font-bold shadow-md shadow-[#9d3c0c]/30 hover:bg-[#7f2b00] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
-            <Check className="w-5 h-5" />
+            <Check className="w-5 h-5" aria-hidden="true" focusable="false" />
             <span>{isSubmitting ? 'Enviando...' : `Crear Comanda ($${totalAmount.toLocaleString('es-AR')})`}</span>
           </button>
         </div>

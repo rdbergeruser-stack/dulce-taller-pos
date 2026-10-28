@@ -76,14 +76,14 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
             level: 'auto_slice',
             label: `0 cortadas (${effective.motherStock} tortas)`,
             badgeClass: 'bg-[#fff8f2] text-[#9d3c0c] border-[#dec0b6] font-bold',
-            icon: <Sparkles className="w-3 h-3 text-[#9d3c0c] shrink-0" />
+            icon: <Sparkles className="w-3 h-3 text-[#9d3c0c] shrink-0" aria-hidden="true" focusable="false" />
           };
         }
         return {
           level: 'out',
           label: 'AGOTADO (0 un.)',
           badgeClass: 'bg-[#ffdad6] text-[#ba1a1a] border-[#ba1a1a]/30 animate-pulse font-extrabold',
-          icon: <AlertOctagon className="w-3 h-3 text-[#ba1a1a] shrink-0" />
+          icon: <AlertOctagon className="w-3 h-3 text-[#ba1a1a] shrink-0" aria-hidden="true" focusable="false" />
         };
       }
       if (stock <= 3) {
@@ -91,14 +91,14 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
           level: 'low',
           label: `${stock} porc. (${effective.motherStock} tortas)`,
           badgeClass: 'bg-[#fef3c7] text-[#92400e] border-[#fde68a] font-bold',
-          icon: <AlertTriangle className="w-3 h-3 text-[#92400e] shrink-0" />
+          icon: <AlertTriangle className="w-3 h-3 text-[#92400e] shrink-0" aria-hidden="true" focusable="false" />
         };
       }
       return {
         level: 'ok',
         label: `${stock} porciones`,
         badgeClass: 'bg-[#ebffe8] text-[#446147] border-[#aecfae] font-semibold',
-        icon: <Check className="w-3 h-3 text-[#446147] shrink-0" />
+        icon: <Check className="w-3 h-3 text-[#446147] shrink-0" aria-hidden="true" focusable="false" />
       };
     }
 
@@ -107,7 +107,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
         level: 'out',
         label: 'AGOTADO (0 un.)',
         badgeClass: 'bg-[#ffdad6] text-[#ba1a1a] border-[#ba1a1a]/30 animate-pulse font-extrabold',
-        icon: <AlertOctagon className="w-3 h-3 text-[#ba1a1a] shrink-0" />
+        icon: <AlertOctagon className="w-3 h-3 text-[#ba1a1a] shrink-0" aria-hidden="true" focusable="false" />
       };
     }
     const lowThreshold = prep.unit_type === 'entera' ? 1 : 3;
@@ -116,14 +116,14 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
         level: 'low',
         label: `Poco Stock (${stock} ${prep.unit_type})`,
         badgeClass: 'bg-[#fef3c7] text-[#92400e] border-[#fde68a] font-bold',
-        icon: <AlertTriangle className="w-3 h-3 text-[#92400e] shrink-0" />
+        icon: <AlertTriangle className="w-3 h-3 text-[#92400e] shrink-0" aria-hidden="true" focusable="false" />
       };
     }
     return {
       level: 'ok',
       label: `${stock} ${prep.unit_type}`,
       badgeClass: 'bg-[#ebffe8] text-[#446147] border-[#aecfae] font-semibold',
-      icon: <Check className="w-3 h-3 text-[#446147] shrink-0" />
+      icon: <Check className="w-3 h-3 text-[#446147] shrink-0" aria-hidden="true" focusable="false" />
     };
   };
 
@@ -134,29 +134,29 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
       case 'pendiente':
         return (
           <span className="flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-[#fef3c7] text-[#92400e] border border-[#fde68a]">
-            <Clock className="w-3.5 h-3.5" /> Pendiente
+            <Clock className="w-3.5 h-3.5" aria-hidden="true" focusable="false" /> Pendiente
           </span>
         );
       case 'en_preparacion':
         return (
           <span className="flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-[#ffdbce] text-[#9d3c0c] border border-[#dec0b6]">
-            <ChefHat className="w-3.5 h-3.5" /> En Preparación
+            <ChefHat className="w-3.5 h-3.5" aria-hidden="true" focusable="false" /> En Preparación
           </span>
         );
       case 'lista':
         return (
           <span className="flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-[#ebffe8] text-[#446147] border border-[#aecfae] animate-pulse">
-            <CheckCircle2 className="w-3.5 h-3.5" /> Lista para Servir
+            <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" focusable="false" /> Lista para Servir
           </span>
         );
       case 'entregada':
         return isPaid ? (
           <span className="flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-[#ebffe8] text-[#446147] border border-[#aecfae]">
-            <CheckCircle2 className="w-3.5 h-3.5" /> Cobrada & Finalizada
+            <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" focusable="false" /> Cobrada & Finalizada
           </span>
         ) : (
           <span className="flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-[#f5ede3] text-[#7c5641] border border-[#dec0b6]">
-            <PackageCheck className="w-3.5 h-3.5" /> Entregada (Pendiente Cobro)
+            <PackageCheck className="w-3.5 h-3.5" aria-hidden="true" focusable="false" /> Entregada (Pendiente Cobro)
           </span>
         );
       default:
@@ -167,9 +167,9 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
   const getOriginIcon = (origin: string) => {
     switch (origin) {
       case 'salon':
-        return <Utensils className="w-4 h-4 text-[#9d3c0c]" />;
+        return <Utensils className="w-4 h-4 text-[#9d3c0c]" aria-hidden="true" focusable="false" />;
       case 'takeaway':
-        return <Coffee className="w-4 h-4 text-[#7c5641]" />;
+        return <Coffee className="w-4 h-4 text-[#7c5641]" aria-hidden="true" focusable="false" />;
 
 
       default:
@@ -199,7 +199,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-[#dec0b6] shadow-sm">
         <div className="flex items-center gap-3">
           <div className="p-3 bg-[#f5ede3] rounded-xl text-[#9d3c0c]">
-            <ChefHat className="w-6 h-6" />
+            <ChefHat className="w-6 h-6" aria-hidden="true" focusable="false" />
           </div>
           <div>
             <h2 className="font-serif font-bold text-xl text-[#1c120c]">
@@ -215,7 +215,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
           onClick={() => setIsModalOpen(true)}
           className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#9d3c0c] text-white text-sm font-bold shadow-md shadow-[#9d3c0c]/25 hover:bg-[#7f2b00] active:scale-95 transition-all"
         >
-          <Plus className="w-5 h-5" />
+          <Plus className="w-5 h-5" aria-hidden="true" focusable="false" />
           <span>+ Nueva Comanda</span>
         </button>
       </div>
@@ -224,9 +224,9 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
       <div className="bg-[#f5ede3] p-4 rounded-2xl border border-[#dec0b6] shadow-sm space-y-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
               Disponibilidad en Vitrina (Stock Cocinado)
-            </span>
+            </h3>
             <span className="text-[10px] px-2 py-0.5 rounded-full bg-white text-[#7c5641] font-semibold border border-[#dec0b6]">
               Tiempo Real
             </span>
@@ -276,7 +276,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
       </div>
 
       {/* Filtros Táctiles Rápidos */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+      <nav aria-label="Filtro de comandas" className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
         {[
           { id: 'activas', label: `Activas (${activeOrders.length})` },
           { id: 'pendiente', label: `Pendientes (${orders.filter(o => o.status === 'pendiente').length})` },
@@ -289,6 +289,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
           <button
             key={filter.id}
             onClick={() => setStatusFilter(filter.id)}
+            aria-pressed={statusFilter === filter.id}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap border ${
               statusFilter === filter.id
                 ? 'bg-[#1c120c] text-white border-[#1c120c]'
@@ -298,7 +299,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
             {filter.label}
           </button>
         ))}
-      </div>
+      </nav>
 
       {/* Grid KDS de Comandas */}
       {isLoading ? (
@@ -307,7 +308,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
         </div>
       ) : filteredOrders.length === 0 ? (
         <div className="p-12 text-center bg-white rounded-2xl border border-dashed border-[#dec0b6] space-y-3">
-          <ChefHat className="w-10 h-10 text-[#dec0b6] mx-auto" />
+          <ChefHat className="w-10 h-10 text-[#dec0b6] mx-auto" aria-hidden="true" focusable="false" />
           <h3 className="font-serif font-bold text-lg text-[#1c120c]">
             No hay comandas en este estado
           </h3>
@@ -341,9 +342,9 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                   <div className="flex items-start justify-between gap-2 pb-3 border-b border-[#dec0b6]/60">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-serif font-bold text-lg text-[#1c120c]">
+                        <h3 className="font-serif font-bold text-lg text-[#1c120c]">
                           #{order.order_number}
-                        </span>
+                        </h3>
                         <span className="flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded bg-[#f5ede3] text-[#1c120c]">
                           {getOriginIcon(order.origin)}
                           <span className="capitalize">{order.origin}</span>
@@ -351,7 +352,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                         </span>
                       </div>
                       <span className="text-xs text-[#7c5641] flex items-center gap-1 mt-1">
-                        <Clock className="w-3 h-3" />
+                        <Clock className="w-3 h-3" aria-hidden="true" focusable="false" />
                         {getTimeAgo(order.created_at)}
                       </span>
                     </div>
@@ -412,7 +413,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                       onClick={() => onUpdateStatus(order.id, 'en_preparacion')}
                       className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#9d3c0c] text-white text-sm font-bold hover:bg-[#7f2b00] active:scale-95 shadow-sm transition-all"
                     >
-                      <ChefHat className="w-4 h-4" />
+                      <ChefHat className="w-4 h-4" aria-hidden="true" focusable="false" />
                       <span>Iniciar Preparación</span>
                     </button>
                   )}
@@ -422,7 +423,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                       onClick={() => onUpdateStatus(order.id, 'lista')}
                       className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#446147] text-white text-sm font-bold hover:bg-[#314d34] active:scale-95 shadow-sm transition-all"
                     >
-                      <CheckCircle2 className="w-4 h-4" />
+                      <CheckCircle2 className="w-4 h-4" aria-hidden="true" focusable="false" />
                       <span>Marcar como Lista</span>
                     </button>
                   )}
@@ -432,9 +433,9 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                       <button
                         onClick={() => onUpdateStatus(order.id, 'entregada')}
                         className="flex items-center justify-center gap-1.5 py-3 rounded-xl bg-[#1c120c] text-white text-xs font-bold hover:bg-black active:scale-95 shadow-sm transition-all"
-                        title="Descuenta del stock de producto cocinado en vitrina"
+                        aria-label="Despachar y entregar comanda"
                       >
-                        <PackageCheck className="w-4 h-4" />
+                        <PackageCheck className="w-4 h-4" aria-hidden="true" focusable="false" />
                         <span>Entregar</span>
                       </button>
 
@@ -442,7 +443,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                         onClick={() => setPayingOrder(order)}
                         className="flex items-center justify-center gap-1.5 py-3 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold hover:bg-[#7f2b00] active:scale-95 shadow-sm transition-all"
                       >
-                        <Banknote className="w-4 h-4" />
+                        <Banknote className="w-4 h-4" aria-hidden="true" focusable="false" />
                         <span>Cobrar</span>
                       </button>
                     </div>
@@ -453,14 +454,14 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                       onClick={() => setPayingOrder(order)}
                       className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#9d3c0c] text-white text-sm font-bold hover:bg-[#7f2b00] active:scale-95 shadow-md shadow-[#9d3c0c]/20 transition-all"
                     >
-                      <Banknote className="w-5 h-5" />
+                      <Banknote className="w-5 h-5" aria-hidden="true" focusable="false" />
                       <span>Cobrar Cuenta (${total.toLocaleString('es-AR')})</span>
                     </button>
                   )}
 
                   {order.status === 'entregada' && isPaid && (
                     <div className="text-center py-2 px-3 rounded-xl bg-[#ebffe8] border border-[#aecfae] text-xs font-bold text-[#446147] flex items-center justify-center gap-1.5">
-                      <CheckCircle2 className="w-4 h-4" />
+                      <CheckCircle2 className="w-4 h-4" aria-hidden="true" focusable="false" />
                       <span>Cuenta Cobrada • Comprobante Emitido</span>
                     </div>
                   )}
