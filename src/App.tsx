@@ -20,6 +20,8 @@ import { RawMaterial, Preparation, Order, StockMovement, PurchaseListItem, Order
 function MainApp() {
   const { user, isAdmin, role } = useAuth();
   const [activeTab, setActiveTab] = useState<ActiveTab>('orders');
+  const [productionInitialPrepId, setProductionInitialPrepId] = useState<string | undefined>(undefined);
+  const [inventoryInitialSubTab, setInventoryInitialSubTab] = useState<'vitrina' | 'stock' | 'kardex'>('vitrina');
 
   // Estados de datos
   const [materials, setMaterials] = useState<RawMaterial[]>([]);
@@ -159,6 +161,37 @@ function MainApp() {
     await loadAllData();
   };
 
+  // Navegación contextual desde Notificaciones
+  const handleNavigateToProduction = (preparationId: string) => {
+    if (role === 'mozo') {
+      showToast('Acceso exclusivo para rol Administrador / Cocina', 'info');
+      return;
+    }
+    setProductionInitialPrepId(preparationId);
+    setActiveTab('production');
+  };
+
+  const handleNavigateToInventory = (subTab: 'vitrina' | 'stock' | 'kardex') => {
+    if (role === 'mozo') {
+      showToast('Acceso exclusivo para rol Administrador / Stock', 'info');
+      return;
+    }
+    setInventoryInitialSubTab(subTab);
+    setActiveTab('inventory');
+  };
+
+  const handleNavigateToPurchases = () => {
+    if (role === 'mozo') {
+      showToast('Acceso exclusivo para rol Administrador', 'info');
+      return;
+    }
+    setActiveTab('purchases');
+  };
+
+  const handleNavigateToOrders = () => {
+    setActiveTab('orders');
+  };
+
   const lowStockCount = inventoryService.getLowStockAlerts(materials).length;
   const outOfStockVitrinaCount = preparations.filter(p => (p.stock_available || 0) <= 0).length;
   const lowStockVitrinaCount = preparations.filter(p => {
@@ -190,6 +223,12 @@ function MainApp() {
         lowStockCount={lowStockCount} 
         outOfStockVitrinaCount={outOfStockVitrinaCount}
         lowStockVitrinaCount={lowStockVitrinaCount}
+        materials={materials}
+        preparations={preparations}
+        onNavigateToProduction={handleNavigateToProduction}
+        onNavigateToInventory={handleNavigateToInventory}
+        onNavigateToPurchases={handleNavigateToPurchases}
+        onNavigateToOrders={handleNavigateToOrders}
       />
 
       {/* Navegación Táctil para Tablet */}
@@ -216,6 +255,7 @@ function MainApp() {
           <ProductionView
             preparations={preparations}
             materials={materials}
+            initialPreparationId={productionInitialPrepId}
             onProductionCompleted={loadAllData}
           />
         )}
@@ -233,6 +273,7 @@ function MainApp() {
             materials={materials}
             movements={movements}
             preparations={preparations}
+            initialSubTab={inventoryInitialSubTab}
             onAddMaterial={handleAddMaterial}
             onAdjustStock={handleAdjustStock}
             onAdjustPrepStock={handleAdjustPrepStock}

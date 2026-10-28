@@ -6,22 +6,33 @@ import { CookingPot, CheckCircle, AlertOctagon, ShieldCheck } from 'lucide-react
 interface ProductionViewProps {
   preparations: Preparation[];
   materials: RawMaterial[];
+  initialPreparationId?: string;
   onProductionCompleted: () => Promise<void>;
 }
 
 export const ProductionView: React.FC<ProductionViewProps> = ({
   preparations,
   materials,
+  initialPreparationId,
   onProductionCompleted
 }) => {
   const produciblePreparations = preparations.filter(p => p.unit_type !== 'porcion');
-  const [selectedPrepId, setSelectedPrepId] = useState<string>(produciblePreparations[0]?.id || preparations[0]?.id || '');
+  const [selectedPrepId, setSelectedPrepId] = useState<string>(
+    initialPreparationId || produciblePreparations[0]?.id || preparations[0]?.id || ''
+  );
   const [quantity, setQuantity] = useState<number>(1);
   const [notes, setNotes] = useState<string>('');
   const [requirements, setRequirements] = useState<ProductionRequirementPreview[]>([]);
   const [canProduce, setCanProduce] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [resultMessage, setResultMessage] = useState<{ type: 'success' | 'error'; text: string; batch?: string } | null>(null);
+
+  // Sincronizar selección si cambia initialPreparationId desde una notificación externa
+  useEffect(() => {
+    if (initialPreparationId && produciblePreparations.some(p => p.id === initialPreparationId)) {
+      setSelectedPrepId(initialPreparationId);
+    }
+  }, [initialPreparationId]);
 
   // Asegurar que si cambian las preparaciones o está seleccionada una porción, seleccione una preparación válida
   useEffect(() => {

@@ -20,6 +20,7 @@ interface InventoryViewProps {
   materials: RawMaterial[];
   movements: StockMovement[];
   preparations: Preparation[];
+  initialSubTab?: 'vitrina' | 'stock' | 'kardex';
   onAddMaterial: (mat: Omit<RawMaterial, 'id'>) => Promise<void>;
   onAdjustStock: (id: string, newStock: number, reason: string, newMinStock?: number) => Promise<void>;
   onAdjustPrepStock: (id: string, newStock: number, reason: string) => Promise<void>;
@@ -33,9 +34,16 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
   onAddMaterial,
   onAdjustStock,
   onAdjustPrepStock,
+  initialSubTab,
   onRefresh
 }) => {
-  const [subTab, setSubTab] = useState<'vitrina' | 'stock' | 'kardex'>('vitrina');
+  const [subTab, setSubTab] = useState<'vitrina' | 'stock' | 'kardex'>(initialSubTab || 'vitrina');
+
+  React.useEffect(() => {
+    if (initialSubTab) {
+      setSubTab(initialSubTab);
+    }
+  }, [initialSubTab]);
   const [selectedMaterial, setSelectedMaterial] = useState<RawMaterial | null>(null);
   const [selectedPrep, setSelectedPrep] = useState<Preparation | null>(null);
   const [newStockValue, setNewStockValue] = useState<string>('');
