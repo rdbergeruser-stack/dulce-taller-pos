@@ -124,9 +124,13 @@ function MainApp() {
     await loadAllData();
   };
 
-  const handleAdjustStock = async (id: string, newStock: number, reason: string) => {
-    await inventoryService.updateRawMaterial(id, { current_stock: newStock }, user.id, reason);
-    showToast('Stock de materia prima ajustado.');
+  const handleAdjustStock = async (id: string, newStock: number, reason: string, newMinStock?: number) => {
+    const updates: Partial<RawMaterial> = { current_stock: newStock };
+    if (newMinStock !== undefined) {
+      updates.min_stock = newMinStock;
+    }
+    await inventoryService.updateRawMaterial(id, updates, user.id, reason);
+    showToast('Stock y niveles de alerta de materia prima actualizados.');
     await loadAllData();
   };
 

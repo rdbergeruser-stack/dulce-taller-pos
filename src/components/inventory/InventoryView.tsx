@@ -9,7 +9,10 @@ import {
   Cake,
   Sparkles,
   Coffee,
-  CheckCircle2
+  CheckCircle2,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown
 } from 'lucide-react';
 import { portionService, getEffectiveAvailableStock } from '../../services/portionService';
 
@@ -18,7 +21,7 @@ interface InventoryViewProps {
   movements: StockMovement[];
   preparations: Preparation[];
   onAddMaterial: (mat: Omit<RawMaterial, 'id'>) => Promise<void>;
-  onAdjustStock: (id: string, newStock: number, reason: string) => Promise<void>;
+  onAdjustStock: (id: string, newStock: number, reason: string, newMinStock?: number) => Promise<void>;
   onAdjustPrepStock: (id: string, newStock: number, reason: string) => Promise<void>;
   onRefresh?: () => Promise<void>;
 }
@@ -36,7 +39,35 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
   const [selectedMaterial, setSelectedMaterial] = useState<RawMaterial | null>(null);
   const [selectedPrep, setSelectedPrep] = useState<Preparation | null>(null);
   const [newStockValue, setNewStockValue] = useState<string>('');
+  const [newMinStockValue, setNewMinStockValue] = useState<string>('');
   const [adjustReason, setAdjustReason] = useState<string>('');
+
+  // Ordenamiento de tabla de Materias Primas
+  type RawMaterialSortField = 'name' | 'unit' | 'current_stock' | 'min_stock' | 'unit_cost' | 'status';
+  type SortDirection = 'asc' | 'desc';
+
+  const [sortField, setSortField] = useState<RawMaterialSortField>('name');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+
+  const handleSort = (field: RawMaterialSortField) => {
+    if (sortField === field) {
+      setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const renderSortIcon = (field: RawMaterialSortField) => {
+    if (sortField !== field) {
+      return <ArrowUpDown className="w-3.5 h-3.5 opacity-40 group-hover:opacity-100 transition-opacity" aria-hidden="true" focusable="false" />;
+    }
+    return sortDirection === 'asc' ? (
+      <ArrowUp className="w-3.5 h-3.5 text-[#9d3c0c]" aria-hidden="true" focusable="false" />
+    ) : (
+      <ArrowDown className="w-3.5 h-3.5 text-[#9d3c0c]" aria-hidden="true" focusable="false" />
+    );
+  };
   const [isNewMatModalOpen, setIsNewMatModalOpen] = useState(false);
   const [sliceNotice, setSliceNotice] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [isSlicing, setIsSlicing] = useState(false);
@@ -56,6 +87,29 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
     const s = p.stock_available || 0;
     const threshold = p.unit_type === 'entera' ? 1 : 3;
     return s > 0 && s <= threshold;
+  });
+
+  const sortedMaterials = [...materials].sort((a, b) => {
+    let comparison = 0;
+    if (sortField === 'name') {
+      comparison = a.name.localeCompare(b.name, 'es', { sensitivity: 'base' });
+    } else if (sortField === 'unit') {
+      comparison = a.unit.localeCompare(b.unit, 'es', { sensitivity: 'base' });
+    } else if (sortField === 'current_stock') {
+      comparison = a.current_stock - b.current_stock;
+    } else if (sortField === 'min_stock') {
+      comparison = a.min_stock - b.min_stock;
+    } else if (sortField === 'unit_cost') {
+      comparison = a.unit_cost - b.unit_cost;
+    } else if (sortField === 'status') {
+      const getRank = (m: RawMaterial) => {
+        if (m.current_stock <= 0) return 0;
+        if (m.current_stock <= m.min_stock) return 1;
+        return 2;
+      };
+      comparison = getRank(a) - getRank(b);
+    }
+    return sortDirection === 'asc' ? comparison : -comparison;
   });
 
   const getRawMaterialStatus = (mat: RawMaterial) => {
@@ -90,6 +144,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
     setSelectedMaterial(mat);
     setSelectedPrep(null);
     setNewStockValue(mat.current_stock.toString());
+    setNewMinStockValue(mat.min_stock.toString());
     setAdjustReason('Reingreso o ajuste físico de inventario');
   };
 
@@ -97,6 +152,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
     setSelectedPrep(prep);
     setSelectedMaterial(null);
     setNewStockValue(prep.stock_available.toString());
+    setNewMinStockValue('');
     setAdjustReason('Ajuste de vitrina / Registro de merma');
   };
 
@@ -104,12 +160,17 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
     e.preventDefault();
     const num = parseFloat(newStockValue);
     if (isNaN(num) || num < 0) {
-      alert('Ingresa una cantidad válida mayor o igual a 0');
+      alert('Ingresa una cantidad de stock válida mayor o igual a 0');
       return;
     }
 
     if (selectedMaterial) {
-      await onAdjustStock(selectedMaterial.id, num, adjustReason);
+      const minNum = parseFloat(newMinStockValue);
+      if (isNaN(minNum) || minNum < 0) {
+        alert('Ingresa un nivel de alerta / stock mínimo válido mayor o igual a 0');
+        return;
+      }
+      await onAdjustStock(selectedMaterial.id, num, adjustReason, minNum);
       setSelectedMaterial(null);
     } else if (selectedPrep) {
       await onAdjustPrepStock(selectedPrep.id, num, adjustReason);
@@ -425,17 +486,77 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
               <thead>
                 <tr className="bg-[#f5ede3] border-b border-[#dec0b6] text-[#7c5641] text-xs uppercase tracking-wider font-bold">
                   <th className="py-3.5 px-4">Código</th>
-                  <th className="py-3.5 px-4">Materia Prima</th>
-                  <th className="py-3.5 px-4">Unidad</th>
-                  <th className="py-3.5 px-4">Stock Actual</th>
-                  <th className="py-3.5 px-4">Stock Mínimo</th>
-                  <th className="py-3.5 px-4">Costo Unit.</th>
-                  <th className="py-3.5 px-4 text-center">Estado</th>
+                  <th className="py-3.5 px-4">
+                    <button
+                      type="button"
+                      onClick={() => handleSort('name')}
+                      className="inline-flex items-center gap-1.5 font-bold uppercase tracking-wider text-[#7c5641] hover:text-[#9d3c0c] transition-colors group focus:outline-none focus:ring-1 focus:ring-[#9d3c0c] rounded"
+                      aria-label={`Ordenar por Materia Prima ${sortField === 'name' ? (sortDirection === 'asc' ? 'descendente' : 'ascendente') : 'ascendente'}`}
+                    >
+                      <span>Materia Prima</span>
+                      {renderSortIcon('name')}
+                    </button>
+                  </th>
+                  <th className="py-3.5 px-4">
+                    <button
+                      type="button"
+                      onClick={() => handleSort('unit')}
+                      className="inline-flex items-center gap-1.5 font-bold uppercase tracking-wider text-[#7c5641] hover:text-[#9d3c0c] transition-colors group focus:outline-none focus:ring-1 focus:ring-[#9d3c0c] rounded"
+                      aria-label={`Ordenar por Unidad ${sortField === 'unit' ? (sortDirection === 'asc' ? 'descendente' : 'ascendente') : 'ascendente'}`}
+                    >
+                      <span>Unidad</span>
+                      {renderSortIcon('unit')}
+                    </button>
+                  </th>
+                  <th className="py-3.5 px-4">
+                    <button
+                      type="button"
+                      onClick={() => handleSort('current_stock')}
+                      className="inline-flex items-center gap-1.5 font-bold uppercase tracking-wider text-[#7c5641] hover:text-[#9d3c0c] transition-colors group focus:outline-none focus:ring-1 focus:ring-[#9d3c0c] rounded"
+                      aria-label={`Ordenar por Stock Actual ${sortField === 'current_stock' ? (sortDirection === 'asc' ? 'descendente' : 'ascendente') : 'ascendente'}`}
+                    >
+                      <span>Stock Actual</span>
+                      {renderSortIcon('current_stock')}
+                    </button>
+                  </th>
+                  <th className="py-3.5 px-4">
+                    <button
+                      type="button"
+                      onClick={() => handleSort('min_stock')}
+                      className="inline-flex items-center gap-1.5 font-bold uppercase tracking-wider text-[#7c5641] hover:text-[#9d3c0c] transition-colors group focus:outline-none focus:ring-1 focus:ring-[#9d3c0c] rounded"
+                      aria-label={`Ordenar por Stock Mínimo ${sortField === 'min_stock' ? (sortDirection === 'asc' ? 'descendente' : 'ascendente') : 'ascendente'}`}
+                    >
+                      <span>Stock Mínimo</span>
+                      {renderSortIcon('min_stock')}
+                    </button>
+                  </th>
+                  <th className="py-3.5 px-4">
+                    <button
+                      type="button"
+                      onClick={() => handleSort('unit_cost')}
+                      className="inline-flex items-center gap-1.5 font-bold uppercase tracking-wider text-[#7c5641] hover:text-[#9d3c0c] transition-colors group focus:outline-none focus:ring-1 focus:ring-[#9d3c0c] rounded"
+                      aria-label={`Ordenar por Costo Unitario ${sortField === 'unit_cost' ? (sortDirection === 'asc' ? 'descendente' : 'ascendente') : 'ascendente'}`}
+                    >
+                      <span>Costo Unit.</span>
+                      {renderSortIcon('unit_cost')}
+                    </button>
+                  </th>
+                  <th className="py-3.5 px-4 text-center">
+                    <button
+                      type="button"
+                      onClick={() => handleSort('status')}
+                      className="inline-flex items-center justify-center gap-1.5 font-bold uppercase tracking-wider text-[#7c5641] hover:text-[#9d3c0c] transition-colors group focus:outline-none focus:ring-1 focus:ring-[#9d3c0c] rounded mx-auto"
+                      aria-label={`Ordenar por Estado ${sortField === 'status' ? (sortDirection === 'asc' ? 'descendente' : 'ascendente') : 'ascendente'}`}
+                    >
+                      <span>Estado</span>
+                      {renderSortIcon('status')}
+                    </button>
+                  </th>
                   <th className="py-3.5 px-4 text-right">Acción</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#dec0b6]/50 font-medium">
-                {materials.map(mat => {
+                {sortedMaterials.map(mat => {
                   const status = getRawMaterialStatus(mat);
                   return (
                     <tr
@@ -591,6 +712,29 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                   required
                 />
               </div>
+
+              {selectedMaterial && (
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label htmlFor="inv-adj-minstock" className="text-xs font-bold text-[#7c5641]">
+                      Nivel de Alerta / Stock Mínimo ({selectedMaterial.unit})
+                    </label>
+                    <span className="text-xs text-[#7c5641] font-medium">Umbral crítico</span>
+                  </div>
+                  <input
+                    id="inv-adj-minstock"
+                    type="number"
+                    step="any"
+                    value={newMinStockValue}
+                    onChange={(e) => setNewMinStockValue(e.target.value)}
+                    className="w-full px-3 py-2.5 rounded-xl border border-[#dec0b6] bg-white text-base font-bold text-[#1c120c] focus:outline-none focus:ring-2 focus:ring-[#9d3c0c]"
+                    required
+                  />
+                  <p className="text-xs text-[#7c5641]">
+                    El sistema alertará en amarillo si el stock cae por debajo de este valor, o en rojo si se agota (0).
+                  </p>
+                </div>
+              )}
 
               <div className="space-y-1.5">
                 <label htmlFor="inv-adj-reason" className="text-xs font-bold text-[#7c5641]">
