@@ -12,7 +12,8 @@ import {
   CheckCircle2,
   ArrowUpDown,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  Search
 } from 'lucide-react';
 import { portionService, getEffectiveAvailableStock } from '../../services/portionService';
 
@@ -21,6 +22,7 @@ interface InventoryViewProps {
   movements: StockMovement[];
   preparations: Preparation[];
   initialSubTab?: 'vitrina' | 'stock' | 'kardex';
+  highlightMaterialId?: string;
   onAddMaterial: (mat: Omit<RawMaterial, 'id'>) => Promise<void>;
   onAdjustStock: (id: string, newStock: number, reason: string, newMinStock?: number) => Promise<void>;
   onAdjustPrepStock: (id: string, newStock: number, reason: string) => Promise<void>;
@@ -35,15 +37,30 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
   onAdjustStock,
   onAdjustPrepStock,
   initialSubTab,
+  highlightMaterialId,
   onRefresh
 }) => {
   const [subTab, setSubTab] = useState<'vitrina' | 'stock' | 'kardex'>(initialSubTab || 'vitrina');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [focusedMatId, setFocusedMatId] = useState<string | null>(null);
 
   React.useEffect(() => {
     if (initialSubTab) {
       setSubTab(initialSubTab);
     }
   }, [initialSubTab]);
+
+  React.useEffect(() => {
+    if (highlightMaterialId) {
+      setSubTab('stock');
+      setFocusedMatId(highlightMaterialId);
+      const target = materials.find(m => m.id === highlightMaterialId);
+      if (target) {
+        setSearchQuery(target.name);
+        handleOpenAdjust(target);
+      }
+    }
+  }, [highlightMaterialId, materials]);
   const [selectedMaterial, setSelectedMaterial] = useState<RawMaterial | null>(null);
   const [selectedPrep, setSelectedPrep] = useState<Preparation | null>(null);
   const [newStockValue, setNewStockValue] = useState<string>('');
@@ -118,6 +135,12 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
       comparison = getRank(a) - getRank(b);
     }
     return sortDirection === 'asc' ? comparison : -comparison;
+  });
+
+  const filteredMaterials = sortedMaterials.filter(m => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return m.name.toLowerCase().includes(q) || m.code.toLowerCase().includes(q);
   });
 
   const getRawMaterialStatus = (mat: RawMaterial) => {
@@ -489,6 +512,45 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
       {/* SUBTAB 2: LISTADO DE MATERIAS PRIMAS */}
       {subTab === 'stock' && (
         <div className="bg-white rounded-2xl border border-[#dec0b6] overflow-hidden shadow-sm">
+          {/* Barra de Filtro y Búsqueda */}
+          <div className="p-3.5 bg-[#f5ede3]/60 border-b border-[#dec0b6] flex flex-wrap items-center justify-between gap-3">
+            <div className="relative flex-1 min-w-[240px] max-w-md">
+              <Search className="w-4 h-4 text-[#7c5641] absolute left-3 top-1/2 -translate-y-1/2" aria-hidden="true" focusable="false" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Filtrar materias primas por nombre o código..."
+                className="w-full pl-9 pr-8 py-2 rounded-xl border border-[#dec0b6] bg-white text-xs text-[#1c120c] placeholder-[#7c5641]/60 focus:outline-none focus:ring-2 focus:ring-[#9d3c0c]"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#7c5641] hover:text-[#1c120c] p-0.5 rounded-full"
+                  aria-label="Limpiar filtro de búsqueda"
+                >
+                  <X className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
+                </button>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2">
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="px-3 py-1.5 rounded-lg border border-[#dec0b6] bg-white text-xs font-bold text-[#9d3c0c] hover:bg-[#ffdbce] transition-all"
+                >
+                  Mostrar todas ({materials.length})
+                </button>
+              )}
+              <span className="text-xs text-[#7c5641] font-semibold">
+                Mostrando {filteredMaterials.length} de {materials.length} materias primas
+              </span>
+            </div>
+          </div>
+
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-sm">
               <thead>
@@ -564,12 +626,15 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#dec0b6]/50 font-medium">
-                {sortedMaterials.map(mat => {
+                {filteredMaterials.map(mat => {
                   const status = getRawMaterialStatus(mat);
+                  const isHighlighted = focusedMatId === mat.id;
                   return (
                     <tr
                       key={mat.id}
-                      className={`transition-colors ${status.rowClass}`}
+                      className={`transition-colors ${status.rowClass} ${
+                        isHighlighted ? 'ring-2 ring-inset ring-[#9d3c0c] bg-[#ffdbce]/40' : ''
+                      }`}
                     >
                       <td className="py-3.5 px-4 text-xs font-bold font-mono text-[#7c5641]">
                         {mat.code}

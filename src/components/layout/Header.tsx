@@ -11,9 +11,10 @@ interface HeaderProps {
   materials?: RawMaterial[];
   preparations?: Preparation[];
   onNavigateToProduction?: (preparationId: string) => void;
-  onNavigateToInventory?: (subTab: 'vitrina' | 'stock' | 'kardex') => void;
+  onNavigateToInventory?: (subTab: 'vitrina' | 'stock' | 'kardex', materialId?: string) => void;
   onNavigateToPurchases?: () => void;
-  onNavigateToOrders?: () => void;
+  onNavigateToOrders?: (focusVitrina?: boolean) => void;
+  onSendKitchenNotice?: (itemName: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({ 
@@ -25,7 +26,8 @@ export const Header: React.FC<HeaderProps> = ({
   onNavigateToProduction,
   onNavigateToInventory,
   onNavigateToPurchases,
-  onNavigateToOrders
+  onNavigateToOrders,
+  onSendKitchenNotice
 }) => {
   const { user, isAdmin, logout } = useAuth();
   const [time, setTime] = useState<string>('');
@@ -181,6 +183,7 @@ export const Header: React.FC<HeaderProps> = ({
         onNavigateToInventory={onNavigateToInventory}
         onNavigateToPurchases={onNavigateToPurchases}
         onNavigateToOrders={onNavigateToOrders}
+        onSendKitchenNotice={onSendKitchenNotice}
       />
     </>
   );

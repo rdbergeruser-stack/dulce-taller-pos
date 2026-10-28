@@ -8,7 +8,8 @@ import {
   Package, 
   ShoppingCart, 
   CheckCircle2, 
-  Eye
+  Eye,
+  Send
 } from 'lucide-react';
 import { findMotherPreparation, getEffectiveAvailableStock } from '../../services/portionService';
 import { useAuth } from '../../contexts/AuthContext';
@@ -20,9 +21,10 @@ export interface NotificationsModalProps {
   preparations: Preparation[];
   initialFilter?: 'all' | 'vitrina' | 'materials';
   onNavigateToProduction?: (preparationId: string) => void;
-  onNavigateToInventory?: (subTab: 'vitrina' | 'stock' | 'kardex') => void;
+  onNavigateToInventory?: (subTab: 'vitrina' | 'stock' | 'kardex', materialId?: string) => void;
   onNavigateToPurchases?: () => void;
-  onNavigateToOrders?: () => void;
+  onNavigateToOrders?: (focusVitrina?: boolean) => void;
+  onSendKitchenNotice?: (itemName: string) => void;
 }
 
 export const NotificationsModal: React.FC<NotificationsModalProps> = ({
@@ -34,10 +36,12 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
   onNavigateToProduction,
   onNavigateToInventory,
   onNavigateToPurchases,
-  onNavigateToOrders
+  onNavigateToOrders,
+  onSendKitchenNotice
 }) => {
   const { isAdmin } = useAuth();
   const [filter, setFilter] = useState<'all' | 'vitrina' | 'materials'>(initialFilter);
+  const [sentNotices, setSentNotices] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (isOpen) {
@@ -100,6 +104,13 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
     if (callback) {
       callback();
       onClose();
+    }
+  };
+
+  const handleSendNotice = (item: RawMaterial) => {
+    setSentNotices(prev => ({ ...prev, [item.id]: true }));
+    if (onSendKitchenNotice) {
+      onSendKitchenNotice(item.name);
     }
   };
 
@@ -276,8 +287,9 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
                             ) : (
                               <button
                                 type="button"
-                                onClick={() => handleAction(() => onNavigateToOrders?.())}
-                                className="px-3 py-2 rounded-xl border border-[#dec0b6] bg-white text-[#7c5641] text-xs font-bold hover:bg-[#efe7dd] active:scale-95 transition-all flex items-center gap-1.5"
+                                onClick={() => handleAction(() => onNavigateToOrders?.(true))}
+                                className="px-3 py-2 rounded-xl border border-[#9d3c0c] bg-white text-[#9d3c0c] text-xs font-bold hover:bg-[#ffdbce] active:scale-95 transition-all flex items-center gap-1.5 shadow-xs"
+                                title="Ir a la pantalla de comandas y enfocar la disponibilidad de vitrina"
                               >
                                 <Eye className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
                                 <span>Ver en Vitrina</span>
@@ -346,9 +358,9 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
                             <>
                               <button
                                 type="button"
-                                onClick={() => handleAction(() => onNavigateToInventory?.('stock'))}
+                                onClick={() => handleAction(() => onNavigateToInventory?.('stock', item.id))}
                                 className="px-2.5 py-1.5 rounded-xl border border-[#dec0b6] bg-white text-xs font-bold text-[#9d3c0c] hover:bg-[#ffdbce] active:scale-95 transition-all flex items-center gap-1"
-                                title="Ver en tabla de inventario para ajustar stock o alerta"
+                                title="Abrir ajuste de stock y alerta para este insumo"
                               >
                                 <Package className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
                                 <span>Ajustar Stock</span>
@@ -364,9 +376,22 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
                               </button>
                             </>
                           ) : (
-                            <span className="text-xs font-semibold text-[#7c5641] bg-white px-2 py-1 rounded-lg border border-[#dec0b6]">
-                              Aviso a Cocina
-                            </span>
+                            sentNotices[item.id] ? (
+                              <span className="text-xs font-bold text-[#446147] bg-[#ebffe8] px-2.5 py-1.5 rounded-xl border border-[#aecfae] flex items-center gap-1 shadow-xs">
+                                <CheckCircle2 className="w-3.5 h-3.5 text-[#446147]" aria-hidden="true" focusable="false" />
+                                <span>Aviso Enviado</span>
+                              </span>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => handleSendNotice(item)}
+                                className="px-2.5 py-1.5 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold hover:bg-[#7f2b00] active:scale-95 transition-all flex items-center gap-1.5 shadow-xs"
+                                title="Enviar aviso a la cocina y administración sobre este insumo crítico"
+                              >
+                                <Send className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
+                                <span>Avisar a Cocina</span>
+                              </button>
+                            )
                           )}
                         </div>
                       </div>

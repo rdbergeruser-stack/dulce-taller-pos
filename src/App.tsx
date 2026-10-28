@@ -22,6 +22,7 @@ function MainApp() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('orders');
   const [productionInitialPrepId, setProductionInitialPrepId] = useState<string | undefined>(undefined);
   const [inventoryInitialSubTab, setInventoryInitialSubTab] = useState<'vitrina' | 'stock' | 'kardex'>('vitrina');
+  const [inventoryHighlightMaterialId, setInventoryHighlightMaterialId] = useState<string | undefined>(undefined);
 
   // Estados de datos
   const [materials, setMaterials] = useState<RawMaterial[]>([]);
@@ -171,12 +172,13 @@ function MainApp() {
     setActiveTab('production');
   };
 
-  const handleNavigateToInventory = (subTab: 'vitrina' | 'stock' | 'kardex') => {
+  const handleNavigateToInventory = (subTab: 'vitrina' | 'stock' | 'kardex', materialId?: string) => {
     if (role === 'mozo') {
       showToast('Acceso exclusivo para rol Administrador / Stock', 'info');
       return;
     }
     setInventoryInitialSubTab(subTab);
+    setInventoryHighlightMaterialId(materialId);
     setActiveTab('inventory');
   };
 
@@ -188,8 +190,24 @@ function MainApp() {
     setActiveTab('purchases');
   };
 
-  const handleNavigateToOrders = () => {
+  const handleNavigateToOrders = (focusVitrina?: boolean) => {
     setActiveTab('orders');
+    if (focusVitrina) {
+      setTimeout(() => {
+        const el = document.getElementById('vitrina-disponibilidad');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.classList.add('ring-4', 'ring-[#9d3c0c]', 'shadow-lg');
+          setTimeout(() => {
+            el.classList.remove('ring-4', 'ring-[#9d3c0c]', 'shadow-lg');
+          }, 2000);
+        }
+      }, 150);
+    }
+  };
+
+  const handleSendKitchenNotice = (itemName: string) => {
+    showToast(`🔔 Aviso registrado para cocina y admin: "${itemName}" en nivel crítico.`, 'info');
   };
 
   const lowStockCount = inventoryService.getLowStockAlerts(materials).length;
@@ -229,6 +247,7 @@ function MainApp() {
         onNavigateToInventory={handleNavigateToInventory}
         onNavigateToPurchases={handleNavigateToPurchases}
         onNavigateToOrders={handleNavigateToOrders}
+        onSendKitchenNotice={handleSendKitchenNotice}
       />
 
       {/* Navegación Táctil para Tablet */}
@@ -274,6 +293,7 @@ function MainApp() {
             movements={movements}
             preparations={preparations}
             initialSubTab={inventoryInitialSubTab}
+            highlightMaterialId={inventoryHighlightMaterialId}
             onAddMaterial={handleAddMaterial}
             onAdjustStock={handleAdjustStock}
             onAdjustPrepStock={handleAdjustPrepStock}

@@ -221,7 +221,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
       </div>
 
       {/* Franja de Disponibilidad en Vitrina (Stock Elaborado) con Alertas Inteligentes */}
-      <div className="bg-[#f5ede3] p-4 rounded-2xl border border-[#dec0b6] shadow-sm space-y-2">
+      <div id="vitrina-disponibilidad" className="bg-[#f5ede3] p-4 rounded-2xl border border-[#dec0b6] shadow-sm space-y-2 transition-all duration-500">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <h3 className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
