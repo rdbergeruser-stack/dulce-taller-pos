@@ -49,7 +49,7 @@ export const PurchasesView: React.FC<PurchasesViewProps> = ({
       <div className="bg-white p-4 rounded-2xl border border-[#dec0b6] shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="p-3 bg-[#f5ede3] text-[#9d3c0c] rounded-xl">
-            <ShoppingCart className="w-6 h-6" />
+            <ShoppingCart className="w-6 h-6" aria-hidden="true" focusable="false" />
           </div>
           <div>
             <h2 className="font-serif font-bold text-xl text-[#1c120c]">
@@ -66,14 +66,14 @@ export const PurchasesView: React.FC<PurchasesViewProps> = ({
             onClick={onRefreshSuggestions}
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#dec0b6] text-xs font-bold text-[#7c5641] hover:bg-[#efe7dd] active:scale-95 transition-all"
           >
-            <RefreshCw className="w-3.5 h-3.5" />
+            <RefreshCw className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
             <span>Actualizar Sugerencias</span>
           </button>
           <button
             onClick={() => setIsNewItemModalOpen(true)}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold shadow-sm hover:bg-[#7f2b00] active:scale-95 transition-all"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4" aria-hidden="true" focusable="false" />
             <span>+ Agregar Ítem</span>
           </button>
         </div>
@@ -120,6 +120,7 @@ export const PurchasesView: React.FC<PurchasesViewProps> = ({
                         <input
                           type="number"
                           step="any"
+                          aria-label={`Cantidad a comprar de ${item.item_name}`}
                           value={item.quantity_to_buy}
                           onChange={(e) => onUpdateItem(item.id, { quantity_to_buy: parseFloat(e.target.value) || 0 })}
                           className="w-24 px-2.5 py-1.5 rounded-lg border border-[#dec0b6] bg-white font-bold text-[#1c120c] focus:outline-none focus:ring-1 focus:ring-[#9d3c0c]"
@@ -135,7 +136,7 @@ export const PurchasesView: React.FC<PurchasesViewProps> = ({
                         onClick={() => onUpdateItem(item.id, { is_purchased: true })}
                         className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#ebffe8] text-[#446147] border border-[#aecfae] text-xs font-bold hover:bg-[#d5f5d3] active:scale-95 transition-all mx-auto"
                       >
-                        <Check className="w-3.5 h-3.5" />
+                        <Check className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
                         <span>Comprado</span>
                       </button>
                     </td>
@@ -155,15 +156,16 @@ export const PurchasesView: React.FC<PurchasesViewProps> = ({
               <h3 className="font-serif font-bold text-lg text-[#1c120c]">
                 Agregar Ítem a la Lista de Compras
               </h3>
-              <button onClick={() => setIsNewItemModalOpen(false)}>
-                <X className="w-5 h-5 text-[#7c5641]" />
+              <button onClick={() => setIsNewItemModalOpen(false)} aria-label="Cerrar modal">
+                <X className="w-5 h-5 text-[#7c5641]" aria-hidden="true" focusable="false" />
               </button>
             </div>
 
             <form onSubmit={handleCreateManual} className="p-5 space-y-4">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#7c5641]">Descripción / Insumo</label>
+                <label htmlFor="purch-item-name" className="text-xs font-bold text-[#7c5641]">Descripción / Insumo</label>
                 <input
+                  id="purch-item-name"
                   type="text"
                   value={newItemName}
                   onChange={(e) => setNewItemName(e.target.value)}
@@ -175,8 +177,9 @@ export const PurchasesView: React.FC<PurchasesViewProps> = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#7c5641]">Cantidad a Comprar</label>
+                  <label htmlFor="purch-qty" className="text-xs font-bold text-[#7c5641]">Cantidad a Comprar</label>
                   <input
+                    id="purch-qty"
                     type="number"
                     value={newQty}
                     onChange={(e) => setNewQty(e.target.value)}
@@ -185,8 +188,9 @@ export const PurchasesView: React.FC<PurchasesViewProps> = ({
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#7c5641]">Unidad</label>
+                  <label htmlFor="purch-unit" className="text-xs font-bold text-[#7c5641]">Unidad</label>
                   <select
+                    id="purch-unit"
                     value={newUnit}
                     onChange={(e) => setNewUnit(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl border border-[#dec0b6] bg-white text-xs font-bold"
@@ -202,8 +206,9 @@ export const PurchasesView: React.FC<PurchasesViewProps> = ({
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#7c5641]">Notas / Proveedor</label>
+                <label htmlFor="purch-notes" className="text-xs font-bold text-[#7c5641]">Notas / Proveedor</label>
                 <input
+                  id="purch-notes"
                   type="text"
                   value={newNotes}
                   onChange={(e) => setNewNotes(e.target.value)}

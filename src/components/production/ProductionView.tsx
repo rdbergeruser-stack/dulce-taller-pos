@@ -82,7 +82,7 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
       <div className="bg-white p-5 rounded-2xl border border-[#dec0b6] shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="p-3 bg-[#f5ede3] text-[#9d3c0c] rounded-xl">
-            <CookingPot className="w-6 h-6" />
+            <CookingPot className="w-6 h-6" aria-hidden="true" focusable="false" />
           </div>
           <div>
             <h2 className="font-serif font-bold text-xl text-[#1c120c]">
@@ -95,7 +95,7 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
         </div>
 
         <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f5ede3] border border-[#dec0b6] text-xs font-semibold text-[#7c5641]">
-          <ShieldCheck className="w-4 h-4 text-[#446147]" />
+          <ShieldCheck className="w-4 h-4 text-[#446147]" aria-hidden="true" focusable="false" />
           <span>Validación Transaccional Activa</span>
         </div>
       </div>
@@ -107,9 +107,9 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
             : 'bg-[#ffdad6] border-[#ba1a1a]/30 text-[#ba1a1a]'
         }`}>
           {resultMessage.type === 'success' ? (
-            <CheckCircle className="w-5 h-5 shrink-0 mt-0.5" />
+            <CheckCircle className="w-5 h-5 shrink-0 mt-0.5" aria-hidden="true" focusable="false" />
           ) : (
-            <AlertOctagon className="w-5 h-5 shrink-0 mt-0.5" />
+            <AlertOctagon className="w-5 h-5 shrink-0 mt-0.5" aria-hidden="true" focusable="false" />
           )}
           <div>
             <p className="font-bold text-sm">{resultMessage.text}</p>
@@ -131,7 +131,7 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
+              <label htmlFor="prod-prep-select" className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
                 Preparación / Torta Base
               </label>
               <span className="text-xs text-[#7c5641] font-medium bg-[#f5ede3] px-2 py-0.5 rounded-full border border-[#dec0b6]">
@@ -139,6 +139,7 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
               </span>
             </div>
             <select
+              id="prod-prep-select"
               value={selectedPrepId}
               onChange={(e) => setSelectedPrepId(e.target.value)}
               className="w-full px-3 py-2.5 rounded-xl border border-[#dec0b6] bg-[#fff8f2] text-sm font-bold text-[#1c120c] focus:outline-none focus:ring-2 focus:ring-[#9d3c0c]"
@@ -149,13 +150,13 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
                 </option>
               ))}
             </select>
-            <p className="text-[11px] text-[#7c5641] italic">
+            <p className="text-xs text-[#7c5641] italic">
               💡 Las porciones individuales no se cocinan directamente con materias primas: se hornea la <strong>Torta Entera</strong> y el sistema fracciona las porciones automáticamente en vitrina.
             </p>
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
+            <label htmlFor="prod-quantity-input" className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
               Cantidad a Producir ({selectedPrep?.unit_type || 'un'})
             </label>
             <div className="flex items-center gap-2">
@@ -175,6 +176,7 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
               ))}
             </div>
             <input
+              id="prod-quantity-input"
               type="number"
               min="0.1"
               step="any"
@@ -185,10 +187,11 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
+            <label htmlFor="prod-notes-input" className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
               Notas de Producción (Opcional)
             </label>
             <input
+              id="prod-notes-input"
               type="text"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
@@ -259,11 +262,11 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
                           </td>
                           <td className="py-2.5 px-3 text-center">
                             {req.isSufficient ? (
-                              <span className="text-[11px] font-bold text-[#446147] bg-[#ebffe8] px-2 py-0.5 rounded-full">
+                              <span className="text-xs font-bold text-[#446147] bg-[#ebffe8] px-2 py-0.5 rounded-full">
                                 OK
                               </span>
                             ) : (
-                              <span className="text-[11px] font-bold text-[#ba1a1a] bg-[#ffdad6] px-2 py-0.5 rounded-full">
+                              <span className="text-xs font-bold text-[#ba1a1a] bg-[#ffdad6] px-2 py-0.5 rounded-full">
                                 Faltan {(req.quantityRequired - req.availableStock).toFixed(1)} {req.rawMaterial.unit}
                               </span>
                             )}
@@ -289,7 +292,7 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
               disabled={!canProduce || isSubmitting || requirements.length === 0}
               className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#9d3c0c] text-white text-sm font-bold shadow-md shadow-[#9d3c0c]/30 hover:bg-[#7f2b00] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
-              <CookingPot className="w-5 h-5" />
+              <CookingPot className="w-5 h-5" aria-hidden="true" focusable="false" />
               <span>
                 {isSubmitting ? 'Procesando Lote...' : `Confirmar Producción (${quantity} un)`}
               </span>

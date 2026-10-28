@@ -259,7 +259,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
       <div className="bg-white p-4 rounded-2xl border border-[#dec0b6] shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="p-3 bg-[#f5ede3] text-[#9d3c0c] rounded-xl">
-            <BookOpen className="w-6 h-6" />
+            <BookOpen className="w-6 h-6" aria-hidden="true" focusable="false" />
           </div>
           <div>
             <h2 className="font-serif font-bold text-xl text-[#1c120c]">
@@ -275,7 +275,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
           onClick={handleOpenNewRecipe}
           className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold shadow-md shadow-[#9d3c0c]/20 hover:bg-[#7f2b00] active:scale-95 transition-all"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-4 h-4" aria-hidden="true" focusable="false" />
           <span>+ Nueva Receta / Preparación</span>
         </button>
       </div>
@@ -317,7 +317,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                         className="p-1 rounded-lg text-[#7c5641] hover:text-[#9d3c0c] hover:bg-[#fff8f2] active:scale-95 transition-all"
                         title={`Editar nombre y precio de ${prep.name}`}
                       >
-                        <Pencil className="w-3.5 h-3.5" />
+                        <Pencil className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
                       </button>
                       <button
                         type="button"
@@ -328,7 +328,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                         className="p-1 rounded-lg text-[#7c5641] hover:text-[#ba1a1a] hover:bg-[#ffdad6] active:scale-95 transition-all"
                         title={`Eliminar ${prep.name}`}
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <Trash2 className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
                       </button>
                     </div>
                   </div>
@@ -368,7 +368,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                       className="p-1.5 rounded-xl border border-[#dec0b6] bg-white text-[#7c5641] hover:text-[#9d3c0c] hover:bg-[#fff8f2] active:scale-95 transition-all shadow-xs"
                       title="Editar nombre, precio y datos de la receta"
                     >
-                      <Pencil className="w-4 h-4 text-[#9d3c0c]" />
+                      <Pencil className="w-4 h-4 text-[#9d3c0c]" aria-hidden="true" focusable="false" />
                     </button>
                   </div>
                   <p className="text-xs text-[#7c5641] mt-0.5">
@@ -382,7 +382,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                     className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#dec0b6] bg-white text-[#7c5641] hover:text-[#9d3c0c] hover:bg-[#fff8f2] text-xs font-bold transition-all shadow-xs"
                     title="Editar datos de la receta"
                   >
-                    <Pencil className="w-3.5 h-3.5 text-[#9d3c0c]" />
+                    <Pencil className="w-3.5 h-3.5 text-[#9d3c0c]" aria-hidden="true" focusable="false" />
                     <span>Editar Ficha</span>
                   </button>
                   <button
@@ -390,14 +390,14 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                     className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#ffdad6] text-[#ba1a1a] hover:bg-[#ffb4ab] text-xs font-bold transition-all"
                     title="Eliminar preparación"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-4 h-4" aria-hidden="true" focusable="false" />
                     <span>Eliminar</span>
                   </button>
                   <button
                     onClick={() => setIsAddIngModalOpen(true)}
                     className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold shadow-sm hover:bg-[#7f2b00] active:scale-95 transition-all"
                   >
-                    <Plus className="w-4 h-4" />
+                    <Plus className="w-4 h-4" aria-hidden="true" focusable="false" />
                     <span>+ Agregar Ingrediente</span>
                   </button>
                 </div>
@@ -406,7 +406,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
               {/* Métricas de Costeo */}
               <div className="grid grid-cols-3 gap-3">
                 <div className="p-3.5 rounded-xl bg-[#f5ede3] border border-[#dec0b6]">
-                  <span className="text-[11px] font-bold text-[#7c5641] uppercase block">
+                  <span className="text-xs font-bold text-[#7c5641] uppercase block">
                     Costo Insumos
                   </span>
                   <span className="text-lg font-bold text-[#1c120c]">
@@ -414,7 +414,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                   </span>
                 </div>
                 <div className="p-3.5 rounded-xl bg-[#f5ede3] border border-[#dec0b6]">
-                  <span className="text-[11px] font-bold text-[#7c5641] uppercase block">
+                  <span className="text-xs font-bold text-[#7c5641] uppercase block">
                     Precio Venta
                   </span>
                   <span className="text-lg font-bold text-[#9d3c0c]">
@@ -422,7 +422,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                   </span>
                 </div>
                 <div className="p-3.5 rounded-xl bg-[#f5ede3] border border-[#dec0b6]">
-                  <span className="text-[11px] font-bold text-[#7c5641] uppercase block">
+                  <span className="text-xs font-bold text-[#7c5641] uppercase block">
                     Margen Teórico
                   </span>
                   <span className="text-lg font-bold text-[#446147]">
@@ -479,7 +479,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                                   onClick={() => handleRemoveIngredient(ing.raw_material_id)}
                                   className="p-1 rounded text-[#ba1a1a] hover:bg-[#ffdad6] active:scale-95"
                                 >
-                                  <Trash2 className="w-4 h-4" />
+                                  <Trash2 className="w-4 h-4" aria-hidden="true" focusable="false" />
                                 </button>
                               </td>
                             </tr>
@@ -506,7 +506,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
             <div className="p-5 border-b border-[#dec0b6] bg-[#f5ede3] flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 bg-[#9d3c0c] text-white rounded-xl">
-                  <ChefHat className="w-5 h-5" />
+                  <ChefHat className="w-5 h-5" aria-hidden="true" focusable="false" />
                 </div>
                 <div>
                   <h3 className="font-serif font-bold text-lg text-[#1c120c]">
@@ -517,16 +517,17 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                   </p>
                 </div>
               </div>
-              <button onClick={() => setIsNewRecipeModalOpen(false)}>
-                <X className="w-5 h-5 text-[#7c5641]" />
+              <button onClick={() => setIsNewRecipeModalOpen(false)} aria-label="Cerrar modal">
+                <X className="w-5 h-5 text-[#7c5641]" aria-hidden="true" focusable="false" />
               </button>
             </div>
 
             <form onSubmit={handleSaveNewRecipe} className="flex-1 overflow-y-auto p-6 space-y-5">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#7c5641]">Código de Ficha</label>
+                  <label htmlFor="rec-new-code" className="text-xs font-bold text-[#7c5641]">Código de Ficha</label>
                   <input
+                    id="rec-new-code"
                     type="text"
                     value={newCode}
                     onChange={(e) => setNewCode(e.target.value)}
@@ -535,8 +536,9 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#7c5641]">Categoría</label>
+                  <label htmlFor="rec-new-cat" className="text-xs font-bold text-[#7c5641]">Categoría</label>
                   <select
+                    id="rec-new-cat"
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value as any)}
                     className="w-full px-3 py-2 rounded-xl border border-[#dec0b6] bg-white text-xs font-bold"
@@ -549,8 +551,9 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#7c5641]">Nombre de la Preparación</label>
+                <label htmlFor="rec-new-name" className="text-xs font-bold text-[#7c5641]">Nombre de la Preparación</label>
                 <input
+                  id="rec-new-name"
                   type="text"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
@@ -562,8 +565,9 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
 
               <div className="grid grid-cols-3 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#7c5641]">Tipo de Unidad</label>
+                  <label htmlFor="rec-new-unit" className="text-xs font-bold text-[#7c5641]">Tipo de Unidad</label>
                   <select
+                    id="rec-new-unit"
                     value={newUnitType}
                     onChange={(e) => setNewUnitType(e.target.value as any)}
                     className="w-full px-3 py-2 rounded-xl border border-[#dec0b6] bg-white text-xs font-bold"
@@ -575,8 +579,9 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#7c5641]">Rendimiento</label>
+                  <label htmlFor="rec-new-yield" className="text-xs font-bold text-[#7c5641]">Rendimiento</label>
                   <input
+                    id="rec-new-yield"
                     type="number"
                     step="any"
                     value={newYield}
@@ -585,8 +590,9 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#7c5641]">Precio Venta ($)</label>
+                  <label htmlFor="rec-new-price" className="text-xs font-bold text-[#7c5641]">Precio Venta ($)</label>
                   <input
+                    id="rec-new-price"
                     type="number"
                     step="any"
                     value={newPrice}
@@ -598,8 +604,9 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#7c5641]">Descripción</label>
+                <label htmlFor="rec-new-desc" className="text-xs font-bold text-[#7c5641]">Descripción</label>
                 <textarea
+                  id="rec-new-desc"
                   rows={2}
                   value={newDescription}
                   onChange={(e) => setNewDescription(e.target.value)}
@@ -625,9 +632,9 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                           <button
                             type="button"
                             onClick={() => handleRemoveIngredientFromDraft(item.raw_material_id)}
-                            className="text-[#ba1a1a] hover:bg-[#ffdad6] p-1 rounded"
+                            aria-label="Eliminar ingrediente" className="text-[#ba1a1a] hover:bg-[#ffdad6] p-1 rounded"
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
+                            <Trash2 className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
                           </button>
                         </div>
                       </div>
@@ -639,6 +646,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                 <div className="p-3 bg-[#efe7dd] rounded-xl flex items-center gap-2">
                   <select
                     id="draft_select_raw"
+                    aria-label="Seleccionar materia prima"
                     className="flex-1 px-2.5 py-1.5 rounded-lg border border-[#dec0b6] bg-white text-xs font-bold"
                   >
                     {materials.map(m => (
@@ -647,6 +655,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                   </select>
                   <input
                     id="draft_qty"
+                    aria-label="Cantidad de ingrediente"
                     type="number"
                     step="any"
                     placeholder="Cant."
@@ -698,15 +707,16 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
               <h3 className="font-serif font-bold text-lg text-[#1c120c]">
                 Agregar Ingrediente a {selectedPrep?.name}
               </h3>
-              <button onClick={() => setIsAddIngModalOpen(false)}>
-                <X className="w-5 h-5 text-[#7c5641]" />
+              <button onClick={() => setIsAddIngModalOpen(false)} aria-label="Cerrar modal">
+                <X className="w-5 h-5 text-[#7c5641]" aria-hidden="true" focusable="false" />
               </button>
             </div>
 
             <form onSubmit={handleAddIngredient} className="p-5 space-y-4">
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#7c5641]">Materia Prima / Insumo</label>
+                <label htmlFor="rec-add-ing-mat" className="text-xs font-bold text-[#7c5641]">Materia Prima / Insumo</label>
                 <select
+                  id="rec-add-ing-mat"
                   value={selectedRawId}
                   onChange={(e) => setSelectedRawId(e.target.value)}
                   className="w-full px-3 py-2.5 rounded-xl border border-[#dec0b6] bg-white text-xs font-bold text-[#1c120c]"
@@ -720,10 +730,11 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#7c5641]">
+                <label htmlFor="rec-add-ing-qty" className="text-xs font-bold text-[#7c5641]">
                   Cantidad Requerida por Unidad
                 </label>
                 <input
+                  id="rec-add-ing-qty"
                   type="number"
                   step="any"
                   value={quantityReq}
@@ -758,13 +769,13 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
           <div className="bg-[#fff8f2] rounded-2xl border border-[#dec0b6] shadow-2xl w-full max-w-md overflow-hidden">
             <div className="p-4 border-b border-[#dec0b6] bg-[#fcf0ed] flex items-center justify-between">
               <div className="flex items-center gap-2 text-[#ba1a1a]">
-                <Trash2 className="w-5 h-5" />
+                <Trash2 className="w-5 h-5" aria-hidden="true" focusable="false" />
                 <h3 className="font-serif font-bold text-lg text-[#1c120c]">
                   ¿Eliminar Preparación / Receta?
                 </h3>
               </div>
               <button onClick={() => setPrepToDelete(null)} disabled={isDeleting}>
-                <X className="w-5 h-5 text-[#7c5641]" />
+                <X className="w-5 h-5 text-[#7c5641]" aria-hidden="true" focusable="false" />
               </button>
             </div>
 
@@ -805,7 +816,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                   disabled={isDeleting}
                   className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#ba1a1a] text-white text-xs font-bold shadow-md shadow-[#ba1a1a]/20 hover:bg-[#93000a] active:scale-95 transition-all disabled:opacity-50"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-4 h-4" aria-hidden="true" focusable="false" />
                   <span>{isDeleting ? 'Eliminando...' : 'Sí, Eliminar Receta'}</span>
                 </button>
               </div>
@@ -820,12 +831,12 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
           <div className="bg-[#fff8f2] rounded-2xl border border-[#dec0b6] shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
             <div className="p-4 border-b border-[#dec0b6] bg-[#f5ede3] flex items-center justify-between">
               <div className="flex items-center gap-2 text-[#9d3c0c]">
-                <Pencil className="w-5 h-5" />
+                <Pencil className="w-5 h-5" aria-hidden="true" focusable="false" />
                 <div>
                   <h3 className="font-serif font-bold text-lg text-[#1c120c]">
                     Editar Ficha de Receta
                   </h3>
-                  <span className="text-[11px] font-mono font-bold text-[#7c5641]">
+                  <span className="text-xs font-mono font-bold text-[#7c5641]">
                     Código: {selectedPrep.code}
                   </span>
                 </div>
@@ -836,7 +847,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                 disabled={isSavingEdit}
                 className="p-1.5 rounded-lg text-[#7c5641] hover:bg-[#efe7dd] transition-all"
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5" aria-hidden="true" focusable="false" />
               </button>
             </div>
 
@@ -848,10 +859,11 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
               )}
 
               <div className="space-y-1">
-                <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
+                <label htmlFor="rec-edit-name" className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
                   Nombre de la Receta / Preparación *
                 </label>
                 <input
+                  id="rec-edit-name"
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
@@ -863,10 +875,11 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
+                  <label htmlFor="rec-edit-price" className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
                     Precio de Venta ($) *
                   </label>
                   <input
+                    id="rec-edit-price"
                     type="number"
                     step="any"
                     min="0"
@@ -882,10 +895,11 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
+                  <label htmlFor="rec-edit-yield" className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
                     Rendimiento (Porciones) *
                   </label>
                   <input
+                    id="rec-edit-yield"
                     type="number"
                     step="any"
                     min="1"
@@ -903,10 +917,11 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
+                  <label htmlFor="rec-edit-cat" className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
                     Categoría
                   </label>
                   <select
+                    id="rec-edit-cat"
                     value={editCategory}
                     onChange={(e) => setEditCategory(e.target.value as PreparationCategory)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-[#dec0b6] bg-white text-sm font-bold text-[#1c120c] focus:outline-none focus:ring-2 focus:ring-[#9d3c0c]"
@@ -918,10 +933,11 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
+                  <label htmlFor="rec-edit-unit" className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
                     Tipo de Unidad
                   </label>
                   <select
+                    id="rec-edit-unit"
                     value={editUnitType}
                     onChange={(e) => setEditUnitType(e.target.value as PreparationUnitType)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-[#dec0b6] bg-white text-sm font-bold text-[#1c120c] focus:outline-none focus:ring-2 focus:ring-[#9d3c0c]"
@@ -961,7 +977,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                   disabled={isSavingEdit}
                   className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold shadow-md shadow-[#9d3c0c]/25 hover:bg-[#7f2b00] active:scale-95 transition-all disabled:opacity-50"
                 >
-                  <Check className="w-4 h-4" />
+                  <Check className="w-4 h-4" aria-hidden="true" focusable="false" />
                   <span>{isSavingEdit ? 'Guardando...' : 'Guardar Cambios'}</span>
                 </button>
               </div>

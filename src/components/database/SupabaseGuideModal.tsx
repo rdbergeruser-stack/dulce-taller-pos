@@ -25,7 +25,7 @@ export const SupabaseGuideModal: React.FC<SupabaseGuideModalProps> = ({ isOpen, 
         <div className="p-5 border-b border-[#dec0b6] bg-[#f5ede3] flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-[#1c120c] text-white rounded-xl">
-              <Database className="w-5 h-5" />
+              <Database className="w-5 h-5" aria-hidden="true" focusable="false" />
             </div>
             <div>
               <h3 className="font-serif font-bold text-lg text-[#1c120c]">
@@ -38,9 +38,10 @@ export const SupabaseGuideModal: React.FC<SupabaseGuideModalProps> = ({ isOpen, 
           </div>
           <button
             onClick={onClose}
+            aria-label="Cerrar modal"
             className="p-1.5 rounded-lg text-[#7c5641] hover:bg-[#efe7dd]"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" focusable="false" />
           </button>
         </div>
 
@@ -65,20 +66,20 @@ export const SupabaseGuideModal: React.FC<SupabaseGuideModalProps> = ({ isOpen, 
 
             <ol className="list-decimal list-inside space-y-2 text-xs text-[#57423a] font-medium leading-relaxed">
               <li>
-                Entra a <a href="https://supabase.com" target="_blank" rel="noreferrer" className="text-[#9d3c0c] font-bold underline inline-flex items-center gap-1">supabase.com <ExternalLink className="w-3 h-3" /></a> y crea un proyecto gratuito (ej: <code className="bg-[#efe7dd] px-1.5 py-0.5 rounded text-[#1c120c]">dulce-taller-pos</code>).
+                Entra a <a href="https://supabase.com" target="_blank" rel="noreferrer" className="text-[#9d3c0c] font-bold underline inline-flex items-center gap-1">supabase.com <ExternalLink className="w-3 h-3" aria-hidden="true" focusable="false" /></a> y crea un proyecto gratuito (ej: <code className="bg-[#efe7dd] px-1.5 py-0.5 rounded text-[#1c120c]">dulce-taller-pos</code>).
               </li>
               <li>
                 En el panel lateral izquierdo de Supabase, entra a <strong>SQL Editor</strong> &rarr; <strong>New Query</strong>.
               </li>
               <li>
                 Copia y pega el contenido completo del archivo ya generado en tu proyecto:
-                <div className="my-2 p-2.5 rounded-xl bg-[#efe7dd] border border-[#dec0b6] font-mono text-[11px] text-[#1c120c] flex items-center justify-between">
+                <div className="my-2 p-2.5 rounded-xl bg-[#efe7dd] border border-[#dec0b6] font-mono text-xs text-[#1c120c] flex items-center justify-between">
                   <span>supabase\full_schema_and_seed.sql</span>
                   <button
                     onClick={handleCopyPath}
                     className="flex items-center gap-1 text-xs font-bold text-[#9d3c0c] hover:underline"
                   >
-                    {copied ? <Check className="w-3.5 h-3.5 text-[#446147]" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copied ? <Check className="w-3.5 h-3.5 text-[#446147]" aria-hidden="true" focusable="false" /> : <Copy className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />}
                     <span>{copied ? 'Ruta Copiada' : 'Copiar Ruta'}</span>
                   </button>
                 </div>
@@ -89,7 +90,7 @@ export const SupabaseGuideModal: React.FC<SupabaseGuideModalProps> = ({ isOpen, 
               </li>
               <li>
                 Pégalas en tu archivo <code className="bg-[#efe7dd] px-1.5 py-0.5 rounded text-[#1c120c]">.env</code>:
-                <div className="mt-2 p-3 bg-[#1c120c] text-white rounded-xl font-mono text-[11px] space-y-1">
+                <div className="mt-2 p-3 bg-[#1c120c] text-white rounded-xl font-mono text-xs space-y-1">
                   <p>VITE_SUPABASE_URL=https://xyzcompany.supabase.co</p>
                   <p>VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</p>
                 </div>

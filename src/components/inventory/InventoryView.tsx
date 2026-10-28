@@ -153,9 +153,9 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
 
   const getPrepCategoryIcon = (cat: string) => {
     switch (cat) {
-      case 'pasteleria': return <Cake className="w-4 h-4 text-[#9d3c0c]" />;
-      case 'cafeteria': return <Coffee className="w-4 h-4 text-[#7c5641]" />;
-      default: return <Sparkles className="w-4 h-4 text-[#d97736]" />;
+      case 'pasteleria': return <Cake className="w-4 h-4 text-[#9d3c0c]" aria-hidden="true" focusable="false" />;
+      case 'cafeteria': return <Coffee className="w-4 h-4 text-[#7c5641]" aria-hidden="true" focusable="false" />;
+      default: return <Sparkles className="w-4 h-4 text-[#d97736]" aria-hidden="true" focusable="false" />;
     }
   };
 
@@ -166,7 +166,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
         <div className="p-4 rounded-2xl bg-[#ffdad6] border border-[#ba1a1a]/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm animate-pulse">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-[#ba1a1a] text-white rounded-xl">
-              <AlertTriangle className="w-5 h-5" />
+              <AlertTriangle className="w-5 h-5" aria-hidden="true" focusable="false" />
             </div>
             <div>
               <h3 className="font-bold text-sm text-[#ba1a1a]">
@@ -185,7 +185,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
         <div className="p-4 rounded-2xl bg-[#fef3c7] border border-[#fde68a] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-[#d97736] text-white rounded-xl">
-              <AlertTriangle className="w-5 h-5" />
+              <AlertTriangle className="w-5 h-5" aria-hidden="true" focusable="false" />
             </div>
             <div>
               <h3 className="font-bold text-sm text-[#92400e]">
@@ -205,7 +205,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
         <div className="p-4 rounded-2xl bg-[#ffdad6] border border-[#ba1a1a]/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm animate-pulse">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-[#ba1a1a] text-white rounded-xl">
-              <AlertTriangle className="w-5 h-5" />
+              <AlertTriangle className="w-5 h-5" aria-hidden="true" focusable="false" />
             </div>
             <div>
               <h3 className="font-bold text-sm text-[#ba1a1a]">
@@ -224,7 +224,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
         <div className="p-4 rounded-2xl bg-[#fef3c7] border border-[#fde68a] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-[#d97736] text-white rounded-xl">
-              <AlertTriangle className="w-5 h-5" />
+              <AlertTriangle className="w-5 h-5" aria-hidden="true" focusable="false" />
             </div>
             <div>
               <h3 className="font-bold text-sm text-[#92400e]">
@@ -250,7 +250,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                 : 'text-[#7c5641] hover:text-[#1c120c]'
             }`}
           >
-            <Cake className="w-4 h-4" />
+            <Cake className="w-4 h-4" aria-hidden="true" focusable="false" />
             <span>Productos Elaborados / Vitrina ({preparations.length})</span>
           </button>
           <button
@@ -261,7 +261,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                 : 'text-[#7c5641] hover:text-[#1c120c]'
             }`}
           >
-            <Package className="w-4 h-4" />
+            <Package className="w-4 h-4" aria-hidden="true" focusable="false" />
             <span>Materias Primas / Insumos ({materials.length})</span>
           </button>
           <button
@@ -272,7 +272,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                 : 'text-[#7c5641] hover:text-[#1c120c]'
             }`}
           >
-            <History className="w-4 h-4" />
+            <History className="w-4 h-4" aria-hidden="true" focusable="false" />
             <span>Auditoría Kardex</span>
           </button>
         </div>
@@ -282,7 +282,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
             onClick={() => setIsNewMatModalOpen(true)}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold shadow-sm hover:bg-[#7f2b00] active:scale-95 transition-all"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4" aria-hidden="true" focusable="false" />
             <span>+ Nueva Materia Prima</span>
           </button>
         )}
@@ -299,9 +299,9 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
             }`}>
               <div className="flex items-center gap-2 text-sm font-bold">
                 {sliceNotice.type === 'success' ? (
-                  <CheckCircle2 className="w-5 h-5 shrink-0" />
+                  <CheckCircle2 className="w-5 h-5 shrink-0" aria-hidden="true" focusable="false" />
                 ) : (
-                  <AlertTriangle className="w-5 h-5 shrink-0" />
+                  <AlertTriangle className="w-5 h-5 shrink-0" aria-hidden="true" focusable="false" />
                 )}
                 <span>{sliceNotice.text}</span>
               </div>
@@ -327,7 +327,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                 >
                   <div>
                     <div className="flex items-center justify-between gap-1 mb-2">
-                      <span className="flex items-center gap-1 text-[11px] font-bold uppercase px-2 py-0.5 rounded-full bg-[#f5ede3] text-[#7c5641]">
+                      <span className="flex items-center gap-1 text-xs font-bold uppercase px-2 py-0.5 rounded-full bg-[#f5ede3] text-[#7c5641]">
                         {getPrepCategoryIcon(prep.category)}
                         <span>{prep.category}</span>
                       </span>
@@ -344,7 +344,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                     </p>
 
                     {isPortion && effective.motherPrep && (
-                      <div className="mt-2.5 p-2 rounded-xl bg-[#f5ede3]/70 border border-[#dec0b6] text-[11px] text-[#7c5641] space-y-1">
+                      <div className="mt-2.5 p-2 rounded-xl bg-[#f5ede3]/70 border border-[#dec0b6] text-xs text-[#7c5641] space-y-1">
                         <span className="font-bold text-[#9d3c0c] block">
                           🍰 Torta Base: {effective.motherPrep.name}
                         </span>
@@ -386,7 +386,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                         className="w-full py-2.5 px-3 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold hover:bg-[#7f2b00] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 shadow-md shadow-[#9d3c0c]/20 transition-all"
                         title={prep.stock_available > 0 ? 'Descuenta 1 torta entera y genera porciones listas en vitrina' : 'Sin stock de tortas enteras para cortar'}
                       >
-                        <Sparkles className="w-3.5 h-3.5" />
+                        <Sparkles className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
                         <span>Cortar 1 Torta en Porciones (+8)</span>
                       </button>
                     )}
@@ -398,7 +398,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                         className="w-full py-2.5 px-3 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold hover:bg-[#7f2b00] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 shadow-md shadow-[#9d3c0c]/20 transition-all"
                         title={effective.motherStock > 0 ? 'Descuenta 1 torta entera y suma porciones cortadas' : 'No hay tortas enteras para fraccionar'}
                       >
-                        <Sparkles className="w-3.5 h-3.5" />
+                        <Sparkles className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
                         <span>Cortar 1 Torta (+{effective.yieldPerCake} porc.)</span>
                       </button>
                     )}
@@ -463,7 +463,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                         ${mat.unit_cost.toFixed(2)}
                       </td>
                       <td className="py-3.5 px-4 text-center">
-                        <span className={`inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full border ${status.badgeClass}`}>
+                        <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full border ${status.badgeClass}`}>
                           {status.label}
                         </span>
                       </td>
@@ -560,8 +560,8 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
               <h3 className="font-serif font-bold text-lg text-[#1c120c]">
                 Ajustar Stock: {selectedMaterial?.name || selectedPrep?.name}
               </h3>
-              <button onClick={() => { setSelectedMaterial(null); setSelectedPrep(null); }}>
-                <X className="w-5 h-5 text-[#7c5641]" />
+              <button onClick={() => { setSelectedMaterial(null); setSelectedPrep(null); }} aria-label="Cerrar modal">
+                <X className="w-5 h-5 text-[#7c5641]" aria-hidden="true" focusable="false" />
               </button>
             </div>
 
@@ -578,10 +578,11 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[#7c5641]">
+                <label htmlFor="inv-adj-stock" className="text-xs font-bold text-[#7c5641]">
                   Nuevo Stock Físico ({selectedMaterial?.unit || selectedPrep?.unit_type})
                 </label>
                 <input
+                  id="inv-adj-stock"
                   type="number"
                   step="any"
                   value={newStockValue}
@@ -592,10 +593,11 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-bold text-[#7c5641]">
+                <label htmlFor="inv-adj-reason" className="text-xs font-bold text-[#7c5641]">
                   Motivo del Ajuste (Auditoría)
                 </label>
                 <input
+                  id="inv-adj-reason"
                   type="text"
                   value={adjustReason}
                   onChange={(e) => setAdjustReason(e.target.value)}
@@ -633,16 +635,17 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
               <h3 className="font-serif font-bold text-lg text-[#1c120c]">
                 Nueva Materia Prima
               </h3>
-              <button onClick={() => setIsNewMatModalOpen(false)}>
-                <X className="w-5 h-5 text-[#7c5641]" />
+              <button onClick={() => setIsNewMatModalOpen(false)} aria-label="Cerrar modal">
+                <X className="w-5 h-5 text-[#7c5641]" aria-hidden="true" focusable="false" />
               </button>
             </div>
 
             <form onSubmit={handleCreateMaterial} className="p-5 space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#7c5641]">Código (Ej. INS-024)</label>
+                  <label htmlFor="inv-new-code" className="text-xs font-bold text-[#7c5641]">Código (Ej. INS-024)</label>
                   <input
+                    id="inv-new-code"
                     type="text"
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
@@ -652,8 +655,9 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#7c5641]">Unidad de Medida</label>
+                  <label htmlFor="inv-new-unit" className="text-xs font-bold text-[#7c5641]">Unidad de Medida</label>
                   <select
+                    id="inv-new-unit"
                     value={unit}
                     onChange={(e) => setUnit(e.target.value as any)}
                     className="w-full px-3 py-2 rounded-xl border border-[#dec0b6] bg-white text-xs font-bold"
@@ -668,7 +672,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-[#7c5641]">Nombre del Insumo</label>
+                <label htmlFor="inv-new-name" className="text-xs font-bold text-[#7c5641]">Nombre del Insumo</label>
                 <input
                   type="text"
                   value={name}
@@ -681,8 +685,9 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
 
               <div className="grid grid-cols-3 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#7c5641]">Stock Inicial</label>
+                  <label htmlFor="inv-new-stock" className="text-xs font-bold text-[#7c5641]">Stock Inicial</label>
                   <input
+                    id="inv-new-stock"
                     type="number"
                     value={stock}
                     onChange={(e) => setStock(e.target.value)}
@@ -690,8 +695,9 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#7c5641]">Stock Mínimo</label>
+                  <label htmlFor="inv-new-minstock" className="text-xs font-bold text-[#7c5641]">Stock Mínimo</label>
                   <input
+                    id="inv-new-minstock"
                     type="number"
                     value={minStock}
                     onChange={(e) => setMinStock(e.target.value)}
@@ -699,8 +705,9 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#7c5641]">Costo Unit. ($)</label>
+                  <label htmlFor="inv-new-cost" className="text-xs font-bold text-[#7c5641]">Costo Unit. ($)</label>
                   <input
+                    id="inv-new-cost"
                     type="number"
                     step="0.01"
                     value={cost}
