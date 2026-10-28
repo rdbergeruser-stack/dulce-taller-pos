@@ -25,7 +25,23 @@ describe('Pruebas de Integración - Producción y Stock Transaccional', { timeou
   });
 
   it('2. Confirmación de Producción: descuenta insumos de forma atómica e incrementa producto terminado', async () => {
-    const materialsBefore = await inventoryService.getRawMaterials();
+    let materialsBefore = await inventoryService.getRawMaterials();
+    
+    // Asegurar stock suficiente para la prueba de producción
+    const azucar = materialsBefore.find(m => m.name.toLowerCase().includes('azúcar') || m.name.toLowerCase().includes('azucar'));
+    if (azucar && azucar.current_stock < 1000) {
+      await inventoryService.updateRawMaterial(azucar.id, { current_stock: 5000 });
+    }
+    const harina = materialsBefore.find(m => m.code === 'INS-001');
+    if (harina && harina.current_stock < 1000) {
+      await inventoryService.updateRawMaterial(harina.id, { current_stock: 5000 });
+    }
+    const manteca = materialsBefore.find(m => m.code === 'INS-002');
+    if (manteca && manteca.current_stock < 1000) {
+      await inventoryService.updateRawMaterial(manteca.id, { current_stock: 5000 });
+    }
+    
+    materialsBefore = await inventoryService.getRawMaterials();
     const flourBefore = materialsBefore.find(m => m.code === 'INS-001')!.current_stock;
     const butterBefore = materialsBefore.find(m => m.code === 'INS-002')!.current_stock;
 

@@ -200,9 +200,9 @@ function MainApp() {
           el.classList.add('ring-4', 'ring-[#9d3c0c]', 'shadow-lg');
           setTimeout(() => {
             el.classList.remove('ring-4', 'ring-[#9d3c0c]', 'shadow-lg');
-          }, 2000);
+          }, 2500);
         }
-      }, 150);
+      }, 250);
     }
   };
 
@@ -223,7 +223,7 @@ function MainApp() {
     <div className="min-h-screen bg-[#fff8f2] flex flex-col font-sans">
       {/* Toast Notification */}
       {toast && (
-        <div className="fixed bottom-5 right-5 z-50 animate-bounce">
+        <div className="fixed bottom-5 right-5 z-[100] animate-bounce">
           <div className={`px-5 py-3 rounded-2xl shadow-xl border text-sm font-bold ${
             toast.type === 'success'
               ? 'bg-[#ebffe8] text-[#446147] border-[#aecfae]'

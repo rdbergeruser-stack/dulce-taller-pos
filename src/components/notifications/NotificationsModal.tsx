@@ -42,10 +42,12 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
   const { isAdmin } = useAuth();
   const [filter, setFilter] = useState<'all' | 'vitrina' | 'materials'>(initialFilter);
   const [sentNotices, setSentNotices] = useState<Record<string, boolean>>({});
+  const [noticeFeedback, setNoticeFeedback] = useState<string | null>(null);
 
   useEffect(() => {
     if (isOpen) {
       setFilter(initialFilter);
+      setNoticeFeedback(null);
     }
   }, [isOpen, initialFilter]);
 
@@ -109,6 +111,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
 
   const handleSendNotice = (item: RawMaterial) => {
     setSentNotices(prev => ({ ...prev, [item.id]: true }));
+    setNoticeFeedback(`¡Aviso enviado a cocina sobre "${item.name}"!`);
     if (onSendKitchenNotice) {
       onSendKitchenNotice(item.name);
     }
@@ -189,6 +192,24 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
             Insumos ({materialAlerts.length})
           </button>
         </div>
+
+        {/* Banner de confirmación de aviso */}
+        {noticeFeedback && (
+          <div className="mx-4 mt-3 p-2.5 rounded-xl bg-[#ebffe8] border border-[#aecfae] text-xs font-bold text-[#446147] flex items-center justify-between shadow-xs animate-fadeIn">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-[#446147]" aria-hidden="true" focusable="false" />
+              <span>{noticeFeedback}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setNoticeFeedback(null)}
+              className="text-[#446147] hover:opacity-70 p-1"
+              aria-label="Cerrar confirmación"
+            >
+              <X className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
+            </button>
+          </div>
+        )}
 
         {/* Lista de Alertas / Contenido */}
         <div className="p-4 md:p-5 overflow-y-auto space-y-4 flex-1">
