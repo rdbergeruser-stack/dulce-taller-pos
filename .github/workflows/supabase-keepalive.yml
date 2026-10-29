@@ -1,0 +1,30 @@
+name: Supabase Keep-Alive Ping
+
+on:
+  schedule:
+    # Se ejecuta cada 3 días a las 09:00 UTC (06:00 hs Argentina)
+    - cron: '0 9 */3 * *'
+  workflow_dispatch: # Permite dispararlo manualmente desde GitHub Actions
+
+jobs:
+  keepalive:
+    name: Ping Actividad Base de Datos
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enviar Ping de Actividad a Supabase
+        run: |
+          echo "Disparando ping a Supabase para evitar pausa por inactividad..."
+          HTTP_STATUS=$(curl -s -o response.json -w "%{http_code}" \
+            -X GET "https://ehlucvffwvevizrupccu.supabase.co/rest/v1/raw_materials?select=id&limit=1" \
+            -H "apikey: sb_publishable_xamN6pN4NmxaxRIU9hXE5Q_H-B-eFd2" \
+            -H "Authorization: Bearer sb_publishable_xamN6pN4NmxaxRIU9hXE5Q_H-B-eFd2")
+
+          echo "Código HTTP recibido: $HTTP_STATUS"
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+            echo "✅ Ping exitoso. La base de datos registró actividad y el contador de 7 días se reinició."
+            cat response.json
+          else
+            echo "⚠️ Error al enviar el ping a Supabase: $HTTP_STATUS"
+            cat response.json
+            exit 1
+          fi
