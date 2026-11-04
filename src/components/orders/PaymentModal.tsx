@@ -14,7 +14,10 @@ import {
   Copy,
   Check,
   Radio,
-  Sparkles
+  Sparkles,
+  MessageSquare,
+  Send,
+  Smartphone
 } from 'lucide-react';
 
 export type PaymentMethod = 'efectivo' | 'tarjeta' | 'qr' | 'transferencia' | 'voucher';
@@ -143,6 +146,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   // Estados Voucher
   const [voucherCode, setVoucherCode] = useState<string>('');
 
+  // Estados WhatsApp
+  const [showWhatsAppInput, setShowWhatsAppInput] = useState(false);
+  const [customerPhone, setCustomerPhone] = useState('');
+
   const cashNum = parseFloat(cashReceived) || 0;
   const change = Math.max(0, cashNum - totalAmount);
   const isCashSufficient = method !== 'efectivo' || cashNum >= totalAmount;
@@ -160,6 +167,60 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   const handleSimulateContactless = () => {
     setIsCardContactlessSimulated(true);
     setTimeout(() => setIsCardContactlessSimulated(false), 2500);
+  };
+
+  const generateWhatsAppMessage = (receipt: string, details: string) => {
+    const itemsList = (order.items || [])
+      .map(item => `• ${item.quantity}x ${item.preparation?.name || 'Producto'} ($${(item.quantity * item.unit_price).toLocaleString('es-AR')})`)
+      .join('\n');
+
+    const paymentMethodLabel = method === 'efectivo' 
+      ? 'Efectivo' 
+      : method === 'qr' 
+      ? 'QR / Billetera Virtual' 
+      : method === 'transferencia' 
+      ? 'Transferencia Bancaria' 
+      : method === 'tarjeta' 
+      ? `Tarjeta ${cardType.toUpperCase()}` 
+      : 'Voucher';
+
+    const detailsLine = details ? ` (${details})` : '';
+
+    return `🧁 *DULCE TALLER - Pastelería & Café*
+---------------------------------------
+🧾 *Comprobante de Pago:* #${receipt}
+📋 *Comanda:* #${order.order_number} (${order.origin.toUpperCase()}${order.table_number ? ` - ${order.table_number}` : ''})
+📅 *Fecha:* ${new Date().toLocaleDateString('es-AR')} - ${new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })} hs
+---------------------------------------
+*Detalle del Consumo:*
+${itemsList}
+
+💰 *TOTAL ABONADO:* $${totalAmount.toLocaleString('es-AR')}
+💳 *Forma de Pago:* ${paymentMethodLabel}${detailsLine}
+---------------------------------------
+_¡Muchas gracias por elegirnos! Esperamos que disfrutes tu pedido._ 🍰☕
+📍 Av. Corrientes 1234 • Dulce Taller`;
+  };
+
+  const handleSendWhatsApp = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    let cleanPhone = customerPhone.replace(/\D/g, '');
+    
+    // Auto-formato para Argentina si se ingresan 10 u 11 dígitos
+    if (cleanPhone.length === 10) {
+      cleanPhone = `549${cleanPhone}`;
+    } else if (cleanPhone.length === 11 && cleanPhone.startsWith('0')) {
+      cleanPhone = `549${cleanPhone.slice(1)}`;
+    } else if (cleanPhone.length === 12 && cleanPhone.startsWith('54') && !cleanPhone.startsWith('549')) {
+      cleanPhone = `549${cleanPhone.slice(2)}`;
+    }
+
+    const text = encodeURIComponent(generateWhatsAppMessage(receiptCode, paidDetails));
+    const waUrl = cleanPhone 
+      ? `https://wa.me/${cleanPhone}?text=${text}`
+      : `https://wa.me/?text=${text}`;
+
+    window.open(waUrl, '_blank', 'noopener,noreferrer');
   };
 
   const handlePay = async () => {
@@ -198,6 +259,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
 
   const handleFinish = () => {
     setPaymentSuccess(false);
+    setShowWhatsAppInput(false);
+    setCustomerPhone('');
     onClose();
   };
 
@@ -657,7 +720,59 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
               )}
             </div>
 
-            <div className="flex items-center gap-3 pt-2">
+            {/* Opciones de Envío por WhatsApp e Impresión */}
+            <div className="w-full max-w-sm space-y-3">
+              {!showWhatsAppInput ? (
+                <button
+                  type="button"
+                  onClick={() => setShowWhatsAppInput(true)}
+                  className="w-full py-2.5 px-4 rounded-xl bg-[#25D366] text-white text-xs font-bold hover:bg-[#20ba5a] active:scale-95 transition-all shadow-md shadow-[#25D366]/20 flex items-center justify-center gap-2"
+                >
+                  <MessageSquare className="w-4 h-4" aria-hidden="true" focusable="false" />
+                  <span>Enviar Ticket por WhatsApp</span>
+                </button>
+              ) : (
+                <form onSubmit={handleSendWhatsApp} className="p-3 bg-white rounded-2xl border border-[#25D366] shadow-sm space-y-2.5 animate-fadeIn">
+                  <div className="flex items-center justify-between">
+                    <label htmlFor="pay-wa-phone" className="text-xs font-bold text-[#1c120c] flex items-center gap-1.5">
+                      <Smartphone className="w-3.5 h-3.5 text-[#25D366]" aria-hidden="true" focusable="false" />
+                      <span>Celular del Cliente</span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setShowWhatsAppInput(false)}
+                      className="text-xs text-[#7c5641] hover:text-[#1c120c]"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <input
+                      id="pay-wa-phone"
+                      type="tel"
+                      value={customerPhone}
+                      onChange={(e) => setCustomerPhone(e.target.value)}
+                      placeholder="Ej. 11 2345-6789"
+                      className="flex-1 px-3 py-2 rounded-xl border border-[#dec0b6] bg-[#fff8f2] text-xs font-bold text-[#1c120c] focus:outline-none focus:ring-2 focus:ring-[#25D366]"
+                      autoFocus
+                    />
+                    <button
+                      type="submit"
+                      className="px-4 py-2 rounded-xl bg-[#25D366] text-white text-xs font-bold hover:bg-[#20ba5a] active:scale-95 transition-all flex items-center gap-1 shrink-0"
+                    >
+                      <Send className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
+                      <span>Enviar</span>
+                    </button>
+                  </div>
+                  <p className="text-xs text-[#7c5641] text-left">
+                    Se abrirá WhatsApp con el detalle del ticket listo para enviar.
+                  </p>
+                </form>
+              )}
+            </div>
+
+            <div className="flex items-center gap-3 pt-1">
               <button
                 type="button"
                 onClick={() => window.print()}
