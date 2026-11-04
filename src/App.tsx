@@ -101,10 +101,11 @@ function MainApp() {
     await loadAllData();
   };
 
-  const handlePayOrder = async (orderId: string, paymentData: { method: any; amountPaid: number; changeGiven: number; receiptNumber: string }) => {
+  const handlePayOrder = async (orderId: string, paymentData: { method: any; amountPaid: number; changeGiven: number; receiptNumber: string; details?: string }) => {
     const order = orders.find(o => o.id === orderId);
     const existingNotes = order?.notes ? `${order.notes} | ` : '';
-    const paymentNote = `${existingNotes}[PAGADO: ${paymentData.method.toUpperCase()} | Recibido: $${paymentData.amountPaid.toLocaleString('es-AR')} | Vuelto: $${paymentData.changeGiven.toLocaleString('es-AR')} | Ticket #${paymentData.receiptNumber}]`;
+    const detailsStr = paymentData.details ? ` (${paymentData.details})` : '';
+    const paymentNote = `${existingNotes}[PAGADO: ${paymentData.method.toUpperCase()}${detailsStr} | Recibido: $${paymentData.amountPaid.toLocaleString('es-AR')} | Vuelto: $${paymentData.changeGiven.toLocaleString('es-AR')} | Ticket #${paymentData.receiptNumber}]`;
 
     if (order && order.status !== 'entregada') {
       await orderService.updateOrderStatus(orderId, 'entregada', user.id);

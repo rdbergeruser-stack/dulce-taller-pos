@@ -26,7 +26,7 @@ interface OrdersViewProps {
     items: { preparation_id: string; quantity: number; unit_price: number; notes?: string }[]
   ) => Promise<void>;
   onUpdateStatus: (orderId: string, status: OrderStatus) => Promise<void>;
-  onPayOrder?: (orderId: string, paymentData: { method: PaymentMethod; amountPaid: number; changeGiven: number; receiptNumber: string }) => Promise<void>;
+  onPayOrder?: (orderId: string, paymentData: { method: PaymentMethod; amountPaid: number; changeGiven: number; receiptNumber: string; details?: string }) => Promise<void>;
   isLoading: boolean;
 }
 
