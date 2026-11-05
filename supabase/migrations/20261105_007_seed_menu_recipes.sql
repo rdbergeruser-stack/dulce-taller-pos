@@ -17,7 +17,7 @@ ALTER TABLE public.preparations ADD CONSTRAINT preparations_unit_type_check CHEC
 
 -- 3. INSERTAR NUEVAS PREPARACIONES (Brownie, Cookies, Chocolate Caliente, Café Latte)
 INSERT INTO public.preparations (code, name, category, description, unit_type, portion_yield, price, stock_available) VALUES
-('PREP-005', 'Brownie Húmedo de Chocolate (Placa Entera)', 'pasteleria', 'Placa entera artesanal de puro chocolate 70% con fina costra crujiente de almendras tostadas (rinde 16 porciones).', 'entera', 1.0, 45000.00, 2),
+('PREP-005', 'Brownie Húmedo de Chocolate (Placa Entera)', 'pasteleria', 'Placa entera artesanal de puro chocolate 70% con fina costra crujiente de almendras tostadas (rinde 16 porciones).', 'entera', 1.0, 45000.00, 0),
 ('PREP-006', 'Porción Brownie Húmedo de Chocolate', 'pasteleria', 'Cuadrado de puro chocolate intenso con fina costra crujiente de almendras. Porción individual (1/16 de placa entera). [TORTA_MADRE:PREP-005]', 'porcion', 16.0, 3600.00, 16),
 ('PREP-007', 'Cookies Estilo Americano', 'pasteleria', 'Galletas horneadas en el día con chips de chocolate belga y manteca noisette. Venta por unidad (lote de horneado rinde 6 unidades).', 'unidad', 6.0, 2400.00, 18),
 ('PREP-011', 'Chocolate Caliente', 'cafeteria', 'Ganache de cacao puro fundida lentamente en leche texturizada con canela y vainilla.', 'taza', 1.0, 3200.00, 25),

@@ -412,7 +412,7 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
       {isAdmin && (
         <div className="space-y-6">
           {/* Panel de Autorización Rápida: Solicitudes de Cocina y Productos con Bajo Stock */}
-          {(productionRequests.length > 0 || preparations.some(p => p.unit_type !== 'porcion' && p.stock_available <= 1)) && (
+          {(productionRequests.length > 0 || preparations.some(p => p.unit_type !== 'porcion' && p.stock_available <= (p.unit_type === 'entera' ? 1 : 3))) && (
             <div className="bg-[#fff8f2] p-5 rounded-2xl border border-[#dec0b6] shadow-sm space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-[#dec0b6]">
                 <div className="flex items-center gap-2">
@@ -489,7 +489,7 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
 
                 {/* 2. Productos de vitrina con bajo stock no solicitados aún */}
                 {preparations
-                  .filter(p => p.unit_type !== 'porcion' && p.stock_available <= 1 && !productionRequests.some(r => r.preparation_id === p.id))
+                  .filter(p => p.unit_type !== 'porcion' && p.stock_available <= (p.unit_type === 'entera' ? 1 : 3) && !productionRequests.some(r => r.preparation_id === p.id))
                   .map(p => {
                     const qty = getCardQuantity(p.id, 1);
 

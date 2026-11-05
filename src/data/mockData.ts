@@ -55,7 +55,7 @@ export const INITIAL_PREPARATIONS: Preparation[] = [
     unit_type: 'entera',
     portion_yield: 1.0,
     price: 45000.00,
-    stock_available: 2,
+    stock_available: 0,
     is_active: true
   },
   {
