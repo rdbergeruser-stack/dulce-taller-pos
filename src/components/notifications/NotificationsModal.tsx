@@ -26,7 +26,7 @@ export interface NotificationsModalProps {
   onNavigateToProduction?: (preparationId: string) => void;
   onNavigateToInventory?: (subTab: 'vitrina' | 'stock' | 'kardex', materialId?: string) => void;
   onNavigateToPurchases?: () => void;
-  onNavigateToOrders?: (focusVitrina?: boolean) => void;
+  onNavigateToOrders?: (focusVitrina?: boolean, orderId?: string) => void;
   onSendKitchenNotice?: (itemName: string) => void;
 }
 
@@ -42,7 +42,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
   onNavigateToOrders,
   onSendKitchenNotice
 }) => {
-  const { isAdmin, isCocinero } = useAuth();
+  const { isAdmin, isCocinero, isMozo } = useAuth();
   const [filter, setFilter] = useState<'all' | 'vitrina' | 'materials' | 'kitchen'>(initialFilter);
   const [kitchenNotifs, setKitchenNotifs] = useState<KitchenNotification[]>([]);
   const [sentNotices, setSentNotices] = useState<Record<string, boolean>>({});
@@ -50,11 +50,17 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
 
   useEffect(() => {
     if (isOpen) {
-      setFilter(isCocinero && initialFilter === 'all' ? 'kitchen' : initialFilter);
+      if (isCocinero && initialFilter === 'all') {
+        setFilter('kitchen');
+      } else if (isMozo) {
+        setFilter(initialFilter === 'materials' || initialFilter === 'kitchen' ? 'vitrina' : initialFilter);
+      } else {
+        setFilter(initialFilter);
+      }
       setNoticeFeedback(null);
       setKitchenNotifs(notificationService.getNotifications());
     }
-  }, [isOpen, initialFilter, isCocinero]);
+  }, [isOpen, initialFilter, isCocinero, isMozo]);
 
   if (!isOpen) return null;
 
@@ -96,52 +102,59 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
       motherStock: number;
     }>;
 
-  // 2. Calcular alertas de materias primas
+  // 2. Calcular alertas de materias primas (exclusivo administración)
   const materialAlerts = materials
     .filter(m => m.is_active && m.current_stock <= m.min_stock)
-    .map(m => ({
-      item: m,
-      isOut: m.current_stock <= 0,
-      isLow: m.current_stock > 0 && m.current_stock <= m.min_stock
-    }));
+    .map(m => {
+      const isOut = m.current_stock <= 0;
+      const suggested = Math.max(0, (m.min_stock * 2) - m.current_stock);
+      return {
+        material: m,
+        isOut,
+        suggested
+      };
+    });
 
-  const totalAlerts = vitrinaAlerts.length + materialAlerts.length + (isCocinero ? kitchenNotifs.filter(k => !k.read).length : 0);
+  // 3. Notificaciones de cocina pertinentes para el rol activo
+  const relevantKitchenNotifs = (isCocinero || isAdmin) ? kitchenNotifs : [];
+  const unreadKitchen = relevantKitchenNotifs.filter(k => !k.read);
+
+  // Total de alertas relevantes para el usuario activo
+  const totalAlerts = vitrinaAlerts.length + 
+    (isAdmin ? materialAlerts.length : 0) + 
+    unreadKitchen.length;
 
   const handleAction = (callback?: () => void) => {
-    if (callback) {
-      callback();
-      onClose();
-    }
+    if (callback) callback();
+    onClose();
   };
 
-  const handleSendNotice = (item: RawMaterial) => {
-    setSentNotices(prev => ({ ...prev, [item.id]: true }));
-    setNoticeFeedback(`¡Aviso enviado a cocina sobre "${item.name}"!`);
+  const handleSendNotice = (itemName: string) => {
     if (onSendKitchenNotice) {
-      onSendKitchenNotice(item.name);
+      onSendKitchenNotice(itemName);
+      setSentNotices(prev => ({ ...prev, [itemName]: true }));
+      setNoticeFeedback(`Aviso enviado a Administración para reponer "${itemName}"`);
+      setTimeout(() => setNoticeFeedback(null), 4000);
     }
   };
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-6 bg-black/50 backdrop-blur-xs animate-fadeIn"
       role="dialog"
       aria-modal="true"
       aria-labelledby="notification-modal-title"
     >
-      <div 
-        className="bg-[#fff8f2] rounded-2xl border border-[#dec0b6] shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden animate-scaleIn"
-        onClick={e => e.stopPropagation()}
-      >
-        {/* Cabecera del Centro de Notificaciones */}
-        <div className="p-4 md:p-5 border-b border-[#dec0b6] bg-[#f5ede3] flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#9d3c0c] text-white flex items-center justify-center shadow-sm">
+      <div className="bg-[#fff8f2] rounded-2xl border border-[#dec0b6] shadow-2xl w-full max-w-2xl max-h-[88vh] flex flex-col overflow-hidden">
+        {/* Header Modal */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#dec0b6] bg-[#f5ede3]">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-[#9d3c0c] text-white">
               <Bell className="w-5 h-5" aria-hidden="true" focusable="false" />
             </div>
             <div>
               <h2 id="notification-modal-title" className="font-serif font-bold text-lg md:text-xl text-[#1c120c]">
-                Alertas de Stock & Vitrina
+                Centro de Notificaciones & Alertas
               </h2>
               <p className="text-xs text-[#7c5641]">
                 {totalAlerts === 0 
@@ -162,7 +175,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
         </div>
 
         {/* Pestañas de filtrado rápido */}
-        <div className="px-5 pt-3 pb-2 border-b border-[#dec0b6] flex items-center gap-2 bg-white">
+        <div className="px-5 pt-3 pb-2 border-b border-[#dec0b6] flex items-center gap-2 bg-white flex-wrap">
           <button
             type="button"
             onClick={() => setFilter('all')}
@@ -174,17 +187,22 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
           >
             Todas ({totalAlerts})
           </button>
-          <button
-            type="button"
-            onClick={() => setFilter('kitchen')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              filter === 'kitchen'
-                ? 'bg-[#9d3c0c] text-white shadow-xs'
-                : 'text-[#7c5641] hover:bg-[#f5ede3]'
-            }`}
-          >
-            Cocina ({kitchenNotifs.filter(k => !k.read).length})
-          </button>
+
+          {(isCocinero || isAdmin) && (
+            <button
+              type="button"
+              onClick={() => setFilter('kitchen')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ${
+                filter === 'kitchen'
+                  ? 'bg-[#9d3c0c] text-white shadow-xs'
+                  : 'text-[#7c5641] hover:bg-[#f5ede3]'
+              }`}
+            >
+              <ChefHat className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
+              <span>Cocina ({unreadKitchen.length})</span>
+            </button>
+          )}
+
           <button
             type="button"
             onClick={() => setFilter('vitrina')}
@@ -196,17 +214,20 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
           >
             Vitrina ({vitrinaAlerts.length})
           </button>
-          <button
-            type="button"
-            onClick={() => setFilter('materials')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              filter === 'materials'
-                ? 'bg-[#9d3c0c] text-white shadow-xs'
-                : 'text-[#7c5641] hover:bg-[#f5ede3]'
-            }`}
-          >
-            Insumos ({materialAlerts.length})
-          </button>
+
+          {isAdmin && (
+            <button
+              type="button"
+              onClick={() => setFilter('materials')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                filter === 'materials'
+                  ? 'bg-[#9d3c0c] text-white shadow-xs'
+                  : 'text-[#7c5641] hover:bg-[#f5ede3]'
+              }`}
+            >
+              Insumos ({materialAlerts.length})
+            </button>
+          )}
         </div>
 
         {/* Banner de confirmación de aviso */}
@@ -243,14 +264,14 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
             </div>
           ) : (
             <>
-              {/* SECCIÓN COMANDAS PARA COCINA */}
-              {(filter === 'all' || filter === 'kitchen') && kitchenNotifs.length > 0 && (
+              {/* SECCIÓN COMANDAS PARA COCINA (Visible para Cocinero y Admin) */}
+              {(isCocinero || isAdmin) && (filter === 'all' || filter === 'kitchen') && relevantKitchenNotifs.length > 0 && (
                 <div className="space-y-2.5">
                   <div className="flex items-center justify-between">
                     <h3 className="text-xs font-bold uppercase tracking-wider text-[#7c5641] flex items-center gap-1.5">
                       <span>🔔 Comandas Nuevas para Cocina</span>
                       <span className="text-xs px-2 py-0.5 rounded-full bg-[#ffdbce] text-[#9d3c0c] font-bold">
-                        {kitchenNotifs.length}
+                        {relevantKitchenNotifs.length}
                       </span>
                     </h3>
                     <button
@@ -266,7 +287,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
                   </div>
 
                   <div className="space-y-2">
-                    {kitchenNotifs.map(k => (
+                    {relevantKitchenNotifs.map(k => (
                       <div 
                         key={k.id}
                         className={`p-3.5 rounded-xl border flex items-center justify-between gap-3 ${
@@ -287,10 +308,12 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
                           type="button"
                           onClick={() => {
                             notificationService.markAsRead(k.id);
-                            if (onNavigateToOrders) onNavigateToOrders();
+                            if (onNavigateToOrders) {
+                              onNavigateToOrders(false, k.order_id);
+                            }
                             onClose();
                           }}
-                          className="px-3 py-1.5 rounded-lg bg-[#9d3c0c] text-white text-xs font-bold shadow-xs hover:bg-[#7f2b00] shrink-0"
+                          className="px-3 py-1.5 rounded-lg bg-[#9d3c0c] text-white text-xs font-bold shadow-xs hover:bg-[#7f2b00] active:scale-95 shrink-0 transition-all"
                         >
                           Ir a Comanda
                         </button>
@@ -349,7 +372,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
                             </p>
                           </div>
 
-                          {/* Acciones directas */}
+                          {/* Acciones directas según rol */}
                           <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
                             {isAdmin ? (
                               <>
@@ -378,6 +401,30 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
                                   </button>
                                 )}
                               </>
+                            ) : isCocinero ? (
+                              <button
+                                type="button"
+                                onClick={() => handleSendNotice(item.name)}
+                                disabled={sentNotices[item.name]}
+                                className={`px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs ${
+                                  sentNotices[item.name]
+                                    ? 'bg-[#ebffe8] border border-[#aecfae] text-[#446147] cursor-default'
+                                    : 'bg-[#9d3c0c] text-white hover:bg-[#7f2b00] active:scale-95'
+                                }`}
+                                title="Enviar aviso a la Administración solicitando autorizar producción"
+                              >
+                                {sentNotices[item.name] ? (
+                                  <>
+                                    <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
+                                    <span>Aviso Enviado</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Send className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
+                                    <span>Avisar a Admin para Cocinar</span>
+                                  </>
+                                )}
+                              </button>
                             ) : (
                               <button
                                 type="button"
@@ -397,22 +444,22 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
                 </div>
               )}
 
-              {/* SECCIÓN MATERIAS PRIMAS */}
-              {(filter === 'all' || filter === 'materials') && materialAlerts.length > 0 && (
-                <div className="space-y-2.5 pt-2">
+              {/* SECCIÓN MATERIAS PRIMAS (Exclusiva para Administrador) */}
+              {isAdmin && (filter === 'all' || filter === 'materials') && materialAlerts.length > 0 && (
+                <div className="space-y-2.5">
                   <div className="flex items-center justify-between">
                     <h3 className="text-xs font-bold uppercase tracking-wider text-[#7c5641] flex items-center gap-1.5">
                       <span>📦 Materias Primas e Insumos</span>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-[#fef3c7] text-[#92400e] font-bold">
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-[#ffdad6] text-[#ba1a1a] font-bold">
                         {materialAlerts.length}
                       </span>
                     </h3>
                   </div>
 
                   <div className="space-y-2">
-                    {materialAlerts.map(({ item, isOut }) => (
+                    {materialAlerts.map(({ material, isOut, suggested }) => (
                       <div
-                        key={item.id}
+                        key={material.id}
                         className={`p-3.5 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-all ${
                           isOut
                             ? 'bg-[#ffdad6]/35 border-[#ba1a1a]/40'
@@ -426,67 +473,43 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
                                 ? 'bg-[#ffdad6] text-[#ba1a1a] border-[#ba1a1a]/40 animate-pulse'
                                 : 'bg-[#fef3c7] text-[#92400e] border-[#fde68a]'
                             }`}>
-                              {isOut ? '🚨 AGOTADO' : '⚠️ BAJO MÍNIMO'}
-                            </span>
-                            <span className="text-xs font-mono font-bold text-[#7c5641]">
-                              {item.code}
+                              {isOut ? '🚨 SIN STOCK' : '⚠️ STOCK MÍNIMO'}
                             </span>
                             <h4 className="text-xs font-bold text-[#1c120c]">
-                              {item.name}
+                              {material.name} ({material.code})
                             </h4>
                           </div>
 
                           <p className="text-xs text-[#7c5641]">
-                            Stock actual: <strong className={isOut ? 'text-[#ba1a1a]' : 'text-[#92400e]'}>
-                              {item.current_stock.toLocaleString('es-AR')} {item.unit}
-                            </strong>
-                            <span className="ml-1 text-xs text-[#7c5641]">
-                              (Mínimo de alerta: {item.min_stock.toLocaleString('es-AR')} {item.unit})
+                            Stock: <strong className={isOut ? 'text-[#ba1a1a]' : 'text-[#92400e]'}>
+                              {material.current_stock} {material.unit}
+                            </strong> (Mín: {material.min_stock} {material.unit})
+                            <span className="ml-2 text-xs text-[#7c5641]">
+                              • Sugerido a reponer: <strong>{suggested} {material.unit}</strong>
                             </span>
                           </p>
                         </div>
 
                         {/* Acciones directas */}
                         <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-                          {isAdmin ? (
-                            <>
-                              <button
-                                type="button"
-                                onClick={() => handleAction(() => onNavigateToInventory?.('stock', item.id))}
-                                className="px-2.5 py-1.5 rounded-xl border border-[#dec0b6] bg-white text-xs font-bold text-[#9d3c0c] hover:bg-[#ffdbce] active:scale-95 transition-all flex items-center gap-1"
-                                title="Abrir ajuste de stock y alerta para este insumo"
-                              >
-                                <Package className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
-                                <span>Ajustar Stock</span>
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => handleAction(() => onNavigateToPurchases?.())}
-                                className="px-2.5 py-1.5 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold hover:bg-[#7f2b00] active:scale-95 transition-all flex items-center gap-1 shadow-xs"
-                                title="Ir a la lista de compras para reponer insumo"
-                              >
-                                <ShoppingCart className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
-                                <span>Comprar</span>
-                              </button>
-                            </>
-                          ) : (
-                            sentNotices[item.id] ? (
-                              <span className="text-xs font-bold text-[#446147] bg-[#ebffe8] px-2.5 py-1.5 rounded-xl border border-[#aecfae] flex items-center gap-1 shadow-xs">
-                                <CheckCircle2 className="w-3.5 h-3.5 text-[#446147]" aria-hidden="true" focusable="false" />
-                                <span>Aviso Enviado</span>
-                              </span>
-                            ) : (
-                              <button
-                                type="button"
-                                onClick={() => handleSendNotice(item)}
-                                className="px-2.5 py-1.5 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold hover:bg-[#7f2b00] active:scale-95 transition-all flex items-center gap-1.5 shadow-xs"
-                                title="Enviar aviso a la cocina y administración sobre este insumo crítico"
-                              >
-                                <Send className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
-                                <span>Avisar a Cocina</span>
-                              </button>
-                            )
-                          )}
+                          <button
+                            type="button"
+                            onClick={() => handleAction(() => onNavigateToPurchases?.())}
+                            className="px-3 py-2 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold hover:bg-[#7f2b00] active:scale-95 transition-all flex items-center gap-1.5 shadow-xs"
+                            title="Ir a la Lista de Compras para gestionar orden al proveedor"
+                          >
+                            <ShoppingCart className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
+                            <span>Ver en Compras</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleAction(() => onNavigateToInventory?.('stock', material.id))}
+                            className="px-3 py-2 rounded-xl border border-[#dec0b6] bg-white text-[#7c5641] text-xs font-bold hover:bg-[#efe7dd] active:scale-95 transition-all flex items-center gap-1.5"
+                            title="Ajustar stock o ver historial de movimientos de este insumo"
+                          >
+                            <Package className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
+                            <span>Ajustar Stock</span>
+                          </button>
                         </div>
                       </div>
                     ))}
@@ -497,17 +520,17 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
           )}
         </div>
 
-        {/* Pie del modal con accesos rápidos */}
-        <div className="p-3 md:p-4 border-t border-[#dec0b6] bg-[#f5ede3] flex items-center justify-between">
-          <span className="text-xs text-[#7c5641] hidden sm:inline">
-            Haz clic en cualquier acción para saltar directo a la sección correspondiente.
-          </span>
+        {/* Footer Modal con Atajos */}
+        <div className="px-5 py-3 border-t border-[#dec0b6] bg-[#f5ede3] flex items-center justify-between">
+          <div className="text-xs text-[#7c5641]">
+            <span className="font-semibold">Dulce Taller POS</span> • Alertas automáticas en tiempo real
+          </div>
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl bg-[#dec0b6] text-[#1c120c] text-xs font-bold hover:bg-[#cdaca0] active:scale-95 transition-all ml-auto"
+            className="px-4 py-2 rounded-xl bg-[#1c120c] text-white text-xs font-bold hover:bg-[#3d2c24] active:scale-95 transition-all"
           >
-            Cerrar
+            Entendido
           </button>
         </div>
       </div>

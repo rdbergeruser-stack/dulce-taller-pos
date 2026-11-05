@@ -303,7 +303,7 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
                   ¡Al día! No tienes órdenes de producción pendientes asignadas por el Administrador.
                 </p>
                 <p className="text-xs">
-                  Concéntrate en la elaboración y despacho de las comandas activas en la pestaña <strong>Comandas & KDS</strong>.
+                  Concéntrate en la elaboración y despacho de las comandas activas en la pestaña <strong>Comandas & Pedidos</strong>.
                 </p>
               </div>
             ) : (

@@ -31,6 +31,21 @@ export const orderService = {
       throw new Error('La comanda debe contener al menos un producto.');
     }
 
+    // Validación estricta de stock disponible en vitrina
+    const preps = await recipeService.getPreparations();
+    for (const item of items) {
+      const prep = preps.find(p => p.id === item.preparation_id);
+      if (prep) {
+        const max = prep.unit_type === 'porcion'
+          ? portionService.getEffectiveAvailableStock(prep, preps).totalAvailablePortions
+          : Math.max(0, Number(prep.stock_available) || 0);
+
+        if (item.quantity > max) {
+          throw new Error(`Stock insuficiente para "${prep.name}". Solicitado: ${item.quantity}, disponible en vitrina: ${max}.`);
+        }
+      }
+    }
+
     const isValidUuid = userId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
 
     if (isSupabaseConfigured && supabase) {

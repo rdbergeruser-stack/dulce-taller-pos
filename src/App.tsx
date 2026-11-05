@@ -32,6 +32,7 @@ function MainApp() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [purchases, setPurchases] = useState<PurchaseListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [highlightOrderId, setHighlightOrderId] = useState<string | null>(null);
 
   // Notificación tipo toast
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'info' | 'error' } | null>(null);
@@ -45,12 +46,12 @@ function MainApp() {
   const loadAllData = async () => {
     try {
       setIsLoading(true);
-      const [mats, movs, preps, ords, purch] = await Promise.all([
-        inventoryService.getRawMaterials(),
+      const mats = await inventoryService.getRawMaterials();
+      const [movs, preps, ords, purch] = await Promise.all([
         inventoryService.getMovements(),
         recipeService.getPreparations(),
         orderService.getOrders(),
-        purchaseService.getPurchaseList()
+        purchaseService.getPurchaseList(mats)
       ]);
       setMaterials(mats);
       setMovements(movs);
@@ -90,8 +91,8 @@ function MainApp() {
     items: { preparation_id: string; quantity: number; unit_price: number; notes?: string }[]
   ) => {
     const createdOrder = await orderService.createOrder(orderData, items, user.id);
-    // Notificar inmediatamente al Cocinero
-    notificationService.notifyNewOrder(createdOrder, user.full_name);
+    // Notificar a Cocina (el tono de campana solo suena en dispositivos de cocineros)
+    notificationService.notifyNewOrder(createdOrder, user.full_name, role || undefined);
     showToast(`Comanda #${createdOrder.order_number} creada con éxito. Notificación enviada a cocina.`, 'success');
     await loadAllData();
   };
@@ -163,8 +164,8 @@ function MainApp() {
   };
 
   const handleRefreshPurchaseSuggestions = async () => {
-    await purchaseService.generateAutoSuggestions();
-    showToast('Sugerencias de compras recalculadas.');
+    await purchaseService.generateAutoSuggestions(materials);
+    showToast('Sugerencias de compras recalculadas según stock.');
     await loadAllData();
   };
 
@@ -196,8 +197,11 @@ function MainApp() {
     setActiveTab('purchases');
   };
 
-  const handleNavigateToOrders = (focusVitrina?: boolean) => {
+  const handleNavigateToOrders = (focusVitrina?: boolean, orderId?: string) => {
     setActiveTab('orders');
+    if (orderId) {
+      setHighlightOrderId(orderId);
+    }
     if (focusVitrina) {
       setTimeout(() => {
         const el = document.getElementById('vitrina-disponibilidad');
@@ -273,6 +277,8 @@ function MainApp() {
             onUpdateStatus={handleUpdateOrderStatus}
             onPayOrder={handlePayOrder}
             isLoading={isLoading}
+            highlightOrderId={highlightOrderId}
+            onClearHighlight={() => setHighlightOrderId(null)}
           />
         )}
 

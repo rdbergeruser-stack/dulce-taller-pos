@@ -29,6 +29,8 @@ interface OrdersViewProps {
   onUpdateStatus: (orderId: string, status: OrderStatus) => Promise<void>;
   onPayOrder?: (orderId: string, paymentData: { method: PaymentMethod; amountPaid: number; changeGiven: number; receiptNumber: string; details?: string }) => Promise<void>;
   isLoading: boolean;
+  highlightOrderId?: string | null;
+  onClearHighlight?: () => void;
 }
 
 export const OrdersView: React.FC<OrdersViewProps> = ({
@@ -37,12 +39,44 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
   onCreateOrder,
   onUpdateStatus,
   onPayOrder,
-  isLoading
+  isLoading,
+  highlightOrderId,
+  onClearHighlight
 }) => {
   const { isCocinero, isMozo } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>('activas');
   const [payingOrder, setPayingOrder] = useState<Order | null>(null);
+
+  React.useEffect(() => {
+    if (!highlightOrderId) return;
+
+    const targetOrder = orders.find(o => o.id === highlightOrderId);
+    if (targetOrder) {
+      const isPaid = Boolean(targetOrder.notes && targetOrder.notes.includes('[PAGADO'));
+      if (isPaid && statusFilter !== 'todas' && statusFilter !== 'cobradas') {
+        setStatusFilter('cobradas');
+      } else if (!isPaid && statusFilter !== 'todas' && statusFilter !== 'activas') {
+        setStatusFilter('activas');
+      }
+    }
+
+    const timer = setTimeout(() => {
+      const el = document.getElementById(`order-card-${highlightOrderId}`);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 250);
+
+    const clearTimer = setTimeout(() => {
+      onClearHighlight?.();
+    }, 3500);
+
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(clearTimer);
+    };
+  }, [highlightOrderId, orders, statusFilter, onClearHighlight]);
 
   const isOrderPaid = (o: Order) => Boolean(o.notes && o.notes.includes('[PAGADO'));
 
@@ -204,11 +238,19 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
             <ChefHat className="w-6 h-6" aria-hidden="true" focusable="false" />
           </div>
           <div>
-            <h2 className="font-serif font-bold text-xl text-[#1c120c]">
-              Comandas en Cocina y Salón (KDS)
-            </h2>
+            <div className="flex items-center gap-2 flex-wrap">
+              <h2 className="font-serif font-bold text-xl text-[#1c120c]">
+                Comandas & Pedidos
+              </h2>
+              <span 
+                className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#f5ede3] text-[#7c5641] border border-[#dec0b6] cursor-help"
+                title="KDS (Kitchen Display System): Sistema de comandas digitales en tiempo real que sincroniza Salón y Cocina sin papel"
+              >
+                KDS Cocina & Salón
+              </span>
+            </div>
             <p className="text-xs text-[#7c5641]">
-              {activeOrders.length} comandas en curso de preparación, entrega o cobro
+              {activeOrders.length} comanda(s) activas • Flujo digital en tiempo real sin papel
             </p>
           </div>
         </div>
@@ -355,11 +397,16 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
             const isPaid = order.notes && order.notes.includes('[PAGADO');
             const total = (order.items || []).reduce((s, it) => s + (it.quantity * it.unit_price), 0);
 
+            const isHighlighted = highlightOrderId === order.id;
+
             return (
               <div
+                id={`order-card-${order.id}`}
                 key={order.id}
-                className={`rounded-2xl border p-5 flex flex-col justify-between transition-all shadow-sm ${
-                  isPaid
+                className={`rounded-2xl border p-5 flex flex-col justify-between transition-all duration-300 shadow-sm ${
+                  isHighlighted
+                    ? 'ring-4 ring-[#9d3c0c] shadow-2xl scale-[1.02] bg-[#fffbf8]'
+                    : isPaid
                     ? 'bg-[#f5ede3]/40 border-[#aecfae] opacity-90'
                     : order.status === 'lista'
                     ? 'bg-[#fffdfa] border-[#446147] ring-2 ring-[#446147]/20'

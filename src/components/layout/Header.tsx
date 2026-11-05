@@ -15,7 +15,7 @@ interface HeaderProps {
   onNavigateToProduction?: (preparationId: string) => void;
   onNavigateToInventory?: (subTab: 'vitrina' | 'stock' | 'kardex', materialId?: string) => void;
   onNavigateToPurchases?: () => void;
-  onNavigateToOrders?: (focusVitrina?: boolean) => void;
+  onNavigateToOrders?: (focusVitrina?: boolean, orderId?: string) => void;
   onSendKitchenNotice?: (itemName: string) => void;
 }
 
@@ -50,7 +50,10 @@ export const Header: React.FC<HeaderProps> = ({
     return () => unsubscribe();
   }, []);
 
-  const totalAlerts = lowStockCount + outOfStockVitrinaCount + lowStockVitrinaCount + (isCocinero ? unreadKitchenNotifs : 0);
+  const totalAlerts = (isAdmin ? lowStockCount : 0) + 
+    outOfStockVitrinaCount + 
+    lowStockVitrinaCount + 
+    (isCocinero ? unreadKitchenNotifs : 0);
 
   useEffect(() => {
     const updateTime = () => {

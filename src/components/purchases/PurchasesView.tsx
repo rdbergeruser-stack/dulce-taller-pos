@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { PurchaseListItem } from '../../types/database';
-import { ShoppingCart, Plus, Check, RefreshCw, X } from 'lucide-react';
+import { PurchaseListItem, RawMaterial } from '../../types/database';
+import { ShoppingCart, Plus, Check, RefreshCw, X, AlertTriangle } from 'lucide-react';
 
 interface PurchasesViewProps {
   items: PurchaseListItem[];
-  materials?: any[];
+  materials?: RawMaterial[];
   onUpdateItem: (id: string, updates: Partial<PurchaseListItem>) => Promise<void>;
   onAddItem: (item: Omit<PurchaseListItem, 'id'>) => Promise<void>;
   onRefreshSuggestions: () => Promise<void>;
@@ -12,6 +12,7 @@ interface PurchasesViewProps {
 
 export const PurchasesView: React.FC<PurchasesViewProps> = ({
   items,
+  materials = [],
   onUpdateItem,
   onAddItem,
   onRefreshSuggestions
@@ -41,7 +42,34 @@ export const PurchasesView: React.FC<PurchasesViewProps> = ({
     setNewNotes('');
   };
 
-  const pendingItems = items.filter(i => !i.is_purchased);
+  // 1. Ítems pendientes guardados
+  const savedPendingItems = items.filter(i => !i.is_purchased);
+  const savedPendingRawMaterialIds = new Set(savedPendingItems.map(i => i.raw_material_id).filter(Boolean));
+
+  // 2. Detectar insumos que estén bajo stock mínimo en tiempo real
+  const lowStockMaterials = materials.filter(m => m.is_active && Number(m.current_stock) <= Number(m.min_stock));
+  
+  // 3. Generar sugerencias dinámicas para los insumos bajos que aún no estén en la lista de compras
+  const dynamicSuggestions: PurchaseListItem[] = lowStockMaterials
+    .filter(m => !savedPendingRawMaterialIds.has(m.id))
+    .map(mat => {
+      const targetStock = Number(mat.min_stock) * 2;
+      const current = Number(mat.current_stock);
+      const suggested = Math.max(1, Math.round((targetStock - current) * 100) / 100);
+      return {
+        id: 'sugg-' + mat.id,
+        raw_material_id: mat.id,
+        item_name: `${mat.name} (${mat.code})`,
+        quantity_suggested: suggested,
+        quantity_to_buy: suggested,
+        unit: mat.unit,
+        is_purchased: false,
+        notes: `Alerta: Stock actual (${mat.current_stock} ${mat.unit}) <= Mínimo (${mat.min_stock} ${mat.unit})`
+      };
+    });
+
+  const pendingItems = [...dynamicSuggestions, ...savedPendingItems];
+  const purchasedItems = items.filter(i => i.is_purchased);
 
   return (
     <div className="space-y-6">
@@ -82,8 +110,14 @@ export const PurchasesView: React.FC<PurchasesViewProps> = ({
       {/* Tabla de Compras Pendientes */}
       <div className="bg-white rounded-2xl border border-[#dec0b6] overflow-hidden shadow-sm">
         <div className="p-4 bg-[#f5ede3] border-b border-[#dec0b6] flex items-center justify-between">
-          <h3 className="font-serif font-bold text-base text-[#1c120c]">
-            Insumos por Comprar ({pendingItems.length})
+          <h3 className="font-serif font-bold text-base text-[#1c120c] flex items-center gap-2">
+            <span>Insumos por Comprar ({pendingItems.length})</span>
+            {lowStockMaterials.length > 0 && (
+              <span className="text-xs px-2 py-0.5 rounded-full bg-[#ffdad6] text-[#ba1a1a] font-bold flex items-center gap-1">
+                <AlertTriangle className="w-3 h-3" aria-hidden="true" focusable="false" />
+                {lowStockMaterials.length} con stock bajo
+              </span>
+            )}
           </h3>
           <span className="text-xs text-[#7c5641]">
             Cantidades editables para enviar al proveedor
@@ -120,21 +154,27 @@ export const PurchasesView: React.FC<PurchasesViewProps> = ({
                         <input
                           type="number"
                           step="any"
-                          aria-label={`Cantidad a comprar de ${item.item_name}`}
                           value={item.quantity_to_buy}
                           onChange={(e) => onUpdateItem(item.id, { quantity_to_buy: parseFloat(e.target.value) || 0 })}
-                          className="w-24 px-2.5 py-1.5 rounded-lg border border-[#dec0b6] bg-white font-bold text-[#1c120c] focus:outline-none focus:ring-1 focus:ring-[#9d3c0c]"
+                          className="w-24 px-2 py-1 border border-[#dec0b6] rounded-lg bg-white text-[#1c120c] font-bold focus:outline-none focus:ring-1 focus:ring-[#9d3c0c]"
                         />
-                        <span className="font-semibold text-[#7c5641] uppercase">{item.unit}</span>
+                        <span className="text-[#7c5641] font-semibold">{item.unit}</span>
                       </div>
                     </td>
-                    <td className="py-3 px-4 text-[#7c5641] italic">
-                      {item.notes || 'Reposición habitual'}
+                    <td className="py-3 px-4">
+                      <input
+                        type="text"
+                        placeholder="Ej. Distribuidora del Sur..."
+                        value={item.notes || ''}
+                        onChange={(e) => onUpdateItem(item.id, { notes: e.target.value })}
+                        className="w-full max-w-xs px-2 py-1 border border-[#dec0b6] rounded-lg bg-white text-xs text-[#1c120c] focus:outline-none focus:ring-1 focus:ring-[#9d3c0c]"
+                      />
                     </td>
                     <td className="py-3 px-4 text-center">
                       <button
                         onClick={() => onUpdateItem(item.id, { is_purchased: true })}
-                        className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#ebffe8] text-[#446147] border border-[#aecfae] text-xs font-bold hover:bg-[#d5f5d3] active:scale-95 transition-all mx-auto"
+                        className="px-3 py-1.5 rounded-lg bg-[#ebffe8] border border-[#aecfae] text-[#446147] hover:bg-[#d6f5d2] active:scale-95 font-bold text-xs inline-flex items-center gap-1 transition-all"
+                        title="Marcar como comprado"
                       >
                         <Check className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
                         <span>Comprado</span>
@@ -148,86 +188,120 @@ export const PurchasesView: React.FC<PurchasesViewProps> = ({
         )}
       </div>
 
+      {/* Historial de Compras Recientes */}
+      {purchasedItems.length > 0 && (
+        <div className="bg-white rounded-2xl border border-[#dec0b6] overflow-hidden shadow-sm opacity-80">
+          <div className="p-4 bg-[#f5ede3] border-b border-[#dec0b6] flex items-center justify-between">
+            <h3 className="font-serif font-bold text-sm text-[#7c5641]">
+              Comprados Recientemente ({purchasedItems.length})
+            </h3>
+          </div>
+          <div className="p-4 space-y-2">
+            {purchasedItems.map(item => (
+              <div key={item.id} className="flex items-center justify-between p-2 rounded-xl bg-[#fff8f2] border border-[#dec0b6] text-xs">
+                <span className="line-through text-[#7c5641] font-medium">
+                  {item.item_name} - {item.quantity_to_buy} {item.unit}
+                </span>
+                <button
+                  onClick={() => onUpdateItem(item.id, { is_purchased: false })}
+                  className="text-xs text-[#9d3c0c] hover:underline font-bold"
+                >
+                  Restaurar a pendientes
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Modal Agregar Ítem Manual */}
       {isNewItemModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-[#fff8f2] rounded-2xl border border-[#dec0b6] shadow-2xl w-full max-w-md overflow-hidden">
-            <div className="p-4 border-b border-[#dec0b6] bg-[#f5ede3] flex items-center justify-between">
-              <h3 className="font-serif font-bold text-lg text-[#1c120c]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl border border-[#dec0b6] shadow-xl w-full max-w-md overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#dec0b6] bg-[#f5ede3]">
+              <h3 className="font-serif font-bold text-base text-[#1c120c]">
                 Agregar Ítem a la Lista de Compras
               </h3>
-              <button onClick={() => setIsNewItemModalOpen(false)} aria-label="Cerrar modal">
-                <X className="w-5 h-5 text-[#7c5641]" aria-hidden="true" focusable="false" />
+              <button
+                onClick={() => setIsNewItemModalOpen(false)}
+                className="p-1.5 rounded-lg text-[#7c5641] hover:bg-[#dec0b6]/40"
+              >
+                <X className="w-4 h-4" aria-hidden="true" focusable="false" />
               </button>
             </div>
 
             <form onSubmit={handleCreateManual} className="p-5 space-y-4">
-              <div className="space-y-1">
-                <label htmlFor="purch-item-name" className="text-xs font-bold text-[#7c5641]">Descripción / Insumo</label>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-[#7c5641] mb-1">
+                  Nombre del Ítem / Insumo
+                </label>
                 <input
-                  id="purch-item-name"
                   type="text"
+                  required
+                  placeholder="Ej. Servilletas, Caja de embalaje, Harina 000..."
                   value={newItemName}
                   onChange={(e) => setNewItemName(e.target.value)}
-                  placeholder="Ej. Servilletas decoradas o Café Colombia"
-                  className="w-full px-3 py-2 rounded-xl border border-[#dec0b6] bg-white text-xs font-bold"
-                  required
+                  className="w-full px-3 py-2 border border-[#dec0b6] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#9d3c0c]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label htmlFor="purch-qty" className="text-xs font-bold text-[#7c5641]">Cantidad a Comprar</label>
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-[#7c5641] mb-1">
+                    Cantidad a Comprar
+                  </label>
                   <input
-                    id="purch-qty"
                     type="number"
+                    step="any"
+                    required
                     value={newQty}
                     onChange={(e) => setNewQty(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-[#dec0b6] bg-white text-xs font-bold"
-                    required
+                    className="w-full px-3 py-2 border border-[#dec0b6] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#9d3c0c]"
                   />
                 </div>
-                <div className="space-y-1">
-                  <label htmlFor="purch-unit" className="text-xs font-bold text-[#7c5641]">Unidad</label>
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-[#7c5641] mb-1">
+                    Unidad de Medida
+                  </label>
                   <select
-                    id="purch-unit"
                     value={newUnit}
                     onChange={(e) => setNewUnit(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-[#dec0b6] bg-white text-xs font-bold"
+                    className="w-full px-3 py-2 border border-[#dec0b6] rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#9d3c0c]"
                   >
                     <option value="gr">Gramos (gr)</option>
-                    <option value="ml">Mililitros (ml)</option>
-                    <option value="un">Unidades (un)</option>
                     <option value="kg">Kilogramos (kg)</option>
-                    <option value="lt">Litros (lt)</option>
-                    <option value="caja">Caja / Pack</option>
+                    <option value="ml">Mililitros (ml)</option>
+                    <option value="l">Litros (l)</option>
+                    <option value="un">Unidades (un)</option>
+                    <option value="paquete">Paquete</option>
                   </select>
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <label htmlFor="purch-notes" className="text-xs font-bold text-[#7c5641]">Notas / Proveedor</label>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-[#7c5641] mb-1">
+                  Notas / Observación
+                </label>
                 <input
-                  id="purch-notes"
                   type="text"
+                  placeholder="Opcional: proveedor recomendado, urgencia..."
                   value={newNotes}
                   onChange={(e) => setNewNotes(e.target.value)}
-                  placeholder="Ej. Proveedor Molino Cañuelas"
-                  className="w-full px-3 py-2 rounded-xl border border-[#dec0b6] bg-white text-xs"
+                  className="w-full px-3 py-2 border border-[#dec0b6] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#9d3c0c]"
                 />
               </div>
 
-              <div className="pt-2 flex items-center justify-end gap-2">
+              <div className="pt-2 flex items-center justify-end gap-2 border-t border-[#dec0b6]">
                 <button
                   type="button"
                   onClick={() => setIsNewItemModalOpen(false)}
-                  className="px-4 py-2 rounded-xl border border-[#dec0b6] text-xs font-bold text-[#7c5641] hover:bg-[#efe7dd]"
+                  className="px-4 py-2 border border-[#dec0b6] rounded-xl text-xs font-bold text-[#7c5641] hover:bg-[#efe7dd]"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold shadow-md hover:bg-[#7f2b00] active:scale-95"
+                  className="px-4 py-2 bg-[#9d3c0c] text-white rounded-xl text-xs font-bold hover:bg-[#7f2b00] active:scale-95"
                 >
                   Agregar a Compras
                 </button>

@@ -5,6 +5,22 @@ const STORAGE_KEY = 'dulce_taller_kitchen_notifications';
 type NotificationListener = (notifications: KitchenNotification[]) => void;
 const listeners: Set<NotificationListener> = new Set();
 
+// Sincronización entre pestañas del navegador mediante evento storage
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (e) => {
+    if (e.key === STORAGE_KEY && e.newValue) {
+      try {
+        const notifs = JSON.parse(e.newValue);
+        if (Array.isArray(notifs)) {
+          listeners.forEach(fn => fn(notifs));
+        }
+      } catch {
+        // Fallback
+      }
+    }
+  });
+}
+
 export const notificationService = {
   getNotifications(): KitchenNotification[] {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -19,7 +35,7 @@ export const notificationService = {
     return [];
   },
 
-  notifyNewOrder(order: Order, createdByName?: string): KitchenNotification {
+  notifyNewOrder(order: Order, createdByName?: string, currentRole?: string | null): KitchenNotification {
     const notifications = this.getNotifications();
     const tableOrOrigin = order.origin === 'salon' 
       ? (order.table_number || 'Salón') 
@@ -44,8 +60,10 @@ export const notificationService = {
     const trimmed = notifications.slice(0, 30);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
 
-    // Reproducir tono de campana de cocina
-    this.playChime();
+    // Solo reproducir sonido de cocina si el usuario activo en este dispositivo es cocinero
+    if (currentRole === 'cocinero') {
+      this.playChime();
+    }
 
     // Notificar a observadores activos
     listeners.forEach(fn => fn(trimmed));
@@ -99,13 +117,11 @@ export const notificationService = {
         osc.stop(ctx.currentTime + start + duration);
       };
 
-      // Secuencia de campana de cocina doble tono
-      playTone(523.25, 0, 0.4);      // C5
-      playTone(659.25, 0.15, 0.4);   // E5
-      playTone(783.99, 0.3, 0.6);    // G5
+      // Campana de dos tonos: Ding-Dong armonioso de cocina (880Hz -> 1320Hz)
+      playTone(880, 0, 0.4);
+      playTone(1320, 0.15, 0.7);
     } catch {
-      // Navegador puede restringir audio si no hubo interacción previa
+      // Ignorar si el navegador bloquea audio sin interacción
     }
   }
 };
-

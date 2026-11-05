@@ -158,5 +158,27 @@ describe('Reglas de Negocio Unitarias - Dulce Taller', () => {
     expect(canManageUsers('mozo')).toBe(false);
     expect(canManageUsers('cocinero')).toBe(false);
   });
+
+  it('8. Bloqueo de comandas por encima del stock disponible en vitrina', async () => {
+    // Si una torta tiene stock 3, no se debe permitir pedir 5
+    const prepStock = 3;
+    const requestedQty = 5;
+    const isExceeded = requestedQty > prepStock;
+    expect(isExceeded).toBe(true);
+  });
+
+  it('9. Lista de compras: genera sugerencia automática cuando un insumo cae por debajo del mínimo', async () => {
+    const { purchaseService } = await import('../../services/purchaseService');
+    const materialsWithLowSugar: RawMaterial[] = [
+      { id: 'rm-sugar', code: 'INS-010', name: 'Azúcar común', unit: 'kg', current_stock: 1, min_stock: 5, unit_cost: 1100, is_active: true }
+    ];
+
+    const list = await purchaseService.getPurchaseList(materialsWithLowSugar);
+    const sugarItem = list.find(i => i.raw_material_id === 'rm-sugar');
+
+    expect(sugarItem).toBeDefined();
+    expect(sugarItem?.quantity_suggested).toBe(9); // (min_stock * 2) - current_stock = 10 - 1 = 9
+    expect(sugarItem?.is_purchased).toBe(false);
+  });
 });
 

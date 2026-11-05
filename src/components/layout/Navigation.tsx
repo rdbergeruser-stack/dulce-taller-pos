@@ -35,7 +35,7 @@ export const Navigation: React.FC<NavigationProps> = ({
   }[] = [
     {
       id: 'orders',
-      label: 'Comandas & KDS',
+      label: 'Comandas & Pedidos',
       icon: <ClipboardList className="w-5 h-5" aria-hidden="true" focusable="false" />,
       badge: pendingOrdersCount > 0 ? pendingOrdersCount : undefined
     },

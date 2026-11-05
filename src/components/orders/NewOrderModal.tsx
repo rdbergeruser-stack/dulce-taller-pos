@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Preparation, OrderOrigin } from '../../types/database';
-import { X, Plus, Minus, Check, Coffee, Utensils } from 'lucide-react';
+import { X, Plus, Minus, Check, Coffee, Utensils, AlertTriangle } from 'lucide-react';
 import { getEffectiveAvailableStock } from '../../services/portionService';
 
 interface NewOrderModalProps {
@@ -28,17 +28,44 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
 
   if (!isOpen) return null;
 
+  // Calcula el stock máximo que se puede vender/comandar
+  const getMaxAvailable = (prep: Preparation): number => {
+    if (prep.unit_type === 'porcion') {
+      const effective = getEffectiveAvailableStock(prep, preparations);
+      return Math.max(0, effective.totalAvailablePortions);
+    }
+    return Math.max(0, Number(prep.stock_available) || 0);
+  };
+
   const handleAddItem = (prepId: string) => {
+    const prep = preparations.find(p => p.id === prepId);
+    if (!prep) return;
+
+    const max = getMaxAvailable(prep);
+    const current = cart[prepId]?.quantity || 0;
+
+    if (max <= 0) {
+      setErrorMessage(`El producto "${prep.name}" no cuenta con stock disponible en vitrina.`);
+      return;
+    }
+
+    if (current >= max) {
+      setErrorMessage(`Stock máximo alcanzado: solo hay ${max} ${prep.unit_type}(s) disponibles de "${prep.name}".`);
+      return;
+    }
+
+    setErrorMessage(null);
     setCart(prev => ({
       ...prev,
       [prepId]: {
-        quantity: (prev[prepId]?.quantity || 0) + 1,
+        quantity: current + 1,
         notes: prev[prepId]?.notes || ''
       }
     }));
   };
 
   const handleRemoveItem = (prepId: string) => {
+    setErrorMessage(null);
     setCart(prev => {
       const current = prev[prepId]?.quantity || 0;
       if (current <= 1) {
@@ -86,6 +113,15 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
       return;
     }
 
+    // Validación estricta de stock disponible antes de emitir la comanda
+    for (const item of selectedItems) {
+      const max = getMaxAvailable(item.preparation);
+      if (item.quantity > max) {
+        setErrorMessage(`La cantidad solicitada para "${item.preparation.name}" (${item.quantity}) supera el stock disponible en vitrina (${max} ${item.preparation.unit_type}(s)). Ajusta la cantidad.`);
+        return;
+      }
+    }
+
     setErrorMessage(null);
     setIsSubmitting(true);
     try {
@@ -113,7 +149,7 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-6 bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-6 bg-black/50 backdrop-blur-xs">
       <div className="bg-[#fff8f2] rounded-2xl border border-[#dec0b6] shadow-2xl w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden">
         {/* Header Modal */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#dec0b6] bg-[#f5ede3]">
@@ -137,8 +173,9 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
           {errorMessage && (
-            <div className="p-3 bg-[#ffdad6] text-[#ba1a1a] rounded-xl text-sm font-medium border border-[#ba1a1a]/20">
-              {errorMessage}
+            <div className="p-3 bg-[#ffdad6] text-[#ba1a1a] rounded-xl text-sm font-medium border border-[#ba1a1a]/20 flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0" aria-hidden="true" focusable="false" />
+              <span>{errorMessage}</span>
             </div>
           )}
 
@@ -152,7 +189,6 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
                 {[
                   { id: 'salon', label: 'Salón', icon: <Utensils className="w-4 h-4" aria-hidden="true" focusable="false" /> },
                   { id: 'takeaway', label: 'Take Away', icon: <Coffee className="w-4 h-4" aria-hidden="true" focusable="false" /> }
-
                 ].map(opt => (
                   <button
                     key={opt.id}
@@ -160,7 +196,7 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
                     onClick={() => setOrigin(opt.id as OrderOrigin)}
                     className={`flex items-center justify-center gap-2 py-3 px-2 rounded-xl text-sm font-bold border transition-all ${
                       origin === opt.id
-                        ? 'bg-[#9d3c0c] text-white border-[#9d3c0c] shadow-sm'
+                        ? 'bg-[#9d3c0c] text-white border-[#9d3c0c] shadow-xs'
                         : 'bg-white text-[#1c120c] border-[#dec0b6] hover:bg-[#efe7dd]'
                     }`}
                   >
@@ -184,7 +220,7 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
                       onClick={() => setTableNumber(mesa)}
                       className={`h-[46px] rounded-xl text-xs font-bold border transition-all ${
                         tableNumber === mesa
-                          ? 'bg-[#1c120c] text-white border-[#1c120c] shadow-sm'
+                          ? 'bg-[#1c120c] text-white border-[#1c120c] shadow-xs'
                           : 'bg-white text-[#1c120c] border-[#dec0b6] hover:bg-[#efe7dd]'
                       }`}
                     >
@@ -196,25 +232,27 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
             )}
           </div>
 
-          {/* Botones de Alta Rotación (Menú táctil) */}
+          {/* Menú táctil de productos */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold uppercase tracking-wider text-[#7c5641]">
-                Productos de Alta Rotación
+                Productos Disponibles en Vitrina
               </label>
               <span className="text-xs text-[#7c5641]">
-                Toca para agregar a la comanda
+                Toca para agregar a la comanda (máx. limitado por stock)
               </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {preparations.map(prep => {
                 const count = cart[prep.id]?.quantity || 0;
-                const stock = prep.stock_available || 0;
-                const effective = getEffectiveAvailableStock(prep, preparations);
+                const maxAvailable = getMaxAvailable(prep);
+                const stock = Number(prep.stock_available) || 0;
                 const isPortion = prep.unit_type === 'porcion';
-                const canAutoOpenMother = isPortion && stock <= 0 && effective.motherStock > 0;
-                const isOutOfStock = effective.totalAvailablePortions <= 0;
+                const effective = isPortion ? getEffectiveAvailableStock(prep, preparations) : null;
+                const canAutoOpenMother = isPortion && stock <= 0 && (effective?.motherStock || 0) > 0;
+                const isOutOfStock = maxAvailable <= 0;
+                const isMaxReached = count >= maxAvailable && maxAvailable > 0;
                 const isLowStock = !canAutoOpenMother && stock > 0 && stock <= (prep.unit_type === 'entera' ? 1 : 3);
 
                 return (
@@ -222,17 +260,23 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
                     key={prep.id}
                     onClick={() => {
                       if (isOutOfStock) {
-                        setErrorMessage(`El producto "${prep.name}" está agotado en vitrina (sin stock ni tortas para fraccionar).`);
+                        setErrorMessage(`El producto "${prep.name}" está agotado en vitrina.`);
+                        return;
+                      }
+                      if (isMaxReached) {
+                        setErrorMessage(`Has alcanzado el stock disponible de "${prep.name}" (${maxAvailable} ${prep.unit_type}(s)).`);
                         return;
                       }
                       handleAddItem(prep.id);
                     }}
-                    className={`p-3.5 rounded-xl border transition-all cursor-pointer select-none text-left flex flex-col justify-between ${
+                    className={`p-3.5 rounded-xl border transition-all select-none text-left flex flex-col justify-between ${
                       isOutOfStock
-                        ? 'bg-[#ffdad6]/30 border-[#ba1a1a]/40 opacity-75'
+                        ? 'bg-[#ffdad6]/30 border-[#ba1a1a]/40 opacity-70 cursor-not-allowed'
+                        : isMaxReached
+                        ? 'bg-[#fff8f2] border-[#9d3c0c] ring-2 ring-[#9d3c0c]/40 cursor-pointer'
                         : count > 0
-                        ? 'bg-[#ffdbce]/40 border-[#9d3c0c] ring-2 ring-[#9d3c0c]/30'
-                        : 'bg-white border-[#dec0b6] hover:border-[#9d3c0c]/50 hover:bg-[#fffbf8]'
+                        ? 'bg-[#ffdbce]/40 border-[#9d3c0c] ring-2 ring-[#9d3c0c]/30 cursor-pointer'
+                        : 'bg-white border-[#dec0b6] hover:border-[#9d3c0c]/50 hover:bg-[#fffbf8] cursor-pointer'
                     }`}
                   >
                     <div>
@@ -244,9 +288,13 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
                           <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-[#ffdad6] text-[#ba1a1a] border border-[#ba1a1a]/30">
                             AGOTADO
                           </span>
+                        ) : isMaxReached ? (
+                          <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-[#9d3c0c] text-white">
+                            MÁX: {maxAvailable}
+                          </span>
                         ) : canAutoOpenMother ? (
                           <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-[#fef3c7] text-[#92400e] border border-[#fde68a]" title="Se abrirá automáticamente 1 torta entera al despachar">
-                            Abrir torta ({effective.motherStock} disp.)
+                            Abrir torta ({effective?.motherStock} disp.)
                           </span>
                         ) : isLowStock ? (
                           <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-[#fef3c7] text-[#92400e] border border-[#fde68a]">
@@ -267,8 +315,14 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
                     </div>
 
                     <div className="mt-3 pt-2 border-t border-[#dec0b6]/50 flex items-center justify-between">
-                      <span className="text-xs text-[#9d3c0c] font-bold">
-                        {count > 0 ? `${count} en comanda` : '+ Agregar'}
+                      <span className={`text-xs font-bold ${isMaxReached ? 'text-[#9d3c0c]' : 'text-[#9d3c0c]'}`}>
+                        {isOutOfStock 
+                          ? 'Sin stock' 
+                          : isMaxReached 
+                          ? `Máximo (${count})` 
+                          : count > 0 
+                          ? `${count} en comanda` 
+                          : '+ Agregar'}
                       </span>
                       {count > 0 && (
                         <div className="w-5 h-5 rounded-full bg-[#9d3c0c] text-white flex items-center justify-center text-xs font-bold">
@@ -293,55 +347,68 @@ export const NewOrderModal: React.FC<NewOrderModalProps> = ({
               </h3>
 
               <div className="space-y-2">
-                {selectedItems.map(item => (
-                  <div
-                    key={item.preparation_id}
-                    className="p-3 bg-white rounded-xl border border-[#dec0b6] flex flex-wrap items-center justify-between gap-2"
-                  >
-                    <div className="flex-1 min-w-[200px]">
-                      <span className="font-bold text-sm text-[#1c120c]">
-                        {item.preparation.name}
-                      </span>
-                      <span className="text-xs text-[#7c5641] ml-2">
-                        (${item.unit_price} c/u)
-                      </span>
-                      <input
-                        type="text"
-                        placeholder="Observación para cocina (ej. leche descremada, caliente)..."
-                        value={item.notes}
-                        onChange={(e) => handleItemNotesChange(item.preparation_id, e.target.value)}
-                        className="mt-1 w-full text-xs px-2.5 py-1.5 rounded-lg border border-[#dec0b6] bg-[#fff8f2] text-[#1c120c] focus:outline-none focus:ring-1 focus:ring-[#9d3c0c]"
-                      />
-                    </div>
+                {selectedItems.map(item => {
+                  const maxAvailable = getMaxAvailable(item.preparation);
+                  const isMaxReached = item.quantity >= maxAvailable;
 
-                    {/* Controles de Cantidad */}
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center bg-[#efe7dd] rounded-lg border border-[#dec0b6]">
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveItem(item.preparation_id)}
-                          className="w-8 h-8 flex items-center justify-center text-[#7c5641] hover:text-[#1c120c] active:scale-95"
-                        >
-                          <Minus className="w-4 h-4" aria-hidden="true" focusable="false" />
-                        </button>
-                        <span className="w-8 text-center font-bold text-sm text-[#1c120c]">
-                          {item.quantity}
+                  return (
+                    <div
+                      key={item.preparation_id}
+                      className="p-3 bg-white rounded-xl border border-[#dec0b6] flex flex-wrap items-center justify-between gap-2"
+                    >
+                      <div className="flex-1 min-w-[200px]">
+                        <span className="font-bold text-sm text-[#1c120c]">
+                          {item.preparation.name}
                         </span>
-                        <button
-                          type="button"
-                          onClick={() => handleAddItem(item.preparation_id)}
-                          className="w-8 h-8 flex items-center justify-center text-[#7c5641] hover:text-[#1c120c] active:scale-95"
-                        >
-                          <Plus className="w-4 h-4" aria-hidden="true" focusable="false" />
-                        </button>
+                        <span className="text-xs text-[#7c5641] ml-2">
+                          (${item.unit_price.toLocaleString('es-AR')} c/u • Disp: {maxAvailable})
+                        </span>
+                        <input
+                          type="text"
+                          placeholder="Observación para cocina (ej. leche descremada, caliente)..."
+                          value={item.notes}
+                          onChange={(e) => handleItemNotesChange(item.preparation_id, e.target.value)}
+                          className="mt-1 w-full text-xs px-2.5 py-1.5 rounded-lg border border-[#dec0b6] bg-[#fff8f2] text-[#1c120c] focus:outline-none focus:ring-1 focus:ring-[#9d3c0c]"
+                        />
                       </div>
 
-                      <span className="w-20 text-right font-bold text-sm text-[#1c120c]">
-                        ${(item.quantity * item.unit_price).toLocaleString('es-AR')}
-                      </span>
+                      {/* Controles de Cantidad con Capping estricto */}
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center bg-[#efe7dd] rounded-lg border border-[#dec0b6]">
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveItem(item.preparation_id)}
+                            className="w-8 h-8 flex items-center justify-center text-[#7c5641] hover:text-[#1c120c] active:scale-95"
+                            aria-label="Restar una unidad"
+                          >
+                            <Minus className="w-4 h-4" aria-hidden="true" focusable="false" />
+                          </button>
+                          <span className="w-8 text-center font-bold text-sm text-[#1c120c]">
+                            {item.quantity}
+                          </span>
+                          <button
+                            type="button"
+                            disabled={isMaxReached}
+                            onClick={() => handleAddItem(item.preparation_id)}
+                            className={`w-8 h-8 flex items-center justify-center transition-all ${
+                              isMaxReached
+                                ? 'opacity-40 cursor-not-allowed text-[#dec0b6]'
+                                : 'text-[#7c5641] hover:text-[#1c120c] active:scale-95'
+                            }`}
+                            title={isMaxReached ? `Máximo alcanzado (${maxAvailable} disponibles)` : 'Sumar una unidad'}
+                            aria-label="Sumar una unidad"
+                          >
+                            <Plus className="w-4 h-4" aria-hidden="true" focusable="false" />
+                          </button>
+                        </div>
+
+                        <span className="w-20 text-right font-bold text-sm text-[#1c120c]">
+                          ${(item.quantity * item.unit_price).toLocaleString('es-AR')}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
