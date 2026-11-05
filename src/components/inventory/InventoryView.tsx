@@ -13,9 +13,12 @@ import {
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
-  Search
+  Search,
+  Bell
 } from 'lucide-react';
 import { portionService, getEffectiveAvailableStock } from '../../services/portionService';
+import { productionOrderService } from '../../services/productionOrderService';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface InventoryViewProps {
   materials: RawMaterial[];
@@ -40,7 +43,25 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
   highlightMaterialId,
   onRefresh
 }) => {
-  const [subTab, setSubTab] = useState<'vitrina' | 'stock' | 'kardex'>(initialSubTab || 'vitrina');
+  const { user, isAdmin, isCocinero, isMozo } = useAuth();
+  const [subTab, setSubTab] = useState<'vitrina' | 'stock' | 'kardex'>(
+    isMozo ? 'vitrina' : (initialSubTab || 'vitrina')
+  );
+  const [requestedPreps, setRequestedPreps] = useState<Record<string, boolean>>({});
+  const [requestFeedback, setRequestFeedback] = useState<string | null>(null);
+
+  const handleRequestProduction = (prep: Preparation) => {
+    productionOrderService.createProductionRequest({
+      preparation_id: prep.id,
+      preparation_name: prep.name,
+      unit_type: prep.unit_type,
+      current_stock: prep.stock_available,
+      requested_by: user?.full_name || 'Mateo Benítez (Cocinero)'
+    });
+    setRequestedPreps(prev => ({ ...prev, [prep.id]: true }));
+    setRequestFeedback(`¡Aviso enviado a Administración! Solicitaste autorizar la producción de "${prep.name}".`);
+    setTimeout(() => setRequestFeedback(null), 4000);
+  };
   const [searchQuery, setSearchQuery] = useState('');
   const [focusedMatId, setFocusedMatId] = useState<string | null>(null);
 
@@ -331,7 +352,15 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
         </div>
       )}
 
-      {/* Sub Tabs: 1) Productos Producidos (Vitrina), 2) Materias Primas, 3) Historial Kardex */}
+      {/* Feedback banner cuando el cocinero solicita producción */}
+      {requestFeedback && (
+        <div className="p-3 rounded-2xl bg-[#ebffe8] border border-[#aecfae] text-xs font-bold text-[#446147] flex items-center gap-2 shadow-xs animate-fadeIn">
+          <CheckCircle2 className="w-4 h-4 text-[#446147] shrink-0" />
+          <span>{requestFeedback}</span>
+        </div>
+      )}
+
+      {/* Sub Tabs adaptadas al rol: Mozo (solo Vitrina), Cocinero (Vitrina + Stock), Admin (Todos) */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center bg-[#efe7dd] p-1 rounded-xl border border-[#dec0b6] overflow-x-auto max-w-full">
           <button
@@ -343,30 +372,36 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
             }`}
           >
             <Cake className="w-4 h-4" aria-hidden="true" focusable="false" />
-            <span>Productos Elaborados / Vitrina ({preparations.length})</span>
+            <span>{isMozo ? 'Stock en Vitrina' : 'Productos Elaborados / Vitrina'} ({preparations.length})</span>
           </button>
-          <button
-            onClick={() => setSubTab('stock')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
-              subTab === 'stock'
-                ? 'bg-white text-[#1c120c] shadow-sm'
-                : 'text-[#7c5641] hover:text-[#1c120c]'
-            }`}
-          >
-            <Package className="w-4 h-4" aria-hidden="true" focusable="false" />
-            <span>Materias Primas / Insumos ({materials.length})</span>
-          </button>
-          <button
-            onClick={() => setSubTab('kardex')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
-              subTab === 'kardex'
-                ? 'bg-white text-[#1c120c] shadow-sm'
-                : 'text-[#7c5641] hover:text-[#1c120c]'
-            }`}
-          >
-            <History className="w-4 h-4" aria-hidden="true" focusable="false" />
-            <span>Auditoría Kardex</span>
-          </button>
+
+          {!isMozo && (
+            <button
+              onClick={() => setSubTab('stock')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+                subTab === 'stock'
+                  ? 'bg-white text-[#1c120c] shadow-sm'
+                  : 'text-[#7c5641] hover:text-[#1c120c]'
+              }`}
+            >
+              <Package className="w-4 h-4" aria-hidden="true" focusable="false" />
+              <span>Materias Primas / Insumos ({materials.length})</span>
+            </button>
+          )}
+
+          {isAdmin && (
+            <button
+              onClick={() => setSubTab('kardex')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+                subTab === 'kardex'
+                  ? 'bg-white text-[#1c120c] shadow-sm'
+                  : 'text-[#7c5641] hover:text-[#1c120c]'
+              }`}
+            >
+              <History className="w-4 h-4" aria-hidden="true" focusable="false" />
+              <span>Auditoría Kardex</span>
+            </button>
+          )}
         </div>
 
         {subTab === 'stock' && (
@@ -471,7 +506,8 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                       </span>
                     </div>
 
-                    {prep.unit_type === 'entera' && (
+                    {/* Botón de corte de tortas enteras (Admin y Cocinero) */}
+                    {prep.unit_type === 'entera' && !isMozo && (
                       <button
                         onClick={() => handleManualSlice(prep.id)}
                         disabled={prep.stock_available <= 0 || isSlicing}
@@ -483,7 +519,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                       </button>
                     )}
 
-                    {isPortion && (
+                    {isPortion && !isMozo && (
                       <button
                         onClick={() => handleManualSlice(prep.id)}
                         disabled={effective.motherStock <= 0 || isSlicing}
@@ -495,12 +531,43 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                       </button>
                     )}
 
-                    <button
-                      onClick={() => handleOpenAdjustPrep(prep)}
-                      className="w-full py-2 rounded-xl border border-[#dec0b6] bg-[#f5ede3] text-xs font-bold text-[#9d3c0c] hover:bg-[#ffdbce] active:scale-95 transition-all"
-                    >
-                      Ajustar Stock / Registrar Merma
-                    </button>
+                    {/* Botón para Cocinero si hay poco stock: Avisar a Administración para solicitar más producción */}
+                    {isCocinero && (!hasStock || prep.stock_available <= (prep.unit_type === 'entera' ? 1 : 3)) && (
+                      <button
+                        type="button"
+                        onClick={() => handleRequestProduction(prep)}
+                        disabled={requestedPreps[prep.id] || productionOrderService.isRequestPending(prep.id)}
+                        className={`w-full py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                          requestedPreps[prep.id] || productionOrderService.isRequestPending(prep.id)
+                            ? 'bg-[#ebffe8] text-[#446147] border border-[#aecfae] cursor-default'
+                            : 'bg-[#ffdbce] text-[#9d3c0c] border border-[#9d3c0c]/40 hover:bg-[#9d3c0c] hover:text-white shadow-xs active:scale-95'
+                        }`}
+                      >
+                        <Bell className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
+                        <span>
+                          {requestedPreps[prep.id] || productionOrderService.isRequestPending(prep.id)
+                            ? '✓ Solicitud enviada a Administración'
+                            : '🔔 Avisar a Administración (Pedir Producción)'}
+                        </span>
+                      </button>
+                    )}
+
+                    {/* Administrador: Ajuste manual de stock y merma */}
+                    {isAdmin && (
+                      <button
+                        onClick={() => handleOpenAdjustPrep(prep)}
+                        className="w-full py-2 rounded-xl border border-[#dec0b6] bg-[#f5ede3] text-xs font-bold text-[#9d3c0c] hover:bg-[#ffdbce] active:scale-95 transition-all"
+                      >
+                        Ajustar Stock / Registrar Merma
+                      </button>
+                    )}
+
+                    {/* Mozo: Modo lectura de vitrina para conocer stock disponible */}
+                    {isMozo && (
+                      <div className="w-full py-2 px-3 rounded-xl bg-[#f5ede3] border border-[#dec0b6] text-xs font-semibold text-[#7c5641] text-center">
+                        Stock en vitrina: <strong className="text-[#1c120c]">{prep.stock_available} {prep.unit_type}</strong>
+                      </div>
+                    )}
                   </div>
                 </div>
               );

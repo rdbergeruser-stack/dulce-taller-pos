@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Order, OrderStatus, Preparation } from '../../types/database';
+import { useAuth } from '../../contexts/AuthContext';
 import { NewOrderModal } from './NewOrderModal';
 import { PaymentModal, PaymentMethod } from './PaymentModal';
 import { getEffectiveAvailableStock } from '../../services/portionService';
@@ -38,6 +39,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
   onPayOrder,
   isLoading
 }) => {
+  const { isCocinero, isMozo } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>('activas');
   const [payingOrder, setPayingOrder] = useState<Order | null>(null);
@@ -211,14 +213,45 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
           </div>
         </div>
 
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#9d3c0c] text-white text-sm font-bold shadow-md shadow-[#9d3c0c]/25 hover:bg-[#7f2b00] active:scale-95 transition-all"
-        >
-          <Plus className="w-5 h-5" aria-hidden="true" focusable="false" />
-          <span>+ Nueva Comanda</span>
-        </button>
+        {isCocinero ? (
+          <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#ffdbce]/50 border border-[#dec0b6] text-xs font-bold text-[#9d3c0c]">
+            <ChefHat className="w-4 h-4" aria-hidden="true" focusable="false" />
+            <span>KDS Cocina • Elaboración de Comandas</span>
+          </div>
+        ) : (
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#9d3c0c] text-white text-sm font-bold shadow-md shadow-[#9d3c0c]/25 hover:bg-[#7f2b00] active:scale-95 transition-all"
+          >
+            <Plus className="w-5 h-5" aria-hidden="true" focusable="false" />
+            <span>+ Nueva Comanda</span>
+          </button>
+        )}
       </div>
+
+      {/* Alerta Destacada para Cocinero cuando hay comandas pendientes */}
+      {isCocinero && orders.filter(o => o.status === 'pendiente').length > 0 && (
+        <div className="p-4 rounded-2xl bg-[#ffdbce] border border-[#9d3c0c]/40 text-[#9d3c0c] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm animate-pulse">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl" role="img" aria-label="Campana">🔔</span>
+            <div>
+              <p className="font-bold text-sm text-[#1c120c]">
+                ¡Tienes {orders.filter(o => o.status === 'pendiente').length} comanda(s) nueva(s) ingresada(s) por Salón!
+              </p>
+              <p className="text-xs text-[#7c5641]">
+                Presiona &quot;Iniciar Preparación&quot; para notificar a los mozos que el pedido se está cocinando.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setStatusFilter('pendiente')}
+            className="px-4 py-2 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold shadow-xs hover:bg-[#7f2b00] shrink-0 self-start sm:self-auto"
+          >
+            Ver Pendientes ({orders.filter(o => o.status === 'pendiente').length})
+          </button>
+        </div>
+      )}
 
       {/* Franja de Disponibilidad en Vitrina (Stock Elaborado) con Alertas Inteligentes */}
       <div id="vitrina-disponibilidad" className="bg-[#f5ede3] p-4 rounded-2xl border border-[#dec0b6] shadow-sm space-y-2 transition-all duration-500">
@@ -408,55 +441,87 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
                     </span>
                   </div>
 
+                  {/* Estado Pendiente */}
                   {order.status === 'pendiente' && (
-                    <button
-                      onClick={() => onUpdateStatus(order.id, 'en_preparacion')}
-                      className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#9d3c0c] text-white text-sm font-bold hover:bg-[#7f2b00] active:scale-95 shadow-sm transition-all"
-                    >
-                      <ChefHat className="w-4 h-4" aria-hidden="true" focusable="false" />
-                      <span>Iniciar Preparación</span>
-                    </button>
-                  )}
-
-                  {order.status === 'en_preparacion' && (
-                    <button
-                      onClick={() => onUpdateStatus(order.id, 'lista')}
-                      className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#446147] text-white text-sm font-bold hover:bg-[#314d34] active:scale-95 shadow-sm transition-all"
-                    >
-                      <CheckCircle2 className="w-4 h-4" aria-hidden="true" focusable="false" />
-                      <span>Marcar como Lista</span>
-                    </button>
-                  )}
-
-                  {order.status === 'lista' && (
-                    <div className="grid grid-cols-2 gap-2">
+                    isMozo ? (
+                      <div className="flex items-center justify-center gap-2 py-3 px-3 rounded-xl bg-[#fff8f2] border border-[#dec0b6] text-xs font-bold text-[#7c5641]">
+                        <Clock className="w-4 h-4 text-[#9d3c0c] animate-pulse" aria-hidden="true" focusable="false" />
+                        <span>Comanda enviada • Esperando inicio de Cocina</span>
+                      </div>
+                    ) : (
                       <button
-                        onClick={() => onUpdateStatus(order.id, 'entregada')}
-                        className="flex items-center justify-center gap-1.5 py-3 rounded-xl bg-[#1c120c] text-white text-xs font-bold hover:bg-black active:scale-95 shadow-sm transition-all"
-                        aria-label="Despachar y entregar comanda"
+                        onClick={() => onUpdateStatus(order.id, 'en_preparacion')}
+                        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#9d3c0c] text-white text-sm font-bold hover:bg-[#7f2b00] active:scale-95 shadow-sm transition-all"
                       >
-                        <PackageCheck className="w-4 h-4" aria-hidden="true" focusable="false" />
-                        <span>Entregar</span>
+                        <ChefHat className="w-4 h-4" aria-hidden="true" focusable="false" />
+                        <span>Iniciar Preparación</span>
                       </button>
+                    )
+                  )}
 
+                  {/* Estado En Preparación */}
+                  {order.status === 'en_preparacion' && (
+                    isMozo ? (
+                      <div className="flex items-center justify-center gap-2 py-3 px-3 rounded-xl bg-[#ffdbce]/40 border border-[#dec0b6] text-xs font-bold text-[#9d3c0c]">
+                        <ChefHat className="w-4 h-4 animate-bounce" aria-hidden="true" focusable="false" />
+                        <span>En Preparación por Cocina...</span>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => onUpdateStatus(order.id, 'lista')}
+                        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#446147] text-white text-sm font-bold hover:bg-[#314d34] active:scale-95 shadow-sm transition-all"
+                      >
+                        <CheckCircle2 className="w-4 h-4" aria-hidden="true" focusable="false" />
+                        <span>Listo para Entrega</span>
+                      </button>
+                    )
+                  )}
+
+                  {/* Estado Lista */}
+                  {order.status === 'lista' && (
+                    isCocinero ? (
+                      <div className="flex items-center justify-center gap-2 py-3 px-3 rounded-xl bg-[#ebffe8] border border-[#aecfae] text-xs font-bold text-[#446147]">
+                        <CheckCircle2 className="w-4 h-4 text-[#446147]" aria-hidden="true" focusable="false" />
+                        <span>¡Listo para Servir! • Esperando retiro por Mozo</span>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          onClick={() => onUpdateStatus(order.id, 'entregada')}
+                          className="flex items-center justify-center gap-1.5 py-3 rounded-xl bg-[#1c120c] text-white text-xs font-bold hover:bg-black active:scale-95 shadow-sm transition-all"
+                          aria-label="Despachar y entregar comanda"
+                        >
+                          <PackageCheck className="w-4 h-4" aria-hidden="true" focusable="false" />
+                          <span>Entregar</span>
+                        </button>
+
+                        <button
+                          onClick={() => setPayingOrder(order)}
+                          className="flex items-center justify-center gap-1.5 py-3 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold hover:bg-[#7f2b00] active:scale-95 shadow-sm transition-all"
+                        >
+                          <Banknote className="w-4 h-4" aria-hidden="true" focusable="false" />
+                          <span>Cobrar</span>
+                        </button>
+                      </div>
+                    )
+                  )}
+
+                  {/* Estado Entregada (Pendiente Cobro) */}
+                  {order.status === 'entregada' && !isPaid && (
+                    isCocinero ? (
+                      <div className="flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-[#f5ede3] border border-[#dec0b6] text-xs font-semibold text-[#7c5641]">
+                        <PackageCheck className="w-4 h-4 text-[#7c5641]" aria-hidden="true" focusable="false" />
+                        <span>Comanda entregada • Cobro a cargo de Mozo / Salón</span>
+                      </div>
+                    ) : (
                       <button
                         onClick={() => setPayingOrder(order)}
-                        className="flex items-center justify-center gap-1.5 py-3 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold hover:bg-[#7f2b00] active:scale-95 shadow-sm transition-all"
+                        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#9d3c0c] text-white text-sm font-bold hover:bg-[#7f2b00] active:scale-95 shadow-md shadow-[#9d3c0c]/20 transition-all"
                       >
-                        <Banknote className="w-4 h-4" aria-hidden="true" focusable="false" />
-                        <span>Cobrar</span>
+                        <Banknote className="w-5 h-5" aria-hidden="true" focusable="false" />
+                        <span>Cobrar Cuenta (${total.toLocaleString('es-AR')})</span>
                       </button>
-                    </div>
-                  )}
-
-                  {order.status === 'entregada' && !isPaid && (
-                    <button
-                      onClick={() => setPayingOrder(order)}
-                      className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#9d3c0c] text-white text-sm font-bold hover:bg-[#7f2b00] active:scale-95 shadow-md shadow-[#9d3c0c]/20 transition-all"
-                    >
-                      <Banknote className="w-5 h-5" aria-hidden="true" focusable="false" />
-                      <span>Cobrar Cuenta (${total.toLocaleString('es-AR')})</span>
-                    </button>
+                    )
                   )}
 
                   {order.status === 'entregada' && isPaid && (

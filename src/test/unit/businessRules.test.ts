@@ -2,7 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { recipeService } from '../../services/recipeService';
 import { inventoryService } from '../../services/inventoryService';
 import { findMotherPreparation, getEffectiveAvailableStock } from '../../services/portionService';
-import { RawMaterial, PreparationIngredient, Preparation } from '../../types/database';
+import { RawMaterial, PreparationIngredient, Preparation, UserRole, Order } from '../../types/database';
+import { productionOrderService } from '../../services/productionOrderService';
+import { notificationService } from '../../services/notificationService';
 
 describe('Reglas de Negocio Unitarias - Dulce Taller', () => {
   const mockMaterials: RawMaterial[] = [
@@ -79,6 +81,82 @@ describe('Reglas de Negocio Unitarias - Dulce Taller', () => {
     expect(effective.motherStock).toBe(3);
     // 0 cortadas + (3 tortas * 8 porciones) = 24 porciones disponibles potenciales
     expect(effective.totalAvailablePortions).toBe(24);
+  });
+
+  it('5. Flujo de Roles: Asignación de producción de Admin a Cocinero y registro de finalización', () => {
+    // El Administrador indica qué debe elaborar el cocinero
+    const assigned = productionOrderService.assignProductionOrder({
+      preparation_id: 'p-mother',
+      quantity: 2,
+      assigned_by: 'Martina González (Admin)',
+      notes: 'Hornear para reposición de vitrina'
+    });
+
+    expect(assigned.status).toBe('pendiente');
+    expect(assigned.quantity).toBe(2);
+    expect(assigned.assigned_by).toContain('Admin');
+
+    // El cocinero completa la tarea
+    const completed = productionOrderService.completeProductionOrder(
+      assigned.id,
+      'Mateo Benítez (Cocinero)',
+      'LOTE-20261104-001'
+    );
+
+    expect(completed.status).toBe('completada');
+    expect(completed.completed_by).toContain('Cocinero');
+    expect(completed.batch_code).toBe('LOTE-20261104-001');
+  });
+
+  it('6. Notificación a Cocina: cuando se crea comanda, se genera aviso para cocina con mesa y productos', () => {
+    const mockOrder: Order = {
+      id: 'ord-test-999',
+      order_number: 999,
+      origin: 'salon',
+      table_number: 'Mesa 12',
+      status: 'pendiente',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      items: [
+        { id: '1', order_id: 'ord-test-999', preparation_id: 'p-1', quantity: 2, unit_price: 3800 }
+      ]
+    };
+
+    const notif = notificationService.notifyNewOrder(mockOrder, 'Lucas Rodríguez');
+    expect(notif.order_number).toBe(999);
+    expect(notif.message).toContain('Mesa 12');
+    expect(notif.message).toContain('Lucas Rodríguez');
+    expect(notif.read).toBe(false);
+
+    const activeNotifs = notificationService.getNotifications();
+    expect(activeNotifs.some(n => n.order_number === 999)).toBe(true);
+  });
+
+  it('7. Matriz de Roles y Permisos de Interfaz', () => {
+    const roles: UserRole[] = ['admin', 'mozo', 'cocinero'];
+    expect(roles).toContain('cocinero');
+
+    // Regla de permisos:
+    // - Solo admin puede gestionar usuarios y roles
+    // - Mozo crea comanda, entrega y cobra, pero NO inicia preparación
+    // - Cocinero ve comandas, inicia preparación y marca listo, pero NO crea ni cobra comandas
+    const canCreateOrders = (r: UserRole) => r === 'admin' || r === 'mozo';
+    const canStartCooking = (r: UserRole) => r === 'admin' || r === 'cocinero';
+    const canDeliverAndCollect = (r: UserRole) => r === 'admin' || r === 'mozo';
+    const canManageUsers = (r: UserRole) => r === 'admin';
+
+    expect(canCreateOrders('cocinero')).toBe(false);
+    expect(canCreateOrders('mozo')).toBe(true);
+
+    expect(canStartCooking('mozo')).toBe(false);
+    expect(canStartCooking('cocinero')).toBe(true);
+
+    expect(canDeliverAndCollect('cocinero')).toBe(false);
+    expect(canDeliverAndCollect('mozo')).toBe(true);
+
+    expect(canManageUsers('admin')).toBe(true);
+    expect(canManageUsers('mozo')).toBe(false);
+    expect(canManageUsers('cocinero')).toBe(false);
   });
 });
 

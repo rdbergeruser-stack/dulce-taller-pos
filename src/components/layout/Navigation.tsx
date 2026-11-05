@@ -6,7 +6,8 @@ import {
   BookOpen, 
   CookingPot, 
   ShoppingCart,
-  Lock
+  Lock,
+  ChefHat
 } from 'lucide-react';
 
 export type ActiveTab = 'orders' | 'inventory' | 'recipes' | 'production' | 'purchases';
@@ -22,9 +23,16 @@ export const Navigation: React.FC<NavigationProps> = ({
   onTabChange,
   pendingOrdersCount
 }) => {
-  const { isAdmin } = useAuth();
+  const { isAdmin, isCocinero, isMozo } = useAuth();
 
-  const tabs: { id: ActiveTab; label: string; icon: React.ReactNode; requiresAdmin?: boolean; badge?: number }[] = [
+  const tabs: { 
+    id: ActiveTab; 
+    label: string; 
+    icon: React.ReactNode; 
+    disabled?: boolean;
+    disabledReason?: string;
+    badge?: number 
+  }[] = [
     {
       id: 'orders',
       label: 'Comandas & KDS',
@@ -33,27 +41,32 @@ export const Navigation: React.FC<NavigationProps> = ({
     },
     {
       id: 'production',
-      label: 'Registrar Producción',
-      icon: <CookingPot className="w-5 h-5" aria-hidden="true" focusable="false" />,
-      requiresAdmin: true
+      label: isCocinero ? 'Taller de Cocina' : 'Registrar Producción',
+      icon: isCocinero 
+        ? <ChefHat className="w-5 h-5" aria-hidden="true" focusable="false" /> 
+        : <CookingPot className="w-5 h-5" aria-hidden="true" focusable="false" />,
+      disabled: !isAdmin && !isCocinero,
+      disabledReason: 'Acceso para Administrador y Cocina'
     },
     {
       id: 'recipes',
       label: 'Recetas & Preparaciones',
       icon: <BookOpen className="w-5 h-5" aria-hidden="true" focusable="false" />,
-      requiresAdmin: true
+      disabled: !isAdmin,
+      disabledReason: 'Solo administradores'
     },
     {
       id: 'inventory',
-      label: 'Materias Primas & Stock',
+      label: isMozo ? 'Stock de Vitrina' : 'Materias Primas & Stock',
       icon: <Package className="w-5 h-5" aria-hidden="true" focusable="false" />,
-      requiresAdmin: true
+      disabled: false
     },
     {
       id: 'purchases',
       label: 'Lista de Compras',
       icon: <ShoppingCart className="w-5 h-5" aria-hidden="true" focusable="false" />,
-      requiresAdmin: true
+      disabled: !isAdmin,
+      disabledReason: 'Solo administradores'
     }
   ];
 
@@ -62,7 +75,7 @@ export const Navigation: React.FC<NavigationProps> = ({
       <div className="flex items-center gap-2 min-w-max">
         {tabs.map(tab => {
           const isActive = activeTab === tab.id;
-          const isDisabled = tab.requiresAdmin && !isAdmin;
+          const isDisabled = tab.disabled;
 
           return (
             <button
@@ -74,7 +87,7 @@ export const Navigation: React.FC<NavigationProps> = ({
               }}
               disabled={isDisabled}
               aria-current={isActive ? 'page' : undefined}
-              aria-label={isDisabled ? `${tab.label} (Solo administradores)` : tab.label}
+              aria-label={isDisabled ? `${tab.label} (${tab.disabledReason || 'Restringido'})` : tab.label}
               className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl font-medium text-sm transition-all relative ${
                 isActive
                   ? 'bg-[#9d3c0c] text-white shadow-md shadow-[#9d3c0c]/25 font-semibold'
@@ -106,4 +119,3 @@ export const Navigation: React.FC<NavigationProps> = ({
     </nav>
   );
 };
-

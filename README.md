@@ -15,6 +15,29 @@ Inspirado en la calidez y precisión de una pastelería artesanal europea:
 
 ---
 
+## 👥 Modelo de Roles y Control de Acceso (RBAC)
+
+El sistema implementa una matriz de roles pensada para la dinámica de turnos reales de gastronomía:
+
+### 🛡️ 1. Administrador / Encargada de Turno
+- **Gestión de Usuarios & Roles:** Modal exclusivo para ver el personal registrado, dar de alta nuevos usuarios con nombre y correo, y asignarles rol (`admin`, `mozo` o `cocinero`).
+- **Indicación de Producción a Cocina:** El Administrador es quien planifica qué preparaciones y cuántas unidades debe elaborar el cocinero en su turno (ej. *2 Lemon Pie enteras para reposición de vitrina*), pudiendo también registrar producción directa.
+- **Control Total:** Acceso a stock de insumos, auditoría Kardex, altas/bajas/edición de recetas estándar y lista inteligente de compras a proveedores.
+
+### ☕ 2. Mozo de Salón
+- **Toma de Comandas:** Crea pedidos con selector táctil rápido de mesas (`Salón`) o `Take Away` con notas de personalización.
+- **Flujo de Cocina Protegido:** El mozo **no** inicia la preparación de los platos: ve el estado *"En espera de Cocina"* y luego *"En Preparación por Cocina"*.
+- **Despacho y Cobro:** Cuando la cocina marca la comanda como lista, al mozo se le habilitan los botones de **`Entregar`** y **`Cobrar`**.
+- **Cobro Multimedio Realista:** Simuladores interactivos de QR dinámico, Posnet para tarjetas, Transferencia con copiado de CBU y envío de comprobante por **WhatsApp** al cliente.
+
+### 👨‍🍳 3. Cocinero / Maestro Pastelero
+- **KDS de Cocina:** Visualiza todas las comandas en tiempo real. **No puede crear comandas ni cobrar**.
+- **Gestión del Fuego/Horno:** El cocinero es el responsable exclusivo de presionar **`Iniciar Preparación`** y, al finalizar la cocción, marcar **`Listo para Entrega`**.
+- **Elaboración Indicada:** Accede a la pestaña de producción para ver las órdenes de elaboración asignadas por el Administrador. Al confirmar la cocción, los insumos se descuentan de forma atómica y los productos elaborados ingresan a vitrina con su código de lote. **No modifica stocks de inventario manualmente**.
+- **Notificaciones en Vivo:** Alerta sonora (chime web sintetizado) y banner destacado en el KDS cada vez que un mozo registra una nueva comanda.
+
+---
+
 ## 🧩 Modelo de Dos Niveles de Stock & Fraccionamiento
 
 1. **Stock de Materias Primas (Insumos):** Harina 0000, Manteca, Huevos frescos, Café en grano, Leche, etc.
@@ -23,33 +46,7 @@ Inspirado en la calidez y precisión de una pastelería artesanal europea:
    - **Descuento al Despachar:** Al entregar una comanda de salón o take-away, se descuenta de las unidades elaboradas disponibles en vitrina.
 3. **Fraccionamiento Inteligente de Tortas:**
    - **Corte Manual en Vitrina:** Desde la tarjeta de cualquier torta entera o porción, el pastelero o encargado puede presionar **`Cortar 1 Torta en Porciones (+8)`**, descontando 1 torta entera e incrementando +8 porciones listas para servir con auditoría en Kardex.
-   - **Corte Automático en Comandas:** Si se piden porciones de salón y hay 0 cortadas en vitrina pero quedan tortas enteras disponibles (`0 cortadas (X tortas)`), el sistema fracciona la torta automáticamente al confirmar o despachar el pedido para no trabar la venta.
-
----
-
-## 👥 Roles de Usuario y Funcionalidades
-
-### 🍽️ Mozo (Personal de Salón / Mostrador)
-- Pantalla táctil de **Inicio de Turno / Login** con identificación de usuario y perfil activo.
-- Acceso directo a la pantalla de **Comandas & KDS**.
-- Toma de pedidos táctil con botones de alta rotación, origen (**Salón** con selección táctil de mesa o **Take Away**) y notas personalizadas para cocina.
-- Flujo de estados en KDS: *Pendiente* &rarr; *En Preparación* &rarr; *Lista para Servir* &rarr; *Entregada*.
-- **Pestaña "Entregadas / Por Cobrar"**: Muestra de forma estricta sólo las comandas entregadas a la mesa que aún están pendientes de pago.
-- **Cobro Táctil Integrado**: Soporte para cobro con Efectivo (con cálculo de vuelto y billetes rápidos), Tarjeta de Débito/Crédito y QR Interoperable, con emisión y sello de comprobante de pago digital.
-- **Pestaña "Cobradas" & "Historial Completo"**: Archivo de comandas cobradas y registro histórico del turno con contadores en vivo.
-- Visualización de stock disponible en vitrina y porciones potenciales en tiempo real con sistema de alertas semafóricas.
-
-### 👨‍🍳 Admin / Encargado de Stock
-- Acceso total a todas las funciones del sistema.
-- **Materias Primas & Kardex:** Control de inventario, stock mínimo con sistema de alertas semafóricas (Óptimo, Bajo Mínimo, Agotado), ajustes manuales con motivo auditado y registro histórico de movimientos.
-- **Fichas Técnicas & Recetas:** 
-  - Cálculo de costo teórico de insumos vs. precio de venta y margen comercial.
-  - Creación de nuevas recetas y asignación dinámica de ingredientes.
-  - **Edición rápida de recetas:** Modificación de nombre, precio de venta al público, rendimiento en porciones y descripción artesanal mediante modal táctil dedicado.
-  - **Eliminación de recetas/preparaciones** con confirmación de seguridad y borrado o desvinculación en cascada.
-  - Catálogo artesanal precargado con *Lemon Pie*, *Torta de Frutillas con Crema*, *Café Capuccino*, etc.
-- **Registrar Producción:** Validación de existencias en tiempo real con bloqueo si falta algún insumo, descuento transaccional atómico y asignación de código de lote (`LOTE-YYYYMMDD-PREP`).
-- **Lista de Compras Inteligente:** Generación automática basada en alertas de stock mínimo y reposición sugerida editable.
+   - **Corte Automático en Comandas:** Si se piden porciones de salón y hay 0 cortadas en vitrina pero quedan tortas enteras disponibles (`0 cortadas (X tortas)`), el sistema fracciona la torta automáticamente al despachar el pedido para no trabar la venta.
 
 ---
 
@@ -59,78 +56,46 @@ Inspirado en la calidez y precisión de una pastelería artesanal europea:
 dulce-taller-pos/
 ├── public/                 # Assets estáticos y favicon
 ├── src/
-│   ├── assets/             # Logo y recursos gráficos oficiales
-│   ├── components/         # Componentes modulares por dominio
-│   │   ├── auth/           # Login táctil y selección de rol
-│   │   ├── database/       # Modal de asistencia para configuración de Supabase
-│   │   ├── inventory/      # Vitrina, materias primas, kardex y ajuste de mermas
-│   │   ├── layout/         # Header de navegación y perfiles
-│   │   ├── orders/         # Tablero KDS, nueva comanda táctil y modal de cobro
-│   │   ├── production/     # Registro de lotes y validación de stock atómico
-│   │   ├── purchases/      # Lista de compras sugerida
-│   │   └── recipes/        # Fichas técnicas, costeo y CRUD de preparaciones
-│   ├── contexts/           # AuthContext (roles mozo/admin y sesión)
-│   ├── data/               # mockData (datos iniciales de pastelería y cafetería)
-│   ├── lib/                # Cliente de conexión con Supabase
-│   ├── services/           # Servicios de negocio (inventory, order, portion, production, recipe)
-│   ├── test/               # Pruebas unitarias e integración con Vitest
-│   └── types/              # Definiciones TypeScript de entidades y base de datos
+│   ├── assets/             # Logos y recursos gráficos
+│   ├── components/
+│   │   ├── auth/           # LoginView y UsersManagementModal (Gestión de Roles)
+│   │   ├── database/       # Modal y guías de configuración Supabase
+│   │   ├── inventory/      # Vitrina, materias primas, auditoría Kardex
+│   │   ├── layout/         # Header interactivo y Navegación táctil
+│   │   ├── notifications/  # Centro de Notificaciones y alertas de cocina
+│   │   ├── orders/         # KDS, NewOrderModal, PaymentModal con WhatsApp
+│   │   ├── production/     # Registro y asignación de órdenes de cocina
+│   │   ├── purchases/      # Lista sugerida y compras manuales
+│   │   └── recipes/        # Fichas técnicas, edición y eliminación de recetas
+│   ├── contexts/           # AuthContext (Sesión de turno y usuarios dinámicos)
+│   ├── data/               # Mock data artesanal representativa
+│   ├── lib/                # Cliente tipado de Supabase
+│   ├── services/           # Servicios transaccionales (order, inventory, production, etc.)
+│   ├── test/               # Pruebas unitarias y de integración (Vitest)
+│   └── types/              # Interfaces TypeScript y esquemas del sistema
 ├── supabase/
-│   ├── full_schema_and_seed.sql  # Script SQL completo de instalación
-│   └── migrations/               # Migraciones incrementales numeradas
+│   └── migrations/         # Esquemas SQL, RPC transaccionales y migraciones
+├── package.json
 └── README.md
 ```
 
 ---
 
-## 🚀 Puesta en Marcha en Local
+## 🚀 Puesta en Marcha
 
-### 1. Requisitos
-- Node.js v18+ o superior.
-
-### 2. Instalación de dependencias
-```bash
-npm install
-```
-
-### 3. Ejecutar en modo desarrollo
-```bash
-npm run dev
-```
-La aplicación abrirá en `http://localhost:5173`.
-
-### 4. Ejecutar pruebas unitarias y de integración
-```bash
-npm test
-```
-Ejecuta la suite con **Vitest** (9 tests automatizados) validando:
-- Alertas de stock mínimo y niveles semafóricos.
-- Cálculo de insumos teóricos y costeo dinámico de recetas.
-- Descuento transaccional atómico de producción de lotes.
-- Fraccionamiento inteligente de tortas (Opción 3: corte manual y automático por porción).
-
-### 5. Compilar para producción
-```bash
-npm run build
-```
-
----
-
-## 🗄️ Conexión con Base de Datos PostgreSQL (Supabase)
-
-El sistema incluye persistencia completa en PostgreSQL. Para conectarlo:
-
-1. Crea un proyecto gratuito en [supabase.com](https://supabase.com).
-2. Ve a **SQL Editor** &rarr; **New Query**.
-3. Copia y pega el contenido del archivo `supabase/full_schema_and_seed.sql` generado en el repositorio y haz clic en **Run**.
-   - Crea las tablas con restricciones `CHECK` y políticas de seguridad RLS.
-   - Crea la función transaccional `confirm_production_batch` para descuento atómico con `SELECT FOR UPDATE`.
-   - Inserta los datos reales de insumos y recetas de Dulce Taller (*Lemon Pie*, *Café Capuccino*).
-4. En Supabase ve a **Project Settings** &rarr; **API**, copia la `Project URL` y la `anon key`.
-5. Pégalas en el archivo `.env`:
-   ```env
-   VITE_SUPABASE_URL=https://tu-proyecto.supabase.co
-   VITE_SUPABASE_ANON_KEY=tu-anon-key-aqui
+1. Clonar el repositorio e instalar dependencias:
+   ```bash
+   npm install
    ```
-
-*Nota:* Si ejecutas la aplicación sin credenciales en `.env`, el sistema funciona en modo demostrativo interactivo con los datos de pastelería reales precargados y muestra un banner en la cabecera con el instructivo para conectarlo.
+2. Iniciar servidor de desarrollo:
+   ```bash
+   npm run dev
+   ```
+3. Ejecutar suite de pruebas:
+   ```bash
+   npm test
+   ```
+4. Compilar para producción:
+   ```bash
+   npm run build
+   ```

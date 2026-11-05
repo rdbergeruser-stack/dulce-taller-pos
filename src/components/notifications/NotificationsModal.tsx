@@ -9,17 +9,20 @@ import {
   ShoppingCart, 
   CheckCircle2, 
   Eye,
-  Send
+  Send,
+  ChefHat
 } from 'lucide-react';
 import { findMotherPreparation, getEffectiveAvailableStock } from '../../services/portionService';
 import { useAuth } from '../../contexts/AuthContext';
+import { notificationService } from '../../services/notificationService';
+import { KitchenNotification } from '../../types/database';
 
 export interface NotificationsModalProps {
   isOpen: boolean;
   onClose: () => void;
   materials: RawMaterial[];
   preparations: Preparation[];
-  initialFilter?: 'all' | 'vitrina' | 'materials';
+  initialFilter?: 'all' | 'vitrina' | 'materials' | 'kitchen';
   onNavigateToProduction?: (preparationId: string) => void;
   onNavigateToInventory?: (subTab: 'vitrina' | 'stock' | 'kardex', materialId?: string) => void;
   onNavigateToPurchases?: () => void;
@@ -39,17 +42,19 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
   onNavigateToOrders,
   onSendKitchenNotice
 }) => {
-  const { isAdmin } = useAuth();
-  const [filter, setFilter] = useState<'all' | 'vitrina' | 'materials'>(initialFilter);
+  const { isAdmin, isCocinero } = useAuth();
+  const [filter, setFilter] = useState<'all' | 'vitrina' | 'materials' | 'kitchen'>(initialFilter);
+  const [kitchenNotifs, setKitchenNotifs] = useState<KitchenNotification[]>([]);
   const [sentNotices, setSentNotices] = useState<Record<string, boolean>>({});
   const [noticeFeedback, setNoticeFeedback] = useState<string | null>(null);
 
   useEffect(() => {
     if (isOpen) {
-      setFilter(initialFilter);
+      setFilter(isCocinero && initialFilter === 'all' ? 'kitchen' : initialFilter);
       setNoticeFeedback(null);
+      setKitchenNotifs(notificationService.getNotifications());
     }
-  }, [isOpen, initialFilter]);
+  }, [isOpen, initialFilter, isCocinero]);
 
   if (!isOpen) return null;
 
@@ -100,7 +105,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
       isLow: m.current_stock > 0 && m.current_stock <= m.min_stock
     }));
 
-  const totalAlerts = vitrinaAlerts.length + materialAlerts.length;
+  const totalAlerts = vitrinaAlerts.length + materialAlerts.length + (isCocinero ? kitchenNotifs.filter(k => !k.read).length : 0);
 
   const handleAction = (callback?: () => void) => {
     if (callback) {
@@ -171,6 +176,17 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
           </button>
           <button
             type="button"
+            onClick={() => setFilter('kitchen')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              filter === 'kitchen'
+                ? 'bg-[#9d3c0c] text-white shadow-xs'
+                : 'text-[#7c5641] hover:bg-[#f5ede3]'
+            }`}
+          >
+            Cocina ({kitchenNotifs.filter(k => !k.read).length})
+          </button>
+          <button
+            type="button"
             onClick={() => setFilter('vitrina')}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
               filter === 'vitrina'
@@ -227,6 +243,63 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
             </div>
           ) : (
             <>
+              {/* SECCIÓN COMANDAS PARA COCINA */}
+              {(filter === 'all' || filter === 'kitchen') && kitchenNotifs.length > 0 && (
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-[#7c5641] flex items-center gap-1.5">
+                      <span>🔔 Comandas Nuevas para Cocina</span>
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-[#ffdbce] text-[#9d3c0c] font-bold">
+                        {kitchenNotifs.length}
+                      </span>
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        notificationService.clearAll();
+                        setKitchenNotifs([]);
+                      }}
+                      className="text-[11px] text-[#7c5641] hover:text-[#ba1a1a] font-medium"
+                    >
+                      Limpiar avisos
+                    </button>
+                  </div>
+
+                  <div className="space-y-2">
+                    {kitchenNotifs.map(k => (
+                      <div 
+                        key={k.id}
+                        className={`p-3.5 rounded-xl border flex items-center justify-between gap-3 ${
+                          !k.read ? 'bg-[#ffdbce]/40 border-[#9d3c0c]' : 'bg-white border-[#dec0b6]'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-xl bg-[#9d3c0c] text-white flex items-center justify-center font-bold">
+                            <ChefHat className="w-5 h-5" aria-hidden="true" focusable="false" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-sm text-[#1c120c]">{k.title}</h4>
+                            <p className="text-xs text-[#7c5641]">{k.message}</p>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            notificationService.markAsRead(k.id);
+                            if (onNavigateToOrders) onNavigateToOrders();
+                            onClose();
+                          }}
+                          className="px-3 py-1.5 rounded-lg bg-[#9d3c0c] text-white text-xs font-bold shadow-xs hover:bg-[#7f2b00] shrink-0"
+                        >
+                          Ir a Comanda
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* SECCIÓN VITRINA */}
               {(filter === 'all' || filter === 'vitrina') && vitrinaAlerts.length > 0 && (
                 <div className="space-y-2.5">

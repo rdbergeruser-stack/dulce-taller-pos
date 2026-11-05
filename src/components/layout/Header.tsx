@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { AlertCircle, LogOut, Shield, User, Bell } from 'lucide-react';
+import { AlertCircle, LogOut, Shield, User, Bell, Users, ChefHat } from 'lucide-react';
 import { RawMaterial, Preparation } from '../../types/database';
 import { NotificationsModal } from '../notifications/NotificationsModal';
+import { UsersManagementModal } from '../auth/UsersManagementModal';
+import { notificationService } from '../../services/notificationService';
 
 interface HeaderProps {
   lowStockCount: number;
@@ -29,12 +31,26 @@ export const Header: React.FC<HeaderProps> = ({
   onNavigateToOrders,
   onSendKitchenNotice
 }) => {
-  const { user, isAdmin, logout } = useAuth();
+  const { user, isAdmin, isCocinero, logout } = useAuth();
   const [time, setTime] = useState<string>('');
   const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
+  const [isUsersModalOpen, setIsUsersModalOpen] = useState(false);
   const [notifFilter, setNotifFilter] = useState<'all' | 'vitrina' | 'materials'>('all');
+  const [unreadKitchenNotifs, setUnreadKitchenNotifs] = useState(0);
 
-  const totalAlerts = lowStockCount + outOfStockVitrinaCount + lowStockVitrinaCount;
+  useEffect(() => {
+    const updateUnread = () => {
+      const notifs = notificationService.getNotifications();
+      setUnreadKitchenNotifs(notifs.filter(n => !n.read).length);
+    };
+    updateUnread();
+    const unsubscribe = notificationService.subscribe(() => {
+      updateUnread();
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const totalAlerts = lowStockCount + outOfStockVitrinaCount + lowStockVitrinaCount + (isCocinero ? unreadKitchenNotifs : 0);
 
   useEffect(() => {
     const updateTime = () => {
@@ -45,6 +61,30 @@ export const Header: React.FC<HeaderProps> = ({
     const timer = setInterval(updateTime, 10000);
     return () => clearInterval(timer);
   }, []);
+
+  const getRoleDetails = () => {
+    if (isAdmin) {
+      return { 
+        icon: <Shield className="w-4 h-4" aria-hidden="true" focusable="false" />, 
+        label: 'Administrador / Stock', 
+        bg: 'bg-[#1c120c]' 
+      };
+    }
+    if (isCocinero) {
+      return { 
+        icon: <ChefHat className="w-4 h-4" aria-hidden="true" focusable="false" />, 
+        label: 'Cocinero / Pastelero', 
+        bg: 'bg-[#9d3c0c]' 
+      };
+    }
+    return { 
+      icon: <User className="w-4 h-4" aria-hidden="true" focusable="false" />, 
+      label: 'Mozo de Salón', 
+      bg: 'bg-[#7c5641]' 
+    };
+  };
+
+  const roleDetails = getRoleDetails();
 
   return (
     <>
@@ -80,6 +120,19 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="text-sm font-bold text-[#1c120c]">{time} hs</span>
             </div>
 
+            {/* Botón Gestión de Usuarios y Roles (Exclusivo Administrador) */}
+            {isAdmin && (
+              <button
+                type="button"
+                onClick={() => setIsUsersModalOpen(true)}
+                className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl border border-[#dec0b6] bg-white text-xs font-bold text-[#1c120c] hover:bg-[#f5ede3] hover:border-[#9d3c0c] active:scale-95 transition-all shadow-xs"
+                title="Panel de Gestión de Usuarios y Asignación de Roles"
+              >
+                <Users className="w-4 h-4 text-[#9d3c0c]" aria-hidden="true" focusable="false" />
+                <span>Usuarios & Roles</span>
+              </button>
+            )}
+
             {/* Botón Campana Centro de Notificaciones */}
             <button
               type="button"
@@ -96,8 +149,24 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </button>
 
-            {/* Alerta Clickeable de Stock Mínimo Insumos */}
-            {lowStockCount > 0 && (
+            {/* Alerta de Nuevas Comandas para Cocinero */}
+            {isCocinero && unreadKitchenNotifs > 0 && (
+              <button
+                type="button"
+                onClick={() => {
+                  notificationService.markAllAsRead();
+                  if (onNavigateToOrders) onNavigateToOrders();
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#ffdbce] text-[#9d3c0c] text-xs font-extrabold border border-[#9d3c0c]/30 animate-pulse hover:brightness-95 active:scale-95 transition-all cursor-pointer"
+                title="Nuevas comandas entraron a cocina. Haz clic para verlas."
+              >
+                <ChefHat className="w-4 h-4 shrink-0" aria-hidden="true" focusable="false" />
+                <span>{unreadKitchenNotifs} nueva(s) comanda(s)</span>
+              </button>
+            )}
+
+            {/* Alerta Clickeable de Stock Mínimo Insumos (Admin/Cocina) */}
+            {lowStockCount > 0 && !isCocinero && (
               <button
                 type="button"
                 onClick={() => { setNotifFilter('materials'); setIsNotifModalOpen(true); }}
@@ -141,18 +210,16 @@ export const Header: React.FC<HeaderProps> = ({
             {user && (
               <div className="flex items-center gap-3 pl-2 sm:border-l border-[#dec0b6]">
                 <div className="flex items-center gap-2.5">
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-sm ${
-                    isAdmin ? 'bg-[#1c120c]' : 'bg-[#9d3c0c]'
-                  }`}>
-                    {isAdmin ? <Shield className="w-4 h-4" aria-hidden="true" focusable="false" /> : <User className="w-4 h-4" aria-hidden="true" focusable="false" />}
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-sm ${roleDetails.bg}`}>
+                    {roleDetails.icon}
                   </div>
                   <div className="text-left">
                     <div className="text-sm font-bold text-[#1c120c] leading-tight">
                       {user.full_name}
                     </div>
                     <div className="text-xs font-semibold text-[#7c5641] flex items-center gap-1 mt-0.5">
-                      <span className={`w-2 h-2 rounded-full ${isAdmin ? 'bg-[#1c120c]' : 'bg-[#9d3c0c]'}`} />
-                      <span>{isAdmin ? 'Administrador / Stock' : 'Mozo de Salón'}</span>
+                      <span className={`w-2 h-2 rounded-full ${roleDetails.bg}`} />
+                      <span>{roleDetails.label}</span>
                     </div>
                   </div>
                 </div>
@@ -163,6 +230,7 @@ export const Header: React.FC<HeaderProps> = ({
                   onClick={logout}
                   aria-label="Cerrar turno y salir del sistema"
                   className="p-2 ml-1 rounded-xl text-[#7c5641] hover:text-[#ba1a1a] hover:bg-[#ffdad6]/40 active:scale-95 transition-all"
+                  title="Cerrar turno y cambiar de usuario"
                 >
                   <LogOut className="w-5 h-5" aria-hidden="true" focusable="false" />
                 </button>
@@ -185,6 +253,14 @@ export const Header: React.FC<HeaderProps> = ({
         onNavigateToOrders={onNavigateToOrders}
         onSendKitchenNotice={onSendKitchenNotice}
       />
+
+      {/* Modal de Gestión de Usuarios y Roles (Exclusivo Administrador) */}
+      {isAdmin && (
+        <UsersManagementModal
+          isOpen={isUsersModalOpen}
+          onClose={() => setIsUsersModalOpen(false)}
+        />
+      )}
     </>
   );
 };

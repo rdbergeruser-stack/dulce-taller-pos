@@ -1,4 +1,4 @@
-export type UserRole = 'admin' | 'mozo';
+export type UserRole = 'admin' | 'mozo' | 'cocinero';
 
 export interface Profile {
   id: string;
@@ -6,6 +6,43 @@ export interface Profile {
   full_name: string;
   role: UserRole;
   created_at: string;
+}
+
+export interface ProductionOrder {
+  id: string;
+  preparation_id: string;
+  quantity: number;
+  notes?: string;
+  status: 'pendiente' | 'completada' | 'cancelada';
+  assigned_by: string;
+  assigned_at: string;
+  completed_by?: string;
+  completed_at?: string;
+  batch_code?: string;
+  preparation?: Preparation;
+}
+
+export interface ProductionRequest {
+  id: string;
+  preparation_id: string;
+  preparation_name: string;
+  unit_type: string;
+  current_stock: number;
+  requested_by: string;
+  requested_at: string;
+  status: 'pendiente' | 'autorizada';
+}
+
+export interface KitchenNotification {
+  id: string;
+  type: 'new_order' | 'kitchen_alert';
+  title: string;
+  message: string;
+  order_id?: string;
+  order_number?: number;
+  table_number?: string;
+  created_at: string;
+  read: boolean;
 }
 
 export type RawMaterialUnit = 'gr' | 'ml' | 'un' | 'kg' | 'lt';

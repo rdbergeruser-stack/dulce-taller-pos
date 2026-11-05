@@ -13,12 +13,13 @@ import { inventoryService } from './services/inventoryService';
 import { recipeService } from './services/recipeService';
 import { orderService } from './services/orderService';
 import { purchaseService } from './services/purchaseService';
+import { notificationService } from './services/notificationService';
 
 import { supabase, isSupabaseConfigured } from './lib/supabase';
 import { RawMaterial, Preparation, Order, StockMovement, PurchaseListItem, OrderStatus, OrderOrigin } from './types/database';
 
 function MainApp() {
-  const { user, isAdmin, role } = useAuth();
+  const { user, isAdmin, isCocinero, isMozo, role } = useAuth();
   const [activeTab, setActiveTab] = useState<ActiveTab>('orders');
   const [productionInitialPrepId, setProductionInitialPrepId] = useState<string | undefined>(undefined);
   const [inventoryInitialSubTab, setInventoryInitialSubTab] = useState<'vitrina' | 'stock' | 'kardex'>('vitrina');
@@ -69,9 +70,11 @@ function MainApp() {
     }
   }, [user]);
 
-  // Si cambia el rol de admin a mozo y está en una pestaña restringida, volver a 'orders'
+  // Si cambia el rol y el usuario se encuentra en una pestaña restringida, volver a 'orders'
   useEffect(() => {
-    if (role === 'mozo' && activeTab !== 'orders') {
+    if (role === 'mozo' && activeTab !== 'orders' && activeTab !== 'inventory') {
+      setActiveTab('orders');
+    } else if (role === 'cocinero' && activeTab !== 'orders' && activeTab !== 'production' && activeTab !== 'inventory') {
       setActiveTab('orders');
     }
   }, [role, activeTab]);
@@ -86,8 +89,10 @@ function MainApp() {
     orderData: { origin: OrderOrigin; table_number?: string; notes?: string },
     items: { preparation_id: string; quantity: number; unit_price: number; notes?: string }[]
   ) => {
-    await orderService.createOrder(orderData, items, user.id);
-    showToast(`Comanda #${orders.length > 0 ? Math.max(...orders.map(o => o.order_number)) + 1 : 101} creada con éxito.`);
+    const createdOrder = await orderService.createOrder(orderData, items, user.id);
+    // Notificar inmediatamente al Cocinero
+    notificationService.notifyNewOrder(createdOrder, user.full_name);
+    showToast(`Comanda #${createdOrder.order_number} creada con éxito. Notificación enviada a cocina.`, 'success');
     await loadAllData();
   };
 
@@ -174,17 +179,17 @@ function MainApp() {
   };
 
   const handleNavigateToInventory = (subTab: 'vitrina' | 'stock' | 'kardex', materialId?: string) => {
-    if (role === 'mozo') {
-      showToast('Acceso exclusivo para rol Administrador / Stock', 'info');
-      return;
+    if (isMozo && subTab !== 'vitrina') {
+      setInventoryInitialSubTab('vitrina');
+    } else {
+      setInventoryInitialSubTab(subTab);
     }
-    setInventoryInitialSubTab(subTab);
     setInventoryHighlightMaterialId(materialId);
     setActiveTab('inventory');
   };
 
   const handleNavigateToPurchases = () => {
-    if (role === 'mozo') {
+    if (!isAdmin) {
       showToast('Acceso exclusivo para rol Administrador', 'info');
       return;
     }
@@ -271,7 +276,7 @@ function MainApp() {
           />
         )}
 
-        {activeTab === 'production' && isAdmin && (
+        {activeTab === 'production' && (isAdmin || isCocinero) && (
           <ProductionView
             preparations={preparations}
             materials={materials}
@@ -288,7 +293,7 @@ function MainApp() {
           />
         )}
 
-        {activeTab === 'inventory' && isAdmin && (
+        {activeTab === 'inventory' && (
           <InventoryView
             materials={materials}
             movements={movements}
