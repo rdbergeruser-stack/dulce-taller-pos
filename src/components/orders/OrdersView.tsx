@@ -80,7 +80,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
 
   const isOrderPaid = (o: Order) => Boolean(o.notes && o.notes.includes('[PAGADO'));
 
-  // Comandas activas en el KDS (no canceladas y aún no cobradas)
+  // Comandas activas (no canceladas y aún no cobradas)
   const activeOrders = orders.filter(o => o.status !== 'cancelada' && !isOrderPaid(o));
   // Comandas entregadas pendientes de cobro
   const pendingPaymentOrders = orders.filter(o => o.status === 'entregada' && !isOrderPaid(o));
@@ -231,7 +231,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Top Bar KDS: Stats & Action Button */}
+      {/* Top Bar: Stats & Action Button */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-[#dec0b6] shadow-sm">
         <div className="flex items-center gap-3">
           <div className="p-3 bg-[#f5ede3] rounded-xl text-[#9d3c0c]">
@@ -242,11 +242,8 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
               <h2 className="font-serif font-bold text-xl text-[#1c120c]">
                 Comandas & Pedidos
               </h2>
-              <span 
-                className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#f5ede3] text-[#7c5641] border border-[#dec0b6] cursor-help"
-                title="KDS (Kitchen Display System): Sistema de comandas digitales en tiempo real que sincroniza Salón y Cocina sin papel"
-              >
-                KDS Cocina & Salón
+              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#f5ede3] text-[#7c5641] border border-[#dec0b6]">
+                Cocina & Salón
               </span>
             </div>
             <p className="text-xs text-[#7c5641]">
@@ -258,7 +255,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
         {isCocinero ? (
           <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#ffdbce]/50 border border-[#dec0b6] text-xs font-bold text-[#9d3c0c]">
             <ChefHat className="w-4 h-4" aria-hidden="true" focusable="false" />
-            <span>KDS Cocina • Elaboración de Comandas</span>
+            <span>Taller de Cocina • Elaboración de Comandas</span>
           </div>
         ) : (
           <button
@@ -376,7 +373,7 @@ export const OrdersView: React.FC<OrdersViewProps> = ({
         ))}
       </nav>
 
-      {/* Grid KDS de Comandas */}
+      {/* Grid de Comandas */}
       {isLoading ? (
         <div className="p-12 text-center text-[#7c5641] font-medium">
           Cargando comandas en curso...

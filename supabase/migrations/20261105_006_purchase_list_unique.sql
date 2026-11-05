@@ -16,3 +16,4 @@ BEGIN
         WHERE is_purchased = false AND raw_material_id IS NOT NULL;
     END IF;
 END $$;
+

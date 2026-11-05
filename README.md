@@ -1,6 +1,6 @@
 # Dulce Taller - Sistema POS de Comandas & Control de Producción
 
-Aplicación web táctil para tablet orientada a cafetería y pastelería artesanal **Dulce Taller**. Permite al personal de salón y cocina gestionar comandas en tiempo real (KDS), inventario de materias primas con control de mermas, fichas técnicas de recetas estándar con costeo dinámico, fraccionamiento de tortas en vitrina, registro de producción y compras sugeridas.
+Aplicación web táctil para tablet orientada a cafetería y pastelería artesanal **Dulce Taller**. Permite al personal de salón y cocina gestionar comandas en tiempo real, inventario de materias primas con control de mermas, fichas técnicas de recetas estándar con costeo dinámico, fraccionamiento de tortas en vitrina, registro de producción y compras sugeridas.
 
 Desarrollado como prototipo funcional de arquitectura senior para el Trabajo Final de Práctica Profesionalizante II (IFTS 29).
 
@@ -31,10 +31,10 @@ El sistema implementa una matriz de roles pensada para la dinámica de turnos re
 - **Cobro Multimedio Realista:** Simuladores interactivos de QR dinámico, Posnet para tarjetas, Transferencia con copiado de CBU y envío de comprobante por **WhatsApp** al cliente.
 
 ### 👨‍🍳 3. Cocinero / Maestro Pastelero
-- **KDS de Cocina:** Visualiza todas las comandas en tiempo real. **No puede crear comandas ni cobrar**.
+- **Pantalla de Cocina / Comandas:** Visualiza todas las comandas en tiempo real. **No puede crear comandas ni cobrar**.
 - **Gestión del Fuego/Horno:** El cocinero es el responsable exclusivo de presionar **`Iniciar Preparación`** y, al finalizar la cocción, marcar **`Listo para Entrega`**.
 - **Elaboración Indicada:** Accede a la pestaña de producción para ver las órdenes de elaboración asignadas por el Administrador. Al confirmar la cocción, los insumos se descuentan de forma atómica y los productos elaborados ingresan a vitrina con su código de lote. **No modifica stocks de inventario manualmente**.
-- **Notificaciones en Vivo:** Alerta sonora (chime web sintetizado) y banner destacado en el KDS cada vez que un mozo registra una nueva comanda.
+- **Notificaciones en Vivo:** Alerta sonora (chime web sintetizado) y banner destacado en la pantalla de comandas cada vez que un mozo registra un nuevo pedido.
 
 ---
 
@@ -63,7 +63,7 @@ dulce-taller-pos/
 │   │   ├── inventory/      # Vitrina, materias primas, auditoría Kardex
 │   │   ├── layout/         # Header interactivo y Navegación táctil
 │   │   ├── notifications/  # Centro de Notificaciones y alertas de cocina
-│   │   ├── orders/         # KDS, NewOrderModal, PaymentModal con WhatsApp
+│   │   ├── orders/         # OrdersView (Comandas), NewOrderModal, PaymentModal con WhatsApp
 │   │   ├── production/     # Registro y asignación de órdenes de cocina
 │   │   ├── purchases/      # Lista sugerida y compras manuales
 │   │   └── recipes/        # Fichas técnicas, edición y eliminación de recetas
