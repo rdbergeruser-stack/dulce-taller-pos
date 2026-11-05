@@ -3,17 +3,7 @@ import { ProductionOrder, ProductionRequest } from '../types/database';
 const STORAGE_KEY = 'dulce_taller_production_orders';
 const REQUESTS_STORAGE_KEY = 'dulce_taller_production_requests';
 
-const INITIAL_PRODUCTION_ORDERS: ProductionOrder[] = [
-  {
-    id: 'pord-1',
-    preparation_id: 'p-1', // Lemon Pie (Torta Entera)
-    quantity: 2,
-    notes: 'Preparar 2 tortas enteras para reposición de vitrina de la tarde.',
-    status: 'pendiente',
-    assigned_by: 'Martina González (Administradora)',
-    assigned_at: new Date(Date.now() - 30 * 60000).toISOString()
-  }
-];
+const INITIAL_PRODUCTION_ORDERS: ProductionOrder[] = [];
 
 export const productionOrderService = {
   getProductionOrders(): ProductionOrder[] {

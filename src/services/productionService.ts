@@ -63,9 +63,24 @@ export const productionService = {
     }
 
     if (isSupabaseConfigured && supabase) {
-      const isValidUuid = userId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
+      let realPrepId = preparationId;
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(preparationId);
+      if (!isUuid) {
+        // Resolver UUID real en Supabase si se pasó un identificador mock
+        const { data: found } = await supabase
+          .from('preparations')
+          .select('id')
+          .or('code.eq.PREP-001,name.ilike.%lemon%')
+          .limit(1)
+          .single();
+        if (found?.id) {
+          realPrepId = found.id;
+        }
+      }
+
+      const isValidUuid = userId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
       const { data, error } = await supabase.rpc('confirm_production_batch', {
-        p_preparation_id: preparationId,
+        p_preparation_id: realPrepId,
         p_quantity_produced: quantityToProduce,
         p_user_id: isValidUuid ? userId : null,
         p_notes: notes || null

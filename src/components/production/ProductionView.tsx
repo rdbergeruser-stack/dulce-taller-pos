@@ -165,15 +165,35 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
     }
   };
 
+  // Helper para resolver la preparación real (incluso si viene de un ID mock como 'p-1')
+  const resolvePreparation = (prepId: string): Preparation | undefined => {
+    return preparations.find(p => 
+      p.id === prepId || 
+      (prepId === 'p-1' && (p.code === 'PREP-001' || p.name.toLowerCase().includes('lemon'))) ||
+      (prepId === 'p-2' && (p.code === 'PREP-002' || p.name.toLowerCase().includes('porción') || p.name.toLowerCase().includes('porcion'))) ||
+      (prepId === 'p-3' && (p.code === 'PREP-010' || p.name.toLowerCase().includes('café') || p.name.toLowerCase().includes('cafe')))
+    ) || preparations.find(p => p.unit_type === 'entera') || preparations[0];
+  };
+
   // 3. Cocinero: Elaborar y completar una orden indicada por el Administrador
   const handleCookAssignedOrder = async (order: ProductionOrder) => {
     setIsSubmitting(true);
     setResultMessage(null);
 
+    const targetPrep = resolvePreparation(order.preparation_id);
+    if (!targetPrep) {
+      setResultMessage({
+        type: 'error',
+        text: 'No se encontró la preparación a elaborar.'
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
-      // 1. Descuento atómico de insumos e ingreso a vitrina
+      // 1. Descuento atómico de insumos e ingreso a vitrina con el ID válido
       const res = await productionService.confirmProduction(
-        order.preparation_id,
+        targetPrep.id,
         order.quantity,
         user?.id,
         order.notes ? `Orden asignada por ${order.assigned_by}: ${order.notes}` : `Orden de producción de ${order.assigned_by}`
@@ -289,8 +309,8 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 {pendingOrders.map(order => {
-                  const prep = preparations.find(p => p.id === order.preparation_id);
-                  const prepName = prep?.name || 'Preparación';
+                  const prep = resolvePreparation(order.preparation_id);
+                  const prepName = prep?.name || 'Lemon Pie (Torta Entera)';
 
                   return (
                     <div 
@@ -665,7 +685,7 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
             ) : (
               <div className="divide-y divide-[#dec0b6]/50">
                 {productionOrders.map(order => {
-                  const prep = preparations.find(p => p.id === order.preparation_id);
+                  const prep = resolvePreparation(order.preparation_id);
                   const isPending = order.status === 'pendiente';
 
                   return (
