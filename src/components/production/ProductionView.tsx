@@ -15,7 +15,9 @@ import {
   CheckCircle2,
   Trash2,
   Bell,
-  Zap
+  Zap,
+  Plus,
+  Minus
 } from 'lucide-react';
 
 interface ProductionViewProps {
@@ -47,6 +49,20 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
   // Órdenes de producción asignadas por el Administrador
   const [productionOrders, setProductionOrders] = useState<ProductionOrder[]>([]);
   const [productionRequests, setProductionRequests] = useState<ProductionRequest[]>([]);
+  // Cantidades dinámicas elegidas por tarjeta en el panel de autorización rápida
+  const [cardQuantities, setCardQuantities] = useState<Record<string, number>>({});
+
+  const getCardQuantity = (id: string, defaultQty: number = 1): number => {
+    return cardQuantities[id] ?? defaultQty;
+  };
+
+  const updateCardQuantity = (id: string, delta: number, defaultQty: number = 1) => {
+    setCardQuantities(prev => {
+      const current = prev[id] ?? defaultQty;
+      const next = Math.max(1, current + delta);
+      return { ...prev, [id]: next };
+    });
+  };
 
   const loadData = () => {
     setProductionOrders(productionOrderService.getProductionOrders());
@@ -412,64 +428,124 @@ export const ProductionView: React.FC<ProductionViewProps> = ({
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                 {/* 1. Solicitudes directas del Cocinero */}
-                {productionRequests.map(req => (
-                  <div key={req.id} className="p-4 rounded-xl border border-[#9d3c0c]/40 bg-white shadow-xs flex flex-col justify-between space-y-3">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <span className="inline-block text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#ffdbce] text-[#9d3c0c] border border-[#9d3c0c]/30">
-                          🔔 Solicitado por {req.requested_by}
-                        </span>
-                        <h4 className="font-serif font-bold text-base text-[#1c120c] mt-1">
-                          {req.preparation_name}
-                        </h4>
-                        <p className="text-xs text-[#7c5641]">
-                          Stock crítico actual en vitrina: <strong>{req.current_stock} {req.unit_type}</strong>
-                        </p>
+                {productionRequests.map(req => {
+                  const qty = getCardQuantity(req.id, 1);
+
+                  return (
+                    <div key={req.id} className="p-4 rounded-xl border border-[#9d3c0c]/40 bg-white shadow-xs flex flex-col justify-between space-y-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <span className="inline-block text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#ffdbce] text-[#9d3c0c] border border-[#9d3c0c]/30">
+                            🔔 Solicitado por {req.requested_by}
+                          </span>
+                          <h4 className="font-serif font-bold text-base text-[#1c120c] mt-1">
+                            {req.preparation_name}
+                          </h4>
+                          <p className="text-xs text-[#7c5641]">
+                            Stock crítico actual en vitrina: <strong>{req.current_stock} {req.unit_type}</strong>
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-2 border-t border-[#dec0b6]/50">
+                        {/* Selector táctil [-] [ cantidad ] [+] */}
+                        <div className="flex items-center justify-center bg-[#efe7dd] rounded-xl border border-[#dec0b6] p-1 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => updateCardQuantity(req.id, -1, 1)}
+                            disabled={qty <= 1}
+                            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#7c5641] hover:text-[#1c120c] hover:bg-[#dec0b6]/40 disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-all"
+                            title="Restar 1 unidad"
+                            aria-label="Restar una unidad"
+                          >
+                            <Minus className="w-3.5 h-3.5" />
+                          </button>
+                          <span className="w-12 text-center font-bold text-xs text-[#1c120c]">
+                            {qty} un
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => updateCardQuantity(req.id, 1, 1)}
+                            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#7c5641] hover:text-[#1c120c] hover:bg-[#dec0b6]/40 active:scale-95 transition-all"
+                            title="Sumar 1 unidad"
+                            aria-label="Sumar una unidad"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleQuickAuthorize(req.preparation_id, qty, req.preparation_name, req.requested_by)}
+                          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold hover:bg-[#7f2b00] shadow-sm active:scale-95 transition-all"
+                        >
+                          <Zap className="w-4 h-4" />
+                          <span>Autorizar y Asignar ({qty} un)</span>
+                        </button>
                       </div>
                     </div>
-
-                    <div className="flex items-center gap-2 pt-2 border-t border-[#dec0b6]/50">
-                      <button
-                        type="button"
-                        onClick={() => handleQuickAuthorize(req.preparation_id, 2, req.preparation_name, req.requested_by)}
-                        className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold hover:bg-[#7f2b00] shadow-sm active:scale-95 transition-all"
-                      >
-                        <Zap className="w-4 h-4" />
-                        <span>Autorizar y Asignar (+2 un)</span>
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
 
                 {/* 2. Productos de vitrina con bajo stock no solicitados aún */}
                 {preparations
                   .filter(p => p.unit_type !== 'porcion' && p.stock_available <= 1 && !productionRequests.some(r => r.preparation_id === p.id))
-                  .map(p => (
-                    <div key={p.id} className="p-4 rounded-xl border border-[#dec0b6] bg-white shadow-xs flex flex-col justify-between space-y-3">
-                      <div>
-                        <span className="inline-block text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#fef3c7] text-[#92400e] border border-[#fde68a]">
-                          ⚠️ Poco Stock en Vitrina ({p.stock_available} {p.unit_type})
-                        </span>
-                        <h4 className="font-serif font-bold text-base text-[#1c120c] mt-1">
-                          {p.name}
-                        </h4>
-                        <p className="text-xs text-[#7c5641]">
-                          Categoría: {p.category} • Precio: ${p.price.toLocaleString('es-AR')}
-                        </p>
-                      </div>
+                  .map(p => {
+                    const qty = getCardQuantity(p.id, 1);
 
-                      <div className="flex items-center gap-2 pt-2 border-t border-[#dec0b6]/50">
-                        <button
-                          type="button"
-                          onClick={() => handleQuickAuthorize(p.id, 2, p.name)}
-                          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-[#1c120c] text-white text-xs font-bold hover:bg-black shadow-sm active:scale-95 transition-all"
-                        >
-                          <Zap className="w-4 h-4 text-[#dec0b6]" />
-                          <span>Autorizar Producción (+2 {p.unit_type})</span>
-                        </button>
+                    return (
+                      <div key={p.id} className="p-4 rounded-xl border border-[#dec0b6] bg-white shadow-xs flex flex-col justify-between space-y-3">
+                        <div>
+                          <span className="inline-block text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#fef3c7] text-[#92400e] border border-[#fde68a]">
+                            ⚠️ Poco Stock en Vitrina ({p.stock_available} {p.unit_type})
+                          </span>
+                          <h4 className="font-serif font-bold text-base text-[#1c120c] mt-1">
+                            {p.name}
+                          </h4>
+                          <p className="text-xs text-[#7c5641]">
+                            Categoría: {p.category} • Precio: ${p.price.toLocaleString('es-AR')}
+                          </p>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-2 border-t border-[#dec0b6]/50">
+                          {/* Selector táctil [-] [ cantidad ] [+] */}
+                          <div className="flex items-center justify-center bg-[#efe7dd] rounded-xl border border-[#dec0b6] p-1 shrink-0">
+                            <button
+                              type="button"
+                              onClick={() => updateCardQuantity(p.id, -1, 1)}
+                              disabled={qty <= 1}
+                              className="w-8 h-8 rounded-lg flex items-center justify-center text-[#7c5641] hover:text-[#1c120c] hover:bg-[#dec0b6]/40 disabled:opacity-30 disabled:cursor-not-allowed active:scale-95 transition-all"
+                              title="Restar 1 unidad"
+                              aria-label="Restar una unidad"
+                            >
+                              <Minus className="w-3.5 h-3.5" />
+                            </button>
+                            <span className="w-14 text-center font-bold text-xs text-[#1c120c]">
+                              {qty} {p.unit_type}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => updateCardQuantity(p.id, 1, 1)}
+                              className="w-8 h-8 rounded-lg flex items-center justify-center text-[#7c5641] hover:text-[#1c120c] hover:bg-[#dec0b6]/40 active:scale-95 transition-all"
+                              title="Sumar 1 unidad"
+                              aria-label="Sumar una unidad"
+                            >
+                              <Plus className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => handleQuickAuthorize(p.id, qty, p.name)}
+                            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-[#1c120c] text-white text-xs font-bold hover:bg-black shadow-sm active:scale-95 transition-all"
+                          >
+                            <Zap className="w-4 h-4 text-[#dec0b6]" />
+                            <span>Autorizar Producción ({qty} {p.unit_type})</span>
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
               </div>
             </div>
           )}

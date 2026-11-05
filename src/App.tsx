@@ -306,6 +306,7 @@ function MainApp() {
             preparations={preparations}
             initialSubTab={inventoryInitialSubTab}
             highlightMaterialId={inventoryHighlightMaterialId}
+            onClearHighlight={() => setInventoryHighlightMaterialId(undefined)}
             onAddMaterial={handleAddMaterial}
             onAdjustStock={handleAdjustStock}
             onAdjustPrepStock={handleAdjustPrepStock}

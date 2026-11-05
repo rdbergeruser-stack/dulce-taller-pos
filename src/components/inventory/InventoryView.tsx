@@ -26,6 +26,7 @@ interface InventoryViewProps {
   preparations: Preparation[];
   initialSubTab?: 'vitrina' | 'stock' | 'kardex';
   highlightMaterialId?: string;
+  onClearHighlight?: () => void;
   onAddMaterial: (mat: Omit<RawMaterial, 'id'>) => Promise<void>;
   onAdjustStock: (id: string, newStock: number, reason: string, newMinStock?: number) => Promise<void>;
   onAdjustPrepStock: (id: string, newStock: number, reason: string) => Promise<void>;
@@ -41,6 +42,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
   onAdjustPrepStock,
   initialSubTab,
   highlightMaterialId,
+  onClearHighlight,
   onRefresh
 }) => {
   const { user, isAdmin, isCocinero, isMozo } = useAuth();
@@ -71,8 +73,11 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
     }
   }, [initialSubTab]);
 
+  const lastHandledHighlightId = React.useRef<string | null>(null);
+
   React.useEffect(() => {
-    if (highlightMaterialId) {
+    if (highlightMaterialId && highlightMaterialId !== lastHandledHighlightId.current) {
+      lastHandledHighlightId.current = highlightMaterialId;
       setSubTab('stock');
       setFocusedMatId(highlightMaterialId);
       const target = materials.find(m => m.id === highlightMaterialId);
@@ -80,8 +85,9 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
         setSearchQuery(target.name);
         handleOpenAdjust(target);
       }
+      onClearHighlight?.();
     }
-  }, [highlightMaterialId, materials]);
+  }, [highlightMaterialId, materials, onClearHighlight]);
   const [selectedMaterial, setSelectedMaterial] = useState<RawMaterial | null>(null);
   const [selectedPrep, setSelectedPrep] = useState<Preparation | null>(null);
   const [newStockValue, setNewStockValue] = useState<string>('');
@@ -208,6 +214,12 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
     setAdjustReason('Ajuste de vitrina / Registro de merma');
   };
 
+  const handleCloseAdjustModal = () => {
+    setSelectedMaterial(null);
+    setSelectedPrep(null);
+    onClearHighlight?.();
+  };
+
   const handleSaveAdjust = async (e: React.FormEvent) => {
     e.preventDefault();
     const num = parseFloat(newStockValue);
@@ -222,11 +234,13 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
         alert('Ingresa un nivel de alerta / stock mínimo válido mayor o igual a 0');
         return;
       }
-      await onAdjustStock(selectedMaterial.id, num, adjustReason, minNum);
-      setSelectedMaterial(null);
+      const matId = selectedMaterial.id;
+      handleCloseAdjustModal();
+      await onAdjustStock(matId, num, adjustReason, minNum);
     } else if (selectedPrep) {
-      await onAdjustPrepStock(selectedPrep.id, num, adjustReason);
-      setSelectedPrep(null);
+      const prepId = selectedPrep.id;
+      handleCloseAdjustModal();
+      await onAdjustPrepStock(prepId, num, adjustReason);
     }
   };
 
@@ -821,7 +835,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
               <h3 className="font-serif font-bold text-lg text-[#1c120c]">
                 Ajustar Stock: {selectedMaterial?.name || selectedPrep?.name}
               </h3>
-              <button onClick={() => { setSelectedMaterial(null); setSelectedPrep(null); }} aria-label="Cerrar modal">
+              <button onClick={handleCloseAdjustModal} aria-label="Cerrar modal">
                 <X className="w-5 h-5 text-[#7c5641]" aria-hidden="true" focusable="false" />
               </button>
             </div>
@@ -894,7 +908,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
               <div className="pt-2 flex items-center justify-end gap-2">
                 <button
                   type="button"
-                  onClick={() => { setSelectedMaterial(null); setSelectedPrep(null); }}
+                  onClick={handleCloseAdjustModal}
                   className="px-4 py-2 rounded-xl border border-[#dec0b6] text-xs font-bold text-[#7c5641] hover:bg-[#efe7dd]"
                 >
                   Cancelar
