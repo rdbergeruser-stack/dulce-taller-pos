@@ -61,7 +61,7 @@ export interface RawMaterial {
 }
 
 export type PreparationCategory = 'pasteleria' | 'cafeteria';
-export type PreparationUnitType = 'porcion' | 'entera' | 'taza';
+export type PreparationUnitType = 'porcion' | 'entera' | 'taza' | 'unidad';
 
 export interface Preparation {
   id: string;

@@ -16,7 +16,7 @@ import {
   Search,
   Bell
 } from 'lucide-react';
-import { portionService, getEffectiveAvailableStock } from '../../services/portionService';
+import { portionService, getEffectiveAvailableStock, findPortionPreparation } from '../../services/portionService';
 import { productionOrderService } from '../../services/productionOrderService';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -521,17 +521,21 @@ export const InventoryView: React.FC<InventoryViewProps> = ({
                     </div>
 
                     {/* Botón de corte de tortas enteras (Admin y Cocinero) */}
-                    {prep.unit_type === 'entera' && !isMozo && (
-                      <button
-                        onClick={() => handleManualSlice(prep.id)}
-                        disabled={prep.stock_available <= 0 || isSlicing}
-                        className="w-full py-2.5 px-3 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold hover:bg-[#7f2b00] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 shadow-md shadow-[#9d3c0c]/20 transition-all"
-                        title={prep.stock_available > 0 ? 'Descuenta 1 torta entera y genera porciones listas en vitrina' : 'Sin stock de tortas enteras para cortar'}
-                      >
-                        <Sparkles className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
-                        <span>Cortar 1 Torta en Porciones (+8)</span>
-                      </button>
-                    )}
+                    {prep.unit_type === 'entera' && !isMozo && (() => {
+                      const childPortion = findPortionPreparation(prep, preparations);
+                      const sliceYield = childPortion ? (Number(childPortion.portion_yield) || 8) : 8;
+                      return (
+                        <button
+                          onClick={() => handleManualSlice(prep.id)}
+                          disabled={prep.stock_available <= 0 || isSlicing}
+                          className="w-full py-2.5 px-3 rounded-xl bg-[#9d3c0c] text-white text-xs font-bold hover:bg-[#7f2b00] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 shadow-md shadow-[#9d3c0c]/20 transition-all"
+                          title={prep.stock_available > 0 ? 'Descuenta 1 torta entera y genera porciones listas en vitrina' : 'Sin stock de tortas enteras para cortar'}
+                        >
+                          <Sparkles className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
+                          <span>Cortar 1 Torta en Porciones (+{sliceYield})</span>
+                        </button>
+                      );
+                    })()}
 
                     {isPortion && !isMozo && (
                       <button

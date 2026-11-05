@@ -575,6 +575,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                     <option value="porcion">Porción</option>
                     <option value="entera">Torta Entera</option>
                     <option value="taza">Taza / Bebida</option>
+                    <option value="unidad">Unidad Individual</option>
 
                   </select>
                 </div>
@@ -945,6 +946,7 @@ export const RecipesView: React.FC<RecipesViewProps> = ({
                     <option value="entera">Torta Entera (entera)</option>
                     <option value="porcion">Porción Individual (porcion)</option>
                     <option value="taza">Taza / Pocillo (taza)</option>
+                    <option value="unidad">Unidad Individual (unidad)</option>
                     <option value="kit">Kit Individual (kit)</option>
                   </select>
                 </div>
