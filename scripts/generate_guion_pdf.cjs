@@ -15,21 +15,21 @@ const htmlContent = `<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Dulce Taller POS - Guión de Demostración en Vivo</title>
+  <title>BackForge - Guión de Demostración en Vivo (Rodrigo)</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap');
 
     @page {
       size: A4;
-      margin: 13mm 14mm 13mm 14mm;
+      margin: 11mm 13mm 11mm 13mm;
     }
 
     * { box-sizing: border-box; }
 
     body {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      font-size: 9pt;
-      line-height: 1.42;
+      font-size: 8.8pt;
+      line-height: 1.38;
       color: #1c120c;
       background-color: #ffffff;
       margin: 0;
@@ -38,8 +38,8 @@ const htmlContent = `<!DOCTYPE html>
 
     .header-box {
       border-bottom: 2.5px solid #9d3c0c;
-      padding-bottom: 9px;
-      margin-bottom: 12px;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
@@ -47,7 +47,7 @@ const htmlContent = `<!DOCTYPE html>
 
     .brand-title {
       font-family: 'Playfair Display', serif;
-      font-size: 20pt;
+      font-size: 18pt;
       font-weight: 700;
       color: #1c120c;
       margin: 0;
@@ -55,7 +55,7 @@ const htmlContent = `<!DOCTYPE html>
     }
 
     .brand-subtitle {
-      font-size: 10pt;
+      font-size: 9.5pt;
       font-weight: 700;
       color: #9d3c0c;
       text-transform: uppercase;
@@ -65,7 +65,7 @@ const htmlContent = `<!DOCTYPE html>
 
     .meta-box {
       text-align: right;
-      font-size: 8.2pt;
+      font-size: 8pt;
       color: #7c5641;
     }
 
@@ -80,71 +80,83 @@ const htmlContent = `<!DOCTYPE html>
       margin-top: 2px;
     }
 
-    .intro-banner {
+    .sync-banner {
       background-color: #fff8f2;
       border: 1px solid #dec0b6;
       border-left: 4px solid #9d3c0c;
-      padding: 8px 11px;
-      border-radius: 8px;
-      margin-bottom: 12px;
-      font-size: 8.5pt;
+      padding: 7px 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      font-size: 8.2pt;
       color: #57423a;
     }
 
-    .scope-pills {
-      display: flex;
-      gap: 6px;
-      margin-top: 4px;
+    .timing-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+      font-size: 7.8pt;
     }
 
-    .scope-pill {
-      background: #ffffff;
+    .timing-table th {
+      background: #f5ede3;
+      color: #7c5641;
+      text-align: left;
+      padding: 4px 6px;
       border: 1px solid #dec0b6;
-      border-radius: 4px;
-      padding: 1px 6px;
-      font-size: 7.8pt;
       font-weight: 700;
-      color: #1c120c;
+      text-transform: uppercase;
+    }
+
+    .timing-table td {
+      padding: 3.5px 6px;
+      border: 1px solid #dec0b6;
+    }
+
+    .timing-table tr.highlight-row {
+      background: #fff1eb;
+      font-weight: 700;
+      color: #9d3c0c;
     }
 
     .act-card {
       background: #ffffff;
       border: 1px solid #dec0b6;
-      border-radius: 9px;
-      margin-bottom: 10px;
+      border-radius: 8px;
+      margin-bottom: 9px;
       overflow: hidden;
       page-break-inside: avoid;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
     }
 
     .act-header {
-      padding: 6px 11px;
+      padding: 5px 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid #dec0b6;
     }
 
-    .act-header-web { background: #eff6ff; }
-    .act-header-mozo { background: #fff1eb; }
-    .act-header-cocina { background: #fef7ed; }
-    .act-header-admin { background: #fdf2f8; }
+    .act-header-1 { background: #eff6ff; }
+    .act-header-2 { background: #fff1eb; }
+    .act-header-3 { background: #fef7ed; }
+    .act-header-4 { background: #fdf2f8; }
 
     .act-title {
       font-family: 'Playfair Display', serif;
-      font-size: 11.5pt;
+      font-size: 10.8pt;
       font-weight: 700;
       color: #1c120c;
       margin: 0;
     }
 
     .role-badge {
-      font-size: 7.5pt;
+      font-size: 7.2pt;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       padding: 2px 7px;
-      border-radius: 16px;
+      border-radius: 14px;
     }
 
     .badge-web { background: #2563eb; color: #ffffff; }
@@ -153,82 +165,48 @@ const htmlContent = `<!DOCTYPE html>
     .badge-admin { background: #1c120c; color: #ffffff; }
 
     .act-body {
-      padding: 8px 11px 9px 11px;
+      padding: 7px 10px 8px 10px;
     }
 
-    .objective-tag {
-      font-size: 8pt;
-      font-style: italic;
-      color: #7c5641;
-      margin-bottom: 6px;
-    }
-
-    .steps-list {
-      margin: 0;
-      padding-left: 16px;
-    }
-
-    .steps-list li {
-      margin-bottom: 4px;
-      font-size: 8.5pt;
-    }
-
-    .steps-list li strong {
+    .action-row {
+      font-size: 8.2pt;
       color: #1c120c;
+      margin-bottom: 4px;
+    }
+
+    .action-row strong {
+      color: #9d3c0c;
     }
 
     .speech-box {
       background: #fdf8f4;
-      border-left: 3px solid #dec0b6;
+      border-left: 3px solid #9d3c0c;
       padding: 4px 8px;
-      margin: 3px 0 5px 0;
-      font-size: 8pt;
-      color: #7c5641;
+      margin: 3px 0 4px 0;
+      font-size: 8.1pt;
+      color: #1c120c;
+      font-style: italic;
       border-radius: 0 5px 5px 0;
     }
 
     .speech-box span {
-      font-weight: 700;
-      color: #9d3c0c;
-    }
-
-    .tips-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 9px;
-      page-break-inside: avoid;
-    }
-
-    .tip-box {
-      background: #fff8f2;
-      border: 1px solid #dec0b6;
-      border-radius: 8px;
-      padding: 7px 9px;
-      font-size: 8pt;
-    }
-
-    .tip-box-title {
       font-weight: 800;
       color: #9d3c0c;
-      margin-bottom: 2px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
+      font-style: normal;
     }
 
     .closure-box {
       background: #1c120c;
       color: #ffffff;
-      border-radius: 8px;
-      padding: 8px 12px;
-      margin-top: 9px;
+      border-radius: 7px;
+      padding: 7px 11px;
+      margin-top: 8px;
       page-break-inside: avoid;
     }
 
     .closure-box-title {
       color: #dec0b6;
-      font-size: 7.8pt;
+      font-size: 7.5pt;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.8px;
@@ -236,15 +214,33 @@ const htmlContent = `<!DOCTYPE html>
 
     .closure-quote {
       font-family: 'Playfair Display', serif;
-      font-size: 9.5pt;
+      font-size: 9.2pt;
       font-style: italic;
       margin-top: 2px;
       line-height: 1.35;
       color: #fff8f2;
     }
 
-    .page-break {
-      page-break-after: always;
+    .tips-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      margin-top: 8px;
+      page-break-inside: avoid;
+    }
+
+    .tip-box {
+      background: #fff8f2;
+      border: 1px solid #dec0b6;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 7.7pt;
+    }
+
+    .tip-box-title {
+      font-weight: 800;
+      color: #9d3c0c;
+      margin-bottom: 2px;
     }
   </style>
 </head>
@@ -253,170 +249,146 @@ const htmlContent = `<!DOCTYPE html>
   <!-- CABECERA PRINCIPAL -->
   <div class="header-box">
     <div>
-      <h1 class="brand-title">Dulce Taller POS</h1>
-      <div class="brand-subtitle">Guión Oficial de Demostración en Video</div>
+      <h1 class="brand-title">BackForge • Dulce Taller</h1>
+      <div class="brand-subtitle">Guión de Demostración del Software en Video (Rodrigo)</div>
     </div>
     <div class="meta-box">
-      <div>Duración estimada: <strong>6 a 7 minutos</strong></div>
-      <div>Tope máximo permitido: <strong>10 minutos</strong></div>
-      <div class="meta-tag">Alcance Académico Acordado</div>
+      <div>Duración Demo: <strong>2:45 a 3:00 min</strong></div>
+      <div>Tope Video Global: <strong>10:00 min máx.</strong></div>
+      <div class="meta-tag">Alcance: Web • Comandas • Stock</div>
     </div>
   </div>
 
-  <div class="intro-banner">
-    <strong>Alcance oficial del sistema:</strong>
-    <div class="scope-pills">
-      <span class="scope-pill">1. Sitio Web Funcional (Clientes)</span>
-      <span class="scope-pill">2. Gestión de Comandas (Salón & Cocina)</span>
-      <span class="scope-pill">3. Control de Stock & Producción (Depósito)</span>
-    </div>
-    <div style="margin-top: 4px; font-size: 7.8pt; color: #7c5641;">
-      * Nota: La gestión de cobros y facturación queda fuera del alcance evaluado, enfocando el 100% del video en la operación gastronómica y el stock.
-    </div>
+  <div class="sync-banner">
+    <strong>Sincronización con el Guión General del Equipo:</strong><br>
+    Tu intervención técnica ocurre <strong>entre la Diapositiva 5 (Tomás) y la Diapositiva 6 (Alejandra)</strong>. Tomás cierra diciendo: <em>"...Verificaremos el registro y cambios de estado de comandas, stock, producción, alertas y el sitio web..."</em> $\rightarrow$ <strong>¡Aquí entrás vos en vivo!</strong>
   </div>
 
-  <!-- ACTO 1: SITIO WEB Y SALÓN -->
+  <!-- TABLA DE CONTROL DE TIEMPO DEL VIDEO -->
+  <table class="timing-table">
+    <thead>
+      <tr>
+        <th>Bloque</th>
+        <th>Responsable</th>
+        <th>Contenido Principal</th>
+        <th>Tiempo Estimado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1. Introducción & 2. Problema</td>
+        <td>Gimena / Tomás</td>
+        <td>Diapositivas 1 y 2: Propuesta BackForge y necesidades</td>
+        <td>1:35 min</td>
+      </tr>
+      <tr>
+        <td>3. Solución & 4. Diferenciación</td>
+        <td>Mariana / Rodrigo</td>
+        <td>Diapositivas 3 y 4: 3 módulos y gestión de riesgos (Rodrigo)</td>
+        <td>1:40 min</td>
+      </tr>
+      <tr>
+        <td>5. Pruebas y Validación</td>
+        <td>Tomás</td>
+        <td>Diapositiva 5: Criterios de aceptación (da el pie a Rodrigo)</td>
+        <td>0:35 min</td>
+      </tr>
+      <tr class="highlight-row">
+        <td>DEMO EN VIVO SOFTWARE</td>
+        <td>RODRIGO</td>
+        <td>Sitio Web + Comandas (Salón/Cocina) + Stock & Producción</td>
+        <td>2:45 a 3:00 min</td>
+      </tr>
+      <tr>
+        <td>6. Inversión & 7. Cierre</td>
+        <td>Alejandra / Gimena</td>
+        <td>Diapositivas 6 y 7: Presupuesto ($1.404.000) y cierre comercial</td>
+        <td>2:00 min</td>
+      </tr>
+      <tr style="background:#f5ede3; font-weight:800;">
+        <td colspan="3">TIEMPO TOTAL DEL VIDEO (Con margen de seguridad)</td>
+        <td>~8:35 a 8:50 min</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- BLOQUE 1: SITIO WEB -->
   <div class="act-card">
-    <div class="act-header act-header-mozo">
-      <h2 class="act-title">ACTO 1: Sitio Web Público y Salón (Mozo)</h2>
-      <span class="role-badge badge-mozo">Rol: Mozo de Salón (1:30 min)</span>
+    <div class="act-header act-header-1">
+      <h2 class="act-title">1. Sitio Web Institucional (20 segundos)</h2>
+      <span class="role-badge badge-web">Pestaña Web Pública</span>
     </div>
     <div class="act-body">
-      <div class="objective-tag"><strong>Objetivo:</strong> Conectar la presencia web para clientes con la toma de comandas y el control de vitrina en tiempo real.</div>
-      <ol class="steps-list">
-        <li>
-          <strong>Presentación del Sitio Web (15 seg):</strong> Mostrar brevemente la página web pública de Dulce Taller:
-          <div class="speech-box"><span>Decir al público:</span> "El sistema cuenta con un sitio web funcional donde los clientes exploran nuestra pastelería y cafetería artesanal en línea."</div>
-        </li>
-        <li>
-          <strong>Ingreso al POS de Salón (15 seg):</strong> Iniciar sesión en la app seleccionando <em>Mozo de Salón</em>. Señalar la interfaz táctil adaptada para tablets.
-        </li>
-        <li>
-          <strong>Franja de Vitrina Inteligente (20 seg):</strong> Mostrar la barra superior de disponibilidad en vivo. Los mozos ven en verde lo disponible y en amarillo/rojo lo que escasea antes de acercarse a la mesa.
-        </li>
-        <li>
-          <strong>Carga de Comanda (Mesa 3) (30 seg):</strong> Tocar <em>"+ Nueva Comanda"</em>, seleccionar Mesa 3 y agregar:
-          <ul>
-            <li><strong>1x Café Latte</strong> ($3.900)</li>
-            <li><strong>1x Porción Lemon Pie</strong> ($3.800) con nota rápida: <em>"bien fría"</em></li>
-            <li><strong>1x Cookie Americana</strong> ($2.400)</li>
-          </ul>
-        </li>
-        <li>
-          <strong>Validación de Stock en Tiempo Real (10 seg):</strong> Intentar agregar más porciones de las que hay en vitrina.
-          <div class="speech-box"><span>Punto clave:</span> "El sistema valida al instante y bloquea la venta si supera el stock real disponible, evitando decepcionar al cliente."</div>
-        </li>
-        <li>
-          <strong>Envío a Cocina:</strong> Presionar <em>"Crear Comanda"</em>. Aparece de inmediato en <em>"Pendientes"</em> con su cronómetro en vivo.
-        </li>
-      </ol>
+      <div class="action-row"><strong>Acción en pantalla:</strong> Mostrar el sitio web institucional navegando la carta digital responsive.</div>
+      <div class="speech-box">
+        <span>Qué decir:</span> "Gracias, Tomás. Comenzamos por el <strong>Sitio Web Institucional</strong>, desarrollado para que las familias conozcan la propuesta sensorial de Dulce Taller, exploren la carta artesanal y consulten horarios desde cualquier celular o computadora, con diseño adaptable y carga ágil."
+      </div>
     </div>
   </div>
 
-  <!-- ACTO 2: COCINA EN ACCIÓN -->
+  <!-- BLOQUE 2: COMANDAS SALON -->
   <div class="act-card">
-    <div class="act-header act-header-cocina">
-      <h2 class="act-title">ACTO 2: Pantalla de Cocina y Despacho</h2>
-      <span class="role-badge badge-cocina">Rol: Cocinero (1:15 min)</span>
+    <div class="act-header act-header-2">
+      <h2 class="act-title">2. Módulo de Comandas y Salón (45 segundos)</h2>
+      <span class="role-badge badge-mozo">App POS • Rol: Mozo</span>
     </div>
     <div class="act-body">
-      <div class="objective-tag"><strong>Objetivo:</strong> Demostrar la comunicación inmediata entre salón y cocina sin papeles ni órdenes extraviadas.</div>
-      <ol class="steps-list">
-        <li>
-          <strong>Acceso de Cocina:</strong> Cambiar usuario o rol a <em>Cocinero</em>.
-          <div class="speech-box"><span>Decir al público:</span> "El cocinero cuenta con su pantalla operativa donde visualiza exclusivamente pedidos pendientes, notas de mesa y tiempos de espera."</div>
-        </li>
-        <li>
-          <strong>Iniciar Preparación:</strong> Identificar la comanda de la Mesa 3 y presionar <em>"Empezar Preparación"</em>. La tarjeta se traslada a la columna <em>"En Preparación"</em>.
-        </li>
-        <li>
-          <strong>Finalización con Aviso Sonoro:</strong> Al terminar la elaboración, tocar <em>"Marcar Lista"</em>. El sistema emite el sonido chime de campana alertando al salón que el pedido está listo para retirar.
-        </li>
-      </ol>
+      <div class="action-row"><strong>Acción en pantalla:</strong> Entrar como Mozo $\rightarrow$ señalar barra de vitrina $\rightarrow$ <em>"+ Nueva Comanda"</em> (Mesa 3: 1 Latte, 1 Lemon Pie) $\rightarrow$ Mostrar bloqueo al intentar pedir de más $\rightarrow$ <em>"Crear Comanda"</em>.</div>
+      <div class="speech-box">
+        <span>Qué decir:</span> "Pasamos a la tablet del salón: el mozo monitorea en la franja superior la <strong>disponibilidad en vitrina en tiempo real</strong>. Al cargar la comanda de la Mesa 3, si intentamos pedir más de lo existente, el sistema valida y <strong>bloquea la orden</strong> para evitar quiebres de stock. Confirmamos y la comanda viaja al instante a preparación."
+      </div>
     </div>
   </div>
 
-  <div class="page-break"></div>
-
-  <!-- CABECERA PÁGINA 2 -->
-  <div class="header-box" style="margin-top: 5px;">
-    <div>
-      <h1 class="brand-title" style="font-size: 16pt;">Dulce Taller POS</h1>
-      <div class="brand-subtitle" style="font-size: 9pt;">Parte 2: Despacho, Stock & Producción</div>
-    </div>
-    <div class="meta-box">
-      <div>Control de Stock & Backoffice</div>
-    </div>
-  </div>
-
-  <!-- ACTO 3: ENTREGA Y FRACCIONAMIENTO -->
+  <!-- BLOQUE 3: COCINA -->
   <div class="act-card">
-    <div class="act-header act-header-mozo">
-      <h2 class="act-title">ACTO 3: Despacho de Comanda y Fraccionamiento en Vitrina</h2>
-      <span class="role-badge badge-mozo">Rol: Mozo & Stock (1:30 min)</span>
+    <div class="act-header act-header-3">
+      <h2 class="act-title">3. Pantalla de Cocina y Despacho (35 segundos)</h2>
+      <span class="role-badge badge-cocina">App POS • Rol: Cocinero</span>
     </div>
     <div class="act-body">
-      <div class="objective-tag"><strong>Objetivo:</strong> Mostrar el descuento automático de vitrina al entregar y la reposición mediante fraccionamiento de tortas madre.</div>
-      <ol class="steps-list">
-        <li>
-          <strong>Entrega al Cliente (20 seg):</strong> Volver a la sesión de <em>Mozo</em>, ubicar la comanda en <em>"Listas"</em> y presionar <strong>"Marcar Entregada"</strong>.
-          <div class="speech-box"><span>Explicar:</span> "Al despachar la comanda, el sistema descuenta automáticamente los productos terminados del stock de vitrina."</div>
-        </li>
-        <li>
-          <strong>Fraccionamiento de Torta Entera en Porciones (Inventario) (50 seg):</strong>
-          Ir a <em>Inventario $\rightarrow$ Vitrina</em>. Observar cómo bajó el stock de la porción y presionar:
-          <br><strong>"Cortar 1 Torta en Porciones (+16 porc.)"</strong> (en Brownie) o <strong>(+8 porc.)</strong> (en Lemon Pie).
-          <div class="speech-box"><span>Punto clave:</span> "Con un solo toque, el sistema descuenta 1 torta entera madre y genera las porciones listas para la venta."</div>
-        </li>
-      </ol>
+      <div class="action-row"><strong>Acción en pantalla:</strong> Vista de Cocinero $\rightarrow$ Tomar comanda Mesa 3 $\rightarrow$ <em>"Empezar Preparación"</em> $\rightarrow$ Al instante tocar <em>"Marcar Lista"</em> (suena campana).</div>
+      <div class="speech-box">
+        <span>Qué decir:</span> "En cocina, el cocinero recibe la comanda sin papeles ni gritos. Con un toque inicia la preparación y, al finalizarla, presiona <strong>Marcar Lista</strong>: el sistema emite un aviso sonoro notificando al salón para su retiro inmediato."
+      </div>
     </div>
   </div>
 
-  <!-- ACTO 4: PRODUCCIÓN, RECETAS Y COMPRAS -->
+  <!-- BLOQUE 4: STOCK Y PRODUCCION -->
   <div class="act-card">
-    <div class="act-header act-header-admin">
-      <h2 class="act-title">ACTO 4: Fichas Técnicas, Producción y Compras</h2>
-      <span class="role-badge badge-admin">Rol: Administrador / Dueño (2:00 min)</span>
+    <div class="act-header act-header-4">
+      <h2 class="act-title">4. Control de Stock, Fraccionamiento y Producción (50 segundos)</h2>
+      <span class="role-badge badge-admin">App POS • Rol: Administrador</span>
     </div>
     <div class="act-body">
-      <div class="objective-tag"><strong>Objetivo:</strong> Exhibir la explosión de ingredientes de las recetas, el consumo de materia prima y las sugerencias automáticas de compra.</div>
-      <ol class="steps-list">
-        <li>
-          <strong>Fichas Técnicas y Costeo (Recetas) (35 seg):</strong>
-          Abrir la pestaña <em>Recetas</em>. Seleccionar una receta (ej. Brownie Húmedo de Chocolate o Lemon Pie):
-          mostrar la lista de materias primas con sus cantidades exactas, costo total de la tanda y margen de ganancia.
-        </li>
-        <li>
-          <strong>Cocción en Producción con Consumo Atómico (50 seg):</strong>
-          Ir a <em>Producción</em>. Usar el selector táctil <strong>[-] [ 1 ] [+]</strong> para definir la cantidad a elaborar.
-          Mostrar el semáforo de insumos (harina, manteca, azúcar, chocolate) y tocar <strong>"Confirmar Producción"</strong>.
-          <div class="speech-box"><span>Punto clave:</span> "El sistema descuenta de forma atómica los gramos e insumos del depósito e incrementa el producto elaborado listo para vitrina."</div>
-        </li>
-        <li>
-          <strong>Sugerencias Inteligentes de Compra (35 seg):</strong>
-          Ir a <em>Compras</em>. Mostrar cómo los insumos que quedaron por debajo de su umbral mínimo de alerta se incorporaron automáticamente a la lista de compras del proveedor.
-        </li>
-      </ol>
+      <div class="action-row"><strong>Acción en pantalla:</strong>
+        1. <em>Inventario > Vitrina:</em> Presionar <em>"Cortar 1 Torta (+16 porc.)"</em> (descuenta 1 entera y suma 16 porciones).<br>
+        2. <em>Producción:</em> Selector <strong>[-] [1] [+]</strong> $\rightarrow$ mostrar semáforo de insumos $\rightarrow$ <em>"Confirmar Producción"</em> (descuenta harina, manteca, chocolate).<br>
+        3. <em>Compras:</em> Mostrar reposición automática bajo mínimo.
+      </div>
+      <div class="speech-box">
+        <span>Qué decir:</span> "En el backoffice, el módulo de <strong>Stock y Producción</strong> centraliza el inventario: permite <strong>fraccionar tortas enteras en porciones</strong> con un toque, costea las recetas y, al cocinar en Producción, <strong>descuenta de forma atómica</strong> los gramos de materia prima del depósito. Si algún insumo alcanza el umbral mínimo, se incorpora automáticamente a la lista sugerida de compras."
+      </div>
     </div>
   </div>
 
-  <!-- CONSEJOS PRÁCTICOS -->
+  <!-- PIE DE CIERRE Y PASE A ALEJANDRA -->
+  <div class="closure-box">
+    <div class="closure-box-title">5. Pase a Alejandra (Diapositiva 6 - Inversión) • 10 segundos:</div>
+    <div class="closure-quote">
+      "De esta manera, Comandas, Stock y Sitio Web operan de forma 100% integrada. Ahora le doy la palabra a Alejandra para presentar la propuesta comercial y de inversión."
+    </div>
+  </div>
+
+  <!-- TIPS RAPIDOS -->
   <div class="tips-grid">
     <div class="tip-box">
-      <div class="tip-box-title">⏱️ Control del Tiempo (6-7 min)</div>
-      No detenerse en detalles secundarios; seguir el hilo conductor del pedido desde que entra hasta que se reponen los insumos. Esto garantiza terminar con comodidad antes de los 10 minutos.
+      <div class="tip-box-title">⏱️ Regla de Oro del Tiempo</div>
+      No explicar código ni botones secundarios. Cada bloque tiene una sola frase y una acción concreta. En 2 minutos y medio mostrás todo con soltura.
     </div>
     <div class="tip-box">
-      <div class="tip-box-title">💻 Demostración en 2 Ventanas</div>
-      Tener una pestaña normal con <strong>Mozo</strong> y otra en incógnito con <strong>Cocinero</strong> para mostrar la sincronización instantánea sin perder tiempo cerrando sesión.
-    </div>
-  </div>
-
-  <!-- FRASE DE CIERRE -->
-  <div class="closure-box">
-    <div class="closure-box-title">Frase de Cierre (15 seg):</div>
-    <div class="closure-quote">
-      "Como pudieron apreciar, Dulce Taller integra en un solo ecosistema el sitio web para clientes, la gestión ágil de comandas en salón y cocina, y el control automatizado del stock desde la receta hasta la compra de insumos."
+      <div class="tip-box-title">💻 Pestañas Preparadas</div>
+      Tener abiertas 3 pestañas: 1. Sitio Web, 2. POS como Mozo (con comanda lista para cargar), 3. POS como Admin en Producción.
     </div>
   </div>
 
@@ -425,62 +397,47 @@ const htmlContent = `<!DOCTYPE html>
 `;
 
 // 1. Guardar Markdown complementario
-const mdContent = `# Dulce Taller POS - Guión de Demostración en Video
-**Duración objetivo:** 6 a 7 minutos (Límite máximo permitido: 10 minutos)  
-**Alcance oficial del sistema:**
-1. **Sitio Web Funcional:** Catálogo y presencia pública para clientes.
-2. **Gestión de Comandas:** Flujo ágil de salón (Mozo) y cocina (Cocinero).
-3. **Control de Stock & Producción:** Inventario de vitrina, materias primas, fichas técnicas y compras automáticas.
-
-*(Nota: La parte de cobros queda excluida de la demo por definición de alcance del proyecto).*
+const mdContent = `# BackForge • Dulce Taller POS - Guión de Demostración en Vivo
+**Orador:** Rodrigo  
+**Duración objetivo:** 2:45 a 3:00 minutos  
+**Ubicación en el video:** Entre Diapositiva 5 (Tomás) y Diapositiva 6 (Alejandra)  
+**Alcance formal:** Sitio Web Institucional • Módulo de Comandas • Control de Stock y Producción
 
 ---
 
-## 🎬 ACTO 1: Sitio Web Público y Salón (Rol: Mozo de Salón ~ 1:30 min)
-- **Sitio Web (15 seg):** Mostrar brevemente la web pública donde los clientes exploran el menú.
-- **Acceso al POS (15 seg):** Ingresar como *Mozo de Salón* en la tablet.
-- **Vitrina Inteligente (20 seg):** Mostrar la franja superior de disponibilidad cocinada en tiempo real.
-- **Carga de Comanda (Mesa 3) (30 seg):**
-  - 1x Café Latte ($3.900)
-  - 1x Porción Lemon Pie ($3.800) [Nota: "bien fría"]
-  - 1x Cookie Americana ($2.400)
-- **Validación de Stock (10 seg):** Intentar pedir más de lo que hay en vitrina; el sistema bloquea pedidos sin stock.
-- **Envío a Cocina:** Presionar *Crear Comanda* y verla en la columna *Pendientes* con su cronómetro activo.
+## ⏱️ Cronograma General del Video (Tope: 10:00 min)
+1. **Diapositivas 1 y 2 (Gimena / Tomás):** Intro y Problema (~1:35 min)
+2. **Diapositivas 3 y 4 (Mariana / Rodrigo):** Solución y Riesgos (~1:40 min)
+3. **Diapositiva 5 (Tomás):** Pruebas y Validación (da el pie) (~0:35 min)
+4. **DEMO EN VIVO (Rodrigo):** Web + Comandas + Stock (**2:45 a 3:00 min**)
+5. **Diapositivas 6 y 7 (Alejandra / Gimena):** Inversión ($1.404.000) y Cierre (~2:00 min)
+* **TOTAL ESTIMADO:** ~8:35 a 8:50 min (Margen seguro de más de 1 minuto).
 
 ---
 
-## 🎬 ACTO 2: Pantalla de Cocina y Despacho (Rol: Cocinero ~ 1:15 min)
-- **Ingreso de Cocina:** Cambiar usuario a *Cocinero*.
-- **Inicio de Preparación:** Tomar la comanda de Mesa 3 y presionar *Empezar Preparación* (pasa a *En Preparación*).
-- **Despacho con Aviso Sonoro:** Al finalizar, presionar *Marcar Lista* (emite sonido chime alertando al salón).
+## 🎬 Guión de la Demo (Paso a Paso de Rodrigo)
 
----
+### 1. Sitio Web Institucional (20 segundos)
+- **Acción:** Pestaña con el sitio web responsive de Dulce Taller.
+- **Voz:** *"Gracias, Tomás. Comenzamos por el **Sitio Web Institucional**, desarrollado para que las familias conozcan la propuesta sensorial de Dulce Taller, exploren la carta artesanal y consulten horarios desde cualquier celular o computadora, con diseño adaptable y carga ágil."*
 
-## 🎬 ACTO 3: Despacho y Fraccionamiento en Vitrina (Rol: Mozo & Stock ~ 1:30 min)
-- **Entrega de Comanda (20 seg):** Volver a *Mozo*, ubicar la comanda en *Listas* y presionar *Marcar Entregada* (descuenta automáticamente el stock de vitrina).
-- **Fraccionamiento Inteligente (50 seg):**
-  - Ir a *Inventario $\rightarrow$ Vitrina*.
-  - Observar el stock y presionar *Cortar 1 Torta en Porciones (+16 porc.)* o *(+8 porc.)*.
-  - Explicar cómo descuenta 1 torta entera madre y suma porciones listas al mostrador.
+### 2. Módulo de Comandas y Salón (45 segundos)
+- **Acción:** Entrar como Mozo $\rightarrow$ señalar barra de vitrina $\rightarrow$ *+ Nueva Comanda* (Mesa 3: 1 Latte, 1 Lemon Pie) $\rightarrow$ Intentar pedir de más (bloqueo) $\rightarrow$ *Crear Comanda*.
+- **Voz:** *"Pasamos a la tablet del salón: el mozo monitorea en la franja superior la **disponibilidad en vitrina en tiempo real**. Al cargar la comanda de la Mesa 3, si intentamos pedir más de lo existente, el sistema valida y **bloquea la orden** para evitar quiebres de stock. Confirmamos y la comanda viaja al instante a preparación."*
 
----
+### 3. Pantalla de Cocina y Despacho (35 segundos)
+- **Acción:** Pestaña de Cocinero $\rightarrow$ Tomar comanda Mesa 3 $\rightarrow$ *Empezar Preparación* $\rightarrow$ *Marcar Lista* (aviso sonoro chime).
+- **Voz:** *"En cocina, el cocinero recibe la comanda sin papeles ni gritos. Con un toque inicia la preparación y, al finalizarla, presiona **Marcar Lista**: el sistema emite un aviso sonoro notificando al salón para su retiro inmediato."*
 
-## 🎬 ACTO 4: Fichas Técnicas, Producción y Compras (Rol: Administrador ~ 2:00 min)
-- **Fichas Técnicas y Costeo (35 seg):**
-  - En *Recetas*, abrir Brownie o Lemon Pie: mostrar materias primas, costo total de tanda y margen comercial.
-- **Cocción en Producción (50 seg):**
-  - En *Producción*, usar el selector *[-] [ 1 ] [+]* y el semáforo de insumos.
-  - Tocar *Confirmar Producción*: se descuentan las materias primas del depósito y se incrementa el producto terminado.
-- **Sugerencias Inteligentes de Compra (35 seg):**
-  - En *Compras*, mostrar cómo los insumos bajo mínimo se incorporan solos a la lista de reposición.
+### 4. Control de Stock, Fraccionamiento y Producción (50 segundos)
+- **Acción:**
+  - *Inventario > Vitrina:* Clic en *Cortar 1 Torta (+16 porc.)* (descuenta 1 entera y suma 16 porciones).
+  - *Producción:* Selector *[-] [ 1 ] [+]* $\rightarrow$ semáforo $\rightarrow$ *Confirmar Producción* (descuenta harina, manteca, etc.).
+  - *Compras:* Mostrar lista automática de reposición bajo mínimo.
+- **Voz:** *"En el backoffice, el módulo de **Stock y Producción** centraliza el inventario: permite **fraccionar tortas enteras en porciones** con un toque, costea las recetas y, al cocinar en Producción, **descuenta de forma atómica** los gramos de materia prima del depósito. Si algún insumo alcanza el umbral mínimo, se incorpora automáticamente a la lista sugerida de compras."*
 
----
-
-## 💡 Consejos de Filmación:
-1. **Duración estricta:** Al no incluir el cobro, el video fluye en ~6 minutos y medio, dando un margen de seguridad de más de 3 minutos respecto al tope de 10 min.
-2. **Dos navegadores:** Usar ventana normal para Mozo e incógnito para Cocinero.
-3. **Frase de Cierre (15 seg):**
-   > *"Dulce Taller integra en un solo ecosistema el sitio web para clientes, la gestión ágil de comandas en salón y cocina, y el control automatizado del stock desde la receta hasta la compra de insumos."*
+### 5. Pase a Alejandra (10 segundos)
+- **Voz:** *"De esta manera, Comandas, Stock y Sitio Web operan de forma 100% integrada. Ahora le doy la palabra a Alejandra para presentar la propuesta comercial y de inversión."*
 `;
 
 fs.writeFileSync(mdPath, mdContent, 'utf8');

@@ -1,56 +1,41 @@
-# Dulce Taller POS - Guión de Demostración en Video
-**Duración objetivo:** 6 a 7 minutos (Límite máximo permitido: 10 minutos)  
-**Alcance oficial del sistema:**
-1. **Sitio Web Funcional:** Catálogo y presencia pública para clientes.
-2. **Gestión de Comandas:** Flujo ágil de salón (Mozo) y cocina (Cocinero).
-3. **Control de Stock & Producción:** Inventario de vitrina, materias primas, fichas técnicas y compras automáticas.
-
-*(Nota: La parte de cobros queda excluida de la demo por definición de alcance del proyecto).*
+# BackForge • Dulce Taller POS - Guión de Demostración en Vivo
+**Orador:** Rodrigo  
+**Duración objetivo:** 2:45 a 3:00 minutos  
+**Ubicación en el video:** Entre Diapositiva 5 (Tomás) y Diapositiva 6 (Alejandra)  
+**Alcance formal:** Sitio Web Institucional • Módulo de Comandas • Control de Stock y Producción
 
 ---
 
-## 🎬 ACTO 1: Sitio Web Público y Salón (Rol: Mozo de Salón ~ 1:30 min)
-- **Sitio Web (15 seg):** Mostrar brevemente la web pública donde los clientes exploran el menú.
-- **Acceso al POS (15 seg):** Ingresar como *Mozo de Salón* en la tablet.
-- **Vitrina Inteligente (20 seg):** Mostrar la franja superior de disponibilidad cocinada en tiempo real.
-- **Carga de Comanda (Mesa 3) (30 seg):**
-  - 1x Café Latte ($3.900)
-  - 1x Porción Lemon Pie ($3.800) [Nota: "bien fría"]
-  - 1x Cookie Americana ($2.400)
-- **Validación de Stock (10 seg):** Intentar pedir más de lo que hay en vitrina; el sistema bloquea pedidos sin stock.
-- **Envío a Cocina:** Presionar *Crear Comanda* y verla en la columna *Pendientes* con su cronómetro activo.
+## ⏱️ Cronograma General del Video (Tope: 10:00 min)
+1. **Diapositivas 1 y 2 (Gimena / Tomás):** Intro y Problema (~1:35 min)
+2. **Diapositivas 3 y 4 (Mariana / Rodrigo):** Solución y Riesgos (~1:40 min)
+3. **Diapositiva 5 (Tomás):** Pruebas y Validación (da el pie) (~0:35 min)
+4. **DEMO EN VIVO (Rodrigo):** Web + Comandas + Stock (**2:45 a 3:00 min**)
+5. **Diapositivas 6 y 7 (Alejandra / Gimena):** Inversión ($1.404.000) y Cierre (~2:00 min)
+* **TOTAL ESTIMADO:** ~8:35 a 8:50 min (Margen seguro de más de 1 minuto).
 
 ---
 
-## 🎬 ACTO 2: Pantalla de Cocina y Despacho (Rol: Cocinero ~ 1:15 min)
-- **Ingreso de Cocina:** Cambiar usuario a *Cocinero*.
-- **Inicio de Preparación:** Tomar la comanda de Mesa 3 y presionar *Empezar Preparación* (pasa a *En Preparación*).
-- **Despacho con Aviso Sonoro:** Al finalizar, presionar *Marcar Lista* (emite sonido chime alertando al salón).
+## 🎬 Guión de la Demo (Paso a Paso de Rodrigo)
 
----
+### 1. Sitio Web Institucional (20 segundos)
+- **Acción:** Pestaña con el sitio web responsive de Dulce Taller.
+- **Voz:** *"Gracias, Tomás. Comenzamos por el **Sitio Web Institucional**, desarrollado para que las familias conozcan la propuesta sensorial de Dulce Taller, exploren la carta artesanal y consulten horarios desde cualquier celular o computadora, con diseño adaptable y carga ágil."*
 
-## 🎬 ACTO 3: Despacho y Fraccionamiento en Vitrina (Rol: Mozo & Stock ~ 1:30 min)
-- **Entrega de Comanda (20 seg):** Volver a *Mozo*, ubicar la comanda en *Listas* y presionar *Marcar Entregada* (descuenta automáticamente el stock de vitrina).
-- **Fraccionamiento Inteligente (50 seg):**
-  - Ir a *Inventario $ightarrow$ Vitrina*.
-  - Observar el stock y presionar *Cortar 1 Torta en Porciones (+16 porc.)* o *(+8 porc.)*.
-  - Explicar cómo descuenta 1 torta entera madre y suma porciones listas al mostrador.
+### 2. Módulo de Comandas y Salón (45 segundos)
+- **Acción:** Entrar como Mozo $ightarrow$ señalar barra de vitrina $ightarrow$ *+ Nueva Comanda* (Mesa 3: 1 Latte, 1 Lemon Pie) $ightarrow$ Intentar pedir de más (bloqueo) $ightarrow$ *Crear Comanda*.
+- **Voz:** *"Pasamos a la tablet del salón: el mozo monitorea en la franja superior la **disponibilidad en vitrina en tiempo real**. Al cargar la comanda de la Mesa 3, si intentamos pedir más de lo existente, el sistema valida y **bloquea la orden** para evitar quiebres de stock. Confirmamos y la comanda viaja al instante a preparación."*
 
----
+### 3. Pantalla de Cocina y Despacho (35 segundos)
+- **Acción:** Pestaña de Cocinero $ightarrow$ Tomar comanda Mesa 3 $ightarrow$ *Empezar Preparación* $ightarrow$ *Marcar Lista* (aviso sonoro chime).
+- **Voz:** *"En cocina, el cocinero recibe la comanda sin papeles ni gritos. Con un toque inicia la preparación y, al finalizarla, presiona **Marcar Lista**: el sistema emite un aviso sonoro notificando al salón para su retiro inmediato."*
 
-## 🎬 ACTO 4: Fichas Técnicas, Producción y Compras (Rol: Administrador ~ 2:00 min)
-- **Fichas Técnicas y Costeo (35 seg):**
-  - En *Recetas*, abrir Brownie o Lemon Pie: mostrar materias primas, costo total de tanda y margen comercial.
-- **Cocción en Producción (50 seg):**
-  - En *Producción*, usar el selector *[-] [ 1 ] [+]* y el semáforo de insumos.
-  - Tocar *Confirmar Producción*: se descuentan las materias primas del depósito y se incrementa el producto terminado.
-- **Sugerencias Inteligentes de Compra (35 seg):**
-  - En *Compras*, mostrar cómo los insumos bajo mínimo se incorporan solos a la lista de reposición.
+### 4. Control de Stock, Fraccionamiento y Producción (50 segundos)
+- **Acción:**
+  - *Inventario > Vitrina:* Clic en *Cortar 1 Torta (+16 porc.)* (descuenta 1 entera y suma 16 porciones).
+  - *Producción:* Selector *[-] [ 1 ] [+]* $ightarrow$ semáforo $ightarrow$ *Confirmar Producción* (descuenta harina, manteca, etc.).
+  - *Compras:* Mostrar lista automática de reposición bajo mínimo.
+- **Voz:** *"En el backoffice, el módulo de **Stock y Producción** centraliza el inventario: permite **fraccionar tortas enteras en porciones** con un toque, costea las recetas y, al cocinar en Producción, **descuenta de forma atómica** los gramos de materia prima del depósito. Si algún insumo alcanza el umbral mínimo, se incorpora automáticamente a la lista sugerida de compras."*
 
----
-
-## 💡 Consejos de Filmación:
-1. **Duración estricta:** Al no incluir el cobro, el video fluye en ~6 minutos y medio, dando un margen de seguridad de más de 3 minutos respecto al tope de 10 min.
-2. **Dos navegadores:** Usar ventana normal para Mozo e incógnito para Cocinero.
-3. **Frase de Cierre (15 seg):**
-   > *"Dulce Taller integra en un solo ecosistema el sitio web para clientes, la gestión ágil de comandas en salón y cocina, y el control automatizado del stock desde la receta hasta la compra de insumos."*
+### 5. Pase a Alejandra (10 segundos)
+- **Voz:** *"De esta manera, Comandas, Stock y Sitio Web operan de forma 100% integrada. Ahora le doy la palabra a Alejandra para presentar la propuesta comercial y de inversión."*
